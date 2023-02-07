@@ -8,13 +8,14 @@
  * @copyright Copyright (c) 2023
  * 
  */
-#include "chunking.hpp"
+#include "chunking_common.hpp"
 
 void print_chunks(std::vector<File_Chunk> file_chunks){
     /**
      * @brief Print details of each chunk in the given vector of chunks
-     * 
      * @param file_chunks: vector containing struct File_Chunk
+     * @return: void
+     * 
      */
 
     // Iterate over vector elements and print details
@@ -22,5 +23,12 @@ void print_chunks(std::vector<File_Chunk> file_chunks){
         std::cout << "\tChunk Size: " <<  chunk.chunk_size << std::endl;
         std::cout << "\tChunk Data: " << chunk.chunk_data << std::endl;
         std::cout << std::endl << std::endl;
+    }
+}
+
+void cleanup_chunks(std::vector<File_Chunk> file_chunks){
+    // Clean up chunk memory
+    for(File_Chunk chunk:file_chunks){
+        delete chunk.chunk_data;
     }
 }

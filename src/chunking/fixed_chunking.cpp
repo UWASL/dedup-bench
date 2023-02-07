@@ -8,29 +8,32 @@
  * @copyright Copyright (c) 2023
  * 
  */
-#include "chunking.hpp"
+#include "fixed_chunking.hpp"
 #include <fstream>
 
-uint64_t Chunking_Techniques::fixed_chunk_size = DEFAULT_FIXED_CHUNK_SIZE;
-
-bool Chunking_Techniques::set_fixed_chunk_size(uint64_t _chunk_size){
+bool Fixed_Chunking::set_fixed_chunk_size(uint64_t _chunk_size){
     /**
      * @brief Sets fixed chunk size. Always call before using fixed chunking technique
      * @param _chunk_size: New fixed chunk size
+     * @return: True if success, False otherwise
      */
-    Chunking_Techniques::fixed_chunk_size = _chunk_size;
-    return true;
+    Fixed_Chunking::fixed_chunk_size = _chunk_size;
+
+    if(fixed_chunk_size == _chunk_size)
+        return true;
+    else
+        return false;
 }
 
-uint64_t Chunking_Techniques:: get_fixed_chunk_size(){
+uint64_t Fixed_Chunking:: get_fixed_chunk_size(){
     /**
      * @brief Returns fixed chunk size
-     * 
+     * @return: uint64_t with fixed_chunk_size value
      */
-    return Chunking_Techniques::fixed_chunk_size;
+    return Fixed_Chunking::fixed_chunk_size;
 }
 
-std::vector<File_Chunk> Chunking_Techniques::fixed_size_chunks(std::string file_path){
+std::vector<File_Chunk> Fixed_Chunking::chunk_file(std::string file_path){
     /**
         @brief Divides a file into fixed size chunks and returns a vector with these chunks
         @param file_path: Path to input file
@@ -39,10 +42,12 @@ std::vector<File_Chunk> Chunking_Techniques::fixed_size_chunks(std::string file_
         @return: Vector containing fixed size chunks from file   
     */
 
+
     std::ifstream file_ptr;
     file_ptr.open(file_path, std::ios::in);
 
-    uint64_t chunk_size = Chunking_Techniques::get_fixed_chunk_size();
+    // Get chunk size from object
+    uint64_t chunk_size = get_fixed_chunk_size();
 
     std::vector<File_Chunk> file_chunks;
 
@@ -54,7 +59,6 @@ std::vector<File_Chunk> Chunking_Techniques::fixed_size_chunks(std::string file_
     file_ptr.seekg(0,std::ios_base::beg);
     uint64_t bytes_to_read = std::min(chunk_size, file_size_bytes);
     
-
 
     uint64_t curr_bytes_read = 0;
     while(curr_bytes_read < file_size_bytes){
