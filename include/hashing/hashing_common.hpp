@@ -29,7 +29,7 @@ class Hashing_Technique{
     virtual std::string hash_chunk(File_Chunk) = 0;
     
     // Hash all chunks in a given vector of chunks
-    virtual std::vector<std::string> hash_chunks(std::vector<File_Chunk>) = 0;
+    std::vector<std::string> hash_chunks(std::vector<File_Chunk>);
 
     // Virtual destructor to support delete on base class ptr
     virtual ~Hashing_Technique(){}

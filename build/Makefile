@@ -21,10 +21,12 @@ ifeq ($(DEBUG), 1)
 	$(COMPILER_FLAGS) += -g
 endif
 
+
+default: dedup.exe
 all: dedup.exe
 
-dedup.exe: driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o
-	$(CC) -o dedup.exe driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o $(INCLUDE_FLAGS) $(COMPILER_FLAGS)
+dedup.exe: driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o
+	$(CC) -o dedup.exe driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o $(INCLUDE_FLAGS) $(COMPILER_FLAGS)
 
 driver.o: ${SRC_PATH}/driver.cpp
 	$(CC) -c $(SRC_PATH)/driver.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o driver.o
@@ -37,6 +39,9 @@ hashing_common.o: ${SRC_PATH_HASHING}/hashing_common.cpp
 
 std_hashing.o: ${SRC_PATH_HASHING}/std_hashing.cpp
 	$(CC) -c $(SRC_PATH_HASHING)/std_hashing.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o std_hashing.o
+
+fnv_hashing.o: ${SRC_PATH_HASHING}/fnv_hashing.cpp
+	$(CC) -c $(SRC_PATH_HASHING)/fnv_hashing.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o fnv_hashing.o
 
 
 # Chunking related build rules

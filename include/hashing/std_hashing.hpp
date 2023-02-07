@@ -7,10 +7,9 @@ class Std_Hashing: public virtual Hashing_Technique{
     public:
         // Hash chunk using standard hashing from CPP std library
         std::string hash_chunk(File_Chunk file_chunk);
-        std::vector<std::string> hash_chunks(std::vector<File_Chunk> file_chunks);
 
         Std_Hashing(){
-            technique_name = "Std Hashing";
+            technique_name = "Std-Hashing";
         }
 };
 

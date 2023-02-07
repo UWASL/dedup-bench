@@ -11,6 +11,7 @@
 
 #include "fixed_chunking.hpp"
 #include "std_hashing.hpp"
+#include "fnv_hashing.hpp"
 
 #include <fstream>
 
@@ -52,7 +53,11 @@ int main(int argc, char * argv[]){
  */
     if(argc != 5){
         std::cout << "Usage: ./driver <file_path> <chunking_technique> <hashing_technique> <chunk_size_for_fixed>" << std::endl;
-        std::cout << "\t Supported techniques: Fixed" << std::endl;
+        std::cout << "\t  <file_path>: Path to file to run chunking and hashing on." << std::endl;
+        std::cout << "\t  Supported <chunking_technique>s: fixed" << std::endl;
+        std::cout << "\t  Supported <hashing_technique>s: std, fnv" << std::endl;
+        std::cout << "\t  <chunk_size_for_fixed>: Positive integer representing size of each chunk in the fixed chunking technique." << std::endl;
+
         exit(EXIT_FAILURE);
     }
 
@@ -65,9 +70,11 @@ int main(int argc, char * argv[]){
     Hashing_Technique *hash_method = nullptr;
     
     // Set parameters for hashing technique and call relevant constructors
-    if(hashing_technique == "Std" || hashing_technique == "Default"){
-        Std_Hashing *std_hash = new Std_Hashing();
-        hash_method = (Hashing_Technique *)std_hash;
+    if(hashing_technique == "std"){
+        hash_method = (Hashing_Technique *)new Std_Hashing();
+    }
+    else if(hashing_technique == "fnv"){
+        hash_method = (Hashing_Technique *)new Fnv_Hashing();
     }
     else{
         std::cout << "Unsupported hashing technique: " << hashing_technique << std::endl;
@@ -75,10 +82,13 @@ int main(int argc, char * argv[]){
     }
 
     // Set parameters for fixed chunking and call relevant constructors
-    if(chunking_technique == "Fixed"){
+    if(chunking_technique == "fixed"){
+        /**
+         * @todo: Add checks to make sure random negative stuff isn't passed. Can be done within the new Config class.
+         * 
+         */
         uint64_t chunk_size = atoi(argv[4]);
-        Fixed_Chunking *fixed_chunking_obj = new Fixed_Chunking(chunk_size);
-        chunk_method = (Chunking_Technique *)fixed_chunking_obj;
+        chunk_method = (Chunking_Technique *)new Fixed_Chunking(chunk_size);
     }
     else{
         std::cout << "Unsupported chunking technique: " << chunking_technique << std::endl;
