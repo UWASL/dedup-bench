@@ -4,6 +4,7 @@
 std::string Fnv_Hashing::hash_chunk(File_Chunk file_chunk){
     /**
      * @brief Function implementing FNV Hashing (Fowler-Noll-Vo)
+     *        Note that this hash function isn't cryptographically secure. Its just a fast placeholder technique for testing.
      * 
      *        This function can handle binary data.
      *    
