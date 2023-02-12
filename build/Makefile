@@ -1,16 +1,19 @@
 INCLUDE_PATH = ../include/
 INCLUDE_PATH_CHUNKING = ../include/chunking/
 INCLUDE_PATH_HASHING = ../include/hashing/
+INCLUDE_PATH_CONFIG = ../include/config/
 
 SRC_PATH = ../src/
 SRC_PATH_CHUNKING = ../src/chunking/
 SRC_PATH_HASHING = ../src/hashing/
+SRC_PATH_CONFIG = ../src/config/
 
-COMPILER_FLAGS= -Wall
+COMPILER_FLAGS= -std=c++11 -Wall
 
 INCLUDE_FLAGS = -I $(INCLUDE_PATH)
 INCLUDE_FLAGS += -I ${INCLUDE_PATH_CHUNKING}
 INCLUDE_FLAGS += -I ${INCLUDE_PATH_HASHING}
+INCLUDE_FLAGS += -I ${INCLUDE_PATH_CONFIG}
 
 CC = g++
 RM = rm -f
@@ -25,8 +28,8 @@ endif
 default: dedup.exe
 all: dedup.exe
 
-dedup.exe: driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o
-	$(CC) -o dedup.exe driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o $(INCLUDE_FLAGS) $(COMPILER_FLAGS)
+dedup.exe: driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o parser.o
+	$(CC) -o dedup.exe driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o parser.o $(INCLUDE_FLAGS) $(COMPILER_FLAGS)
 
 driver.o: ${SRC_PATH}/driver.cpp
 	$(CC) -c $(SRC_PATH)/driver.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o driver.o
@@ -51,6 +54,10 @@ chunking_common.o: $(SRC_PATH_CHUNKING)/chunking_common.cpp
 
 fixed_chunking.o: $(SRC_PATH_CHUNKING)/fixed_chunking.cpp
 	$(CC) -c $(SRC_PATH_CHUNKING)/fixed_chunking.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o fixed_chunking.o
+
+# Config related build rules
+parser.o: $(SRC_PATH_CONFIG)/parser.cpp
+	$(CC) -c $(SRC_PATH_CONFIG)/parser.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o parser.o
 
 clean:
 	$(RM) *.o *.d *.exe
