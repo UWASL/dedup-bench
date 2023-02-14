@@ -4,13 +4,11 @@
 #include <string>
 
 class ConfigError: public std::exception {
-	const char* msg;
+	const std::string msg;
 	public:
-		ConfigError(const std::string& msg): msg{msg.c_str()} {};
+		ConfigError(const std::string& msg);
 
-		const char* what() const noexcept override {
-			return msg;
-		}
+		const char* what() const noexcept override;
 };
 
 #endif
