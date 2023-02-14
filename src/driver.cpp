@@ -12,6 +12,8 @@
 #include "fixed_chunking.hpp"
 #include "std_hashing.hpp"
 #include "fnv_hashing.hpp"
+#include "parser.hpp"
+#include "config_error.hpp"
 
 #include <fstream>
 
@@ -51,57 +53,65 @@ int main(int argc, char * argv[]){
  * @brief Main entry point for dedup.exe. Parses arguments and calls driver_function()
  * @todo: Add Config class which takes in parameters
  */
-    if(argc != 5){
-        std::cout << "Usage: ./driver <file_path> <chunking_technique> <hashing_technique> <chunk_size_for_fixed>" << std::endl;
+    if(argc != 3){
+        std::cout << "Usage: ./dedup.exe <file_path> <config_file_path>" << std::endl;
         std::cout << "\t  <file_path>: Path to file to run chunking and hashing on." << std::endl;
-        std::cout << "\t  Supported <chunking_technique>s: fixed" << std::endl;
-        std::cout << "\t  Supported <hashing_technique>s: std, fnv" << std::endl;
-        std::cout << "\t  <chunk_size_for_fixed>: Positive integer representing size of each chunk in the fixed chunking technique." << std::endl;
+        std::cout << "\t  <config_file_path>: Path to the config file." << std::endl;
 
         exit(EXIT_FAILURE);
     }
 
     std::string file_path = std::string(argv[1]);
-    std::string chunking_technique = std::string(argv[2]);
-    std::string hashing_technique = std::string(argv[3]);
+	try {
+		Parser parser{std::string(argv[2])};
+		ChunkingTech chunking_technique = parser.get_chunking_tech();
+		HashingTech hashing_technique = parser.get_hashing_tech();
 
-    // Pointers used to hold derived instances of Chunking_Technique and Hashing_Technique
-    Chunking_Technique *chunk_method = nullptr;
-    Hashing_Technique *hash_method = nullptr;
-    
-    // Set parameters for hashing technique and call relevant constructors
-    if(hashing_technique == "std"){
-        hash_method = (Hashing_Technique *)new Std_Hashing();
-    }
-    else if(hashing_technique == "fnv"){
-        hash_method = (Hashing_Technique *)new Fnv_Hashing();
-    }
-    else{
-        std::cout << "Unsupported hashing technique: " << hashing_technique << std::endl;
-        exit(EXIT_FAILURE);
-    }
+		// Pointers used to hold derived instances of Chunking_Technique and Hashing_Technique
+		/**
+		 * @todo: Change this to use RAII instead to avoid possible memory leak
+		 * 
+		 */
+		Chunking_Technique *chunk_method = nullptr;
+		Hashing_Technique *hash_method = nullptr;
+		
+		// Set parameters for hashing technique and call relevant constructors
+		switch (chunking_technique) {
+			case ChunkingTech::FIXED:
+				/**
+				 * @todo: For now hard code in a chunk size. Later the first parameter of Fixed_Chunking should
+				 * 		  be its appropriate Config class
+				 * 
+				 */
+				chunk_method = (Chunking_Technique *)new Fixed_Chunking(2048);
+				break;
+			default:
+				std::cerr << "Unimplemented chunking technique" << std::endl;
+				exit(EXIT_FAILURE);
+		}
 
-    // Set parameters for fixed chunking and call relevant constructors
-    if(chunking_technique == "fixed"){
-        /**
-         * @todo: Add checks to make sure random negative stuff isn't passed. Can be done within the new Config class.
-         * 
-         */
-        uint64_t chunk_size = atoi(argv[4]);
-        chunk_method = (Chunking_Technique *)new Fixed_Chunking(chunk_size);
-    }
-    else{
-        std::cout << "Unsupported chunking technique: " << chunking_technique << std::endl;
-        exit(EXIT_FAILURE);
-    }
+		switch (hashing_technique) {
+			case HashingTech::STD:
+				hash_method = (Hashing_Technique *)new Std_Hashing();
+				break;
+			case HashingTech::FNV:
+				hash_method = (Hashing_Technique *)new Fnv_Hashing();
+				break;
+			default:
+				std::cerr << "Unimplemented hashing technique" << std::endl;
+				exit(EXIT_FAILURE);
+		}
 
-    // Call driver function
-    driver_function(file_path, chunk_method, hash_method);
+		// Call driver function
+		driver_function(file_path, chunk_method, hash_method);
 
-    // Cleanup pointers
-    delete hash_method;
-    delete chunk_method;
+		// Cleanup pointers
+		delete hash_method;
+		delete chunk_method;
+	} catch (const ConfigError& e) {
+		std::cerr << e.what() << std::endl;
+		exit(EXIT_FAILURE);
+	}
 
     exit(EXIT_SUCCESS);
-
 }
