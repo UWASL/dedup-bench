@@ -4,7 +4,7 @@
 #include <string>
 
 
-Config::Config(const Parser& parser): parser{parser} {}
+Config::Config(std::string config_file_path): parser{config_file_path} {}
 
 ChunkingTech Config::get_chunking_tech() const {
 	try {

@@ -12,7 +12,6 @@
 #include "fixed_chunking.hpp"
 #include "std_hashing.hpp"
 #include "fnv_hashing.hpp"
-#include "parser.hpp"
 #include "config.hpp"
 #include "config_error.hpp"
 
@@ -64,8 +63,7 @@ int main(int argc, char * argv[]){
 
     std::string file_path = std::string(argv[1]);
 	try {
-		Parser parser{std::string(argv[2])};
-		Config config{parser};
+		Config config{std::string(argv[2])};
 		ChunkingTech chunking_technique = config.get_chunking_tech();
 		HashingTech hashing_technique = config.get_hashing_tech();
 

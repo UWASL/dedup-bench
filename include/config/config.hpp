@@ -13,10 +13,10 @@ enum class HashingTech { STD, FNV, MD5, SHA1, SHA2 };
 
 
 class Config {
-	const Parser& parser;
+	const Parser parser;
 
 	public:
-		Config(const Parser& parser);
+		Config(std::string config_file_path);
 
 		/**
 		 * @brief Get the chunking algorithm specified in the config file.
