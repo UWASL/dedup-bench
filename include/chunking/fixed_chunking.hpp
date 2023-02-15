@@ -2,6 +2,7 @@
 #define _FIXED_CHUNKING_
 
 #include "chunking_common.hpp"
+#include "config.hpp"
 
 #define DEFAULT_FIXED_CHUNK_SIZE 4096
 
@@ -25,13 +26,13 @@ class Fixed_Chunking: public virtual Chunking_Technique{
             technique_name = "Fixed Chunking";
         }
 
-        Fixed_Chunking(uint64_t _chunk_size){
+        Fixed_Chunking(const Config& config){
             /**
              * @brief Constructor with custom fixed_chunk_size
              * @param _chunk_size: Value for fixed_chunk_size
              * @return: void
              */
-            fixed_chunk_size = _chunk_size;
+            fixed_chunk_size = config.get_fc_size();
             technique_name = "Fixed Chunking";
         }
 

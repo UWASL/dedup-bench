@@ -13,6 +13,7 @@
 #include "std_hashing.hpp"
 #include "fnv_hashing.hpp"
 #include "parser.hpp"
+#include "config.hpp"
 #include "config_error.hpp"
 
 #include <fstream>
@@ -64,8 +65,9 @@ int main(int argc, char * argv[]){
     std::string file_path = std::string(argv[1]);
 	try {
 		Parser parser{std::string(argv[2])};
-		ChunkingTech chunking_technique = parser.get_chunking_tech();
-		HashingTech hashing_technique = parser.get_hashing_tech();
+		Config config{parser};
+		ChunkingTech chunking_technique = config.get_chunking_tech();
+		HashingTech hashing_technique = config.get_hashing_tech();
 
 		// Pointers used to hold derived instances of Chunking_Technique and Hashing_Technique
 		/**
@@ -78,12 +80,7 @@ int main(int argc, char * argv[]){
 		// Set parameters for hashing technique and call relevant constructors
 		switch (chunking_technique) {
 			case ChunkingTech::FIXED:
-				/**
-				 * @todo: For now hard code in a chunk size. Later the first parameter of Fixed_Chunking should
-				 * 		  be its appropriate Config class
-				 * 
-				 */
-				chunk_method = (Chunking_Technique *)new Fixed_Chunking(2048);
+				chunk_method = (Chunking_Technique *)new Fixed_Chunking(config);
 				break;
 			default:
 				std::cerr << "Unimplemented chunking technique" << std::endl;
