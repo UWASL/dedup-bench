@@ -47,11 +47,11 @@ endif
 default: dedup
 all: dedup
 
-dedup: driver.o $(OBJS_CHUNKING) $(OBJS_HASHING) $(OBJS_CONFIG) 
+dedup: $(OBJS_MAIN) $(OBJS_CHUNKING) $(OBJS_HASHING) $(OBJS_CONFIG) 
 	@echo ""
 	@echo "Linking $@ ....."
 	@echo "============================"
-	$(CC) -o dedup.exe driver.o $(OBJS_CHUNKING) $(OBJS_HASHING) $(OBJS_CONFIG) $(INCLUDE_FLAGS) $(COMPILER_FLAGS)
+	$(CC) -o dedup.exe $(OBJS_MAIN) $(OBJS_CHUNKING) $(OBJS_HASHING) $(OBJS_CONFIG) $(INCLUDE_FLAGS) $(COMPILER_FLAGS)
 	@echo ""
 
 # Driver related build rules
