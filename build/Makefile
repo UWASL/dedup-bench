@@ -1,3 +1,8 @@
+# =========================
+# Can consider using -MMD flag in the compiler to auto-gen dependencies file
+# if the number of headers ever grow too big
+# =========================
+MAKEFILE = Makefile
 INCLUDE_PATH = ../include/
 INCLUDE_PATH_CHUNKING = ../include/chunking
 INCLUDE_PATH_HASHING = ../include/hashing
@@ -51,26 +56,23 @@ dedup: driver.o $(OBJS_CHUNKING) $(OBJS_HASHING) $(OBJS_CONFIG)
 
 # Driver related build rules
 
-$(OBJS_MAIN): %.o: $(SRC_PATH)/%.cpp
+$(OBJS_MAIN): %.o: $(SRC_PATH)/%.cpp $(MAKEFILE)
 	$(CC) $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
 
 # Hashing related build rules
 
-$(OBJS_HASHING): %.o: $(SRC_PATH_HASHING)/%.cpp $(DEPS_HASHING)
+$(OBJS_HASHING): %.o: $(SRC_PATH_HASHING)/%.cpp $(DEPS_HASHING) $(MAKEFILE)
 	$(CC) $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
 
 # Chunking related build rules
 
-$(OBJS_CHUNKING): %.o: $(SRC_PATH_CHUNKING)/%.cpp $(DEPS_CHUNKING)
+$(OBJS_CHUNKING): %.o: $(SRC_PATH_CHUNKING)/%.cpp $(DEPS_CHUNKING) $(MAKEFILE)
 	$(CC) $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
 
 # Config related build rules
 
-$(OBJS_CONFIG): %.o: $(SRC_PATH_CONFIG)/%.cpp $(DEPS_CONFIG)
+$(OBJS_CONFIG): %.o: $(SRC_PATH_CONFIG)/%.cpp $(DEPS_CONFIG) $(MAKEFILE)
 	$(CC) $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
-
-config.o: $(SRC_PATH_CONFIG)/config.cpp
-	$(CC) -c $(SRC_PATH_CONFIG)/config.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o config.o
 
 clean:
 	$(RM) *.o *.d *.exe
