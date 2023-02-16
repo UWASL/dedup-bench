@@ -37,35 +37,11 @@ Parser::Parser(const std::string& config_file_path) {
   	}
 }
 
-std::string Parser::get_property(const std::string& key) {
+std::string Parser::get_property(const std::string& key) const {
 	return dict.at(key);
 }
 
-ChunkingTech Parser::get_chunking_tech() {
-	auto it = dict.find(CHUNKING_TECH);
-	if (it != dict.end()) {
-		std::string value = it->second;
-		if (value == "fixed") {
-			return ChunkingTech::FIXED;
-		}
-	}
-	throw ConfigError("The configuration file does not specify a valid chunking technique");
-}
-
-HashingTech Parser::get_hashing_tech() {
-	auto it = dict.find(HASHING_TECH);
-	if (it != dict.end()) {
-		std::string value = it->second;
-		if (value == "std") {
-			return HashingTech::STD;
-		} else if (value == "fnv") {
-			return HashingTech::FNV;
-		}
-	}
-	throw ConfigError("The configuration file does not specify a valid hashing technique");
-}
-
-void Parser::print() {
+void Parser::print() const {
 	for (auto it = dict.begin(); it != dict.end(); ++it) {
 		std::cout << it->first << " = " << it->second << std::endl;
 	}

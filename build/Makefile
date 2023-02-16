@@ -28,8 +28,8 @@ endif
 default: dedup.exe
 all: dedup.exe
 
-dedup.exe: driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o parser.o config_error.o
-	$(CC) -o dedup.exe driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o parser.o config_error.o $(INCLUDE_FLAGS) $(COMPILER_FLAGS)
+dedup.exe: driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o parser.o config_error.o config.o
+	$(CC) -o dedup.exe driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o parser.o config_error.o config.o $(INCLUDE_FLAGS) $(COMPILER_FLAGS)
 
 driver.o: ${SRC_PATH}/driver.cpp
 	$(CC) -c $(SRC_PATH)/driver.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o driver.o
@@ -61,6 +61,9 @@ parser.o: $(SRC_PATH_CONFIG)/parser.cpp
 
 config_error.o: $(SRC_PATH_CONFIG)/config_error.cpp
 	$(CC) -c $(SRC_PATH_CONFIG)/config_error.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o config_error.o
+
+config.o: $(SRC_PATH_CONFIG)/config.cpp
+	$(CC) -c $(SRC_PATH_CONFIG)/config.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o config.o
 
 clean:
 	$(RM) *.o *.d *.exe

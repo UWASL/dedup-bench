@@ -3,14 +3,6 @@
 #include <string>
 #include <unordered_map>
 
-#define CHUNKING_TECH "chunking_algo"
-#define HASHING_TECH "hashing_algo"
-
-// define the possible chunking algorithms
-enum class ChunkingTech { FILE, FIXED };
-// define the possible hashing algorithms
-enum class HashingTech { STD, FNV, MD5, SHA1, SHA2 };
-
 
 class Parser {
 	const char delimiter = '=';
@@ -27,28 +19,12 @@ class Parser {
 		 * @param key 
 		 * @return std::string 
 		 */
-		std::string get_property(const std::string& key);
-
-		/**
-		 * @brief Get the chunking algorithm specified in the config file.
-		 * throws ConfigError if the key does not exist or if the value is invalid
-		 * 
-		 * @return ChunkingTech 
-		 */
-		ChunkingTech get_chunking_tech();
-
-		/**
-		 * @brief Get the hashing algorithm specified in the config file.
-		 * throws ConfigError if the key does not exist or if the value is invalid
-		 * 
-		 * @return HashingTech 
-		 */
-		HashingTech get_hashing_tech();
+		std::string get_property(const std::string& key) const;
 
 		/**
 		 * @brief Prints out all the stored key value mapping
 		 */
-		void print();
+		void print() const;
 };
 
 #endif
