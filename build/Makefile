@@ -3,17 +3,31 @@ INCLUDE_PATH_CHUNKING = ../include/chunking
 INCLUDE_PATH_HASHING = ../include/hashing
 INCLUDE_PATH_CONFIG = ../include/config
 
-SRC_PATH = ../src/
-SRC_PATH_CHUNKING = ../src/chunking
-SRC_PATH_HASHING = ../src/hashing
-SRC_PATH_CONFIG = ../src/config
-
-COMPILER_FLAGS= -std=c++11 -Wall
-
 INCLUDE_FLAGS = -I $(INCLUDE_PATH)
 INCLUDE_FLAGS += -I ${INCLUDE_PATH_CHUNKING}
 INCLUDE_FLAGS += -I ${INCLUDE_PATH_HASHING}
 INCLUDE_FLAGS += -I ${INCLUDE_PATH_CONFIG}
+
+SRC_PATH = ../src
+SRC_MAIN = $(wildcard $(SRC_PATH)/*.cpp)
+OBJS_MAIN = $(SRC_MAIN:$(SRC_PATH)/%.cpp=%.o)
+
+SRC_PATH_CHUNKING = ../src/chunking
+SRC_CHUNKING = $(wildcard $(SRC_PATH_CHUNKING)/*.cpp)
+OBJS_CHUNKING = $(SRC_CHUNKING:$(SRC_PATH_CHUNKING)/%.cpp=%.o)
+DEPS_CHUNKING = $(wildcard $(INCLUDE_PATH_CHUNKING)/*.hpp)
+
+SRC_PATH_HASHING = ../src/hashing
+SRC_HASHING = $(wildcard $(SRC_PATH_HASHING)/*.cpp)
+OBJS_HASHING = $(SRC_HASHING:$(SRC_PATH_HASHING)/%.cpp=%.o)
+DEPS_HASHING = $(wildcard $(INCLUDE_PATH_HASHING)/*.hpp)
+
+SRC_PATH_CONFIG = ../src/config
+SRC_CONFIG = $(wildcard $(SRC_PATH_CONFIG)/*.cpp)
+OBJS_CONFIG = $(SRC_CONFIG:$(SRC_PATH_CONFIG)/%.cpp=%.o)
+DEPS_CONFIG = $(wildcard $(INCLUDE_PATH_CONFIG)/*.hpp)
+
+COMPILER_FLAGS= -std=c++11 -Wall -Wextra -Wno-format
 
 CC = g++
 RM = rm -f
@@ -25,45 +39,39 @@ ifeq ($(DEBUG), 1)
 endif
 
 
-default: dedup.exe
-all: dedup.exe
+default: dedup
+all: dedup
 
-dedup.exe: driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o parser.o config_error.o config.o
-	$(CC) -o dedup.exe driver.o fixed_chunking.o chunking_common.o hashing_common.o std_hashing.o fnv_hashing.o parser.o config_error.o config.o $(INCLUDE_FLAGS) $(COMPILER_FLAGS)
+dedup: driver.o $(OBJS_CHUNKING) $(OBJS_HASHING) $(OBJS_CONFIG) 
+	@echo ""
+	@echo "Linking $@ ....."
+	@echo "============================"
+	$(CC) -o dedup.exe driver.o $(OBJS_CHUNKING) $(OBJS_HASHING) $(OBJS_CONFIG) $(INCLUDE_FLAGS) $(COMPILER_FLAGS)
+	@echo ""
 
-driver.o: ${SRC_PATH}/driver.cpp
-	$(CC) -c $(SRC_PATH)/driver.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o driver.o
+# Driver related build rules
 
+$(OBJS_MAIN): %.o: $(SRC_PATH)/%.cpp
+	$(CC) $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
 
 # Hashing related build rules
 
-hashing_common.o: ${SRC_PATH_HASHING}/hashing_common.cpp
-	$(CC) -c $(SRC_PATH_HASHING)/hashing_common.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o hashing_common.o
-
-std_hashing.o: ${SRC_PATH_HASHING}/std_hashing.cpp
-	$(CC) -c $(SRC_PATH_HASHING)/std_hashing.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o std_hashing.o
-
-fnv_hashing.o: ${SRC_PATH_HASHING}/fnv_hashing.cpp
-	$(CC) -c $(SRC_PATH_HASHING)/fnv_hashing.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o fnv_hashing.o
-
+$(OBJS_HASHING): %.o: $(SRC_PATH_HASHING)/%.cpp $(DEPS_HASHING)
+	$(CC) $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
 
 # Chunking related build rules
 
-chunking_common.o: $(SRC_PATH_CHUNKING)/chunking_common.cpp 
-	$(CC) -c $(SRC_PATH_CHUNKING)/chunking_common.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o chunking_common.o
-
-fixed_chunking.o: $(SRC_PATH_CHUNKING)/fixed_chunking.cpp
-	$(CC) -c $(SRC_PATH_CHUNKING)/fixed_chunking.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o fixed_chunking.o
+$(OBJS_CHUNKING): %.o: $(SRC_PATH_CHUNKING)/%.cpp $(DEPS_CHUNKING)
+	$(CC) $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
 
 # Config related build rules
-parser.o: $(SRC_PATH_CONFIG)/parser.cpp
-	$(CC) -c $(SRC_PATH_CONFIG)/parser.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o parser.o
 
-config_error.o: $(SRC_PATH_CONFIG)/config_error.cpp
-	$(CC) -c $(SRC_PATH_CONFIG)/config_error.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o config_error.o
+$(OBJS_CONFIG): %.o: $(SRC_PATH_CONFIG)/%.cpp $(DEPS_CONFIG)
+	$(CC) $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -c $< -o $@
 
 config.o: $(SRC_PATH_CONFIG)/config.cpp
 	$(CC) -c $(SRC_PATH_CONFIG)/config.cpp $(INCLUDE_FLAGS) $(COMPILER_FLAGS) -o config.o
 
 clean:
 	$(RM) *.o *.d *.exe
+
