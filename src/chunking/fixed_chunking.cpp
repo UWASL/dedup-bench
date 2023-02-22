@@ -80,9 +80,3 @@ std::vector<File_Chunk> Fixed_Chunking::chunk_file(std::string file_path){
 
     return file_chunks;
 }
-
-void blhFunc(){
-    /**
-     * 
-    */
-}
