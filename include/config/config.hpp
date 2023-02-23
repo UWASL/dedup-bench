@@ -9,7 +9,7 @@
 // define the possible chunking algorithms
 enum class ChunkingTech { FILE, FIXED };
 // define the possible hashing algorithms
-enum class HashingTech { STD, FNV, MD5, SHA1, SHA2 };
+enum class HashingTech { STD, FNV, MD5, SHA1 };
 
 
 class Config {
