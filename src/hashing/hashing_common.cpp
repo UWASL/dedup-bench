@@ -66,6 +66,6 @@ std::string bytes_to_hex_str(const BYTE* data, unsigned int len) {
     ss << std::hex;
     for (unsigned int i = 0; i < len; ++i) {
         ss << std::setw(2) << std::setfill('0') << (uint32_t)data[i];
-	}
+    }
     return ss.str();
 }

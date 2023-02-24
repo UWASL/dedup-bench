@@ -18,7 +18,7 @@ class Fnv_Hashing: public virtual Hashing_Technique{
         static const uint64_t fnv_prime = 0x100000001b3;
     public:
         // Function to hash a given chunk
-        std::string hash_chunk(File_Chunk file_chunk);
+        std::string hash_chunk(File_Chunk file_chunk) override;
 
         Fnv_Hashing(){
             technique_name = "FNV-Hashing";
