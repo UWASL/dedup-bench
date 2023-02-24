@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 void print_hashes(std::vector<std::string> hash_list){
     /**
@@ -58,4 +59,13 @@ std::vector<std::string> Hashing_Technique::hash_chunks(std::vector<File_Chunk> 
     }
 
     return hash_vector; 
+}
+
+std::string bytes_to_hex_str(const BYTE* data, unsigned int len) {
+    std::stringstream ss;
+    ss << std::hex;
+    for (unsigned int i = 0; i < len; ++i) {
+        ss << std::setw(2) << std::setfill('0') << (uint32_t)data[i];
+	}
+    return ss.str();
 }
