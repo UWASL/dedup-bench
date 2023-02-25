@@ -20,7 +20,7 @@ std::string Fnv_Hashing::hash_chunk(File_Chunk file_chunk){
      * 
      */
 
-    char *data_to_hash = file_chunk.chunk_data;
+    const char *data_to_hash = file_chunk.chunk_data;
     uint64_t chunk_size = file_chunk.chunk_size;
 
     // Initialize hash value to FNV_Offset_Basis

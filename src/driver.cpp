@@ -12,12 +12,15 @@
 #include "fixed_chunking.hpp"
 #include "std_hashing.hpp"
 #include "fnv_hashing.hpp"
+#include "sha1_hashing.hpp"
 #include "config.hpp"
 #include "config_error.hpp"
+#include "chunking_common.hpp"
 
 #include <fstream>
+#include <memory>
 
-static void driver_function(std::string file_path, Chunking_Technique *chunk_method, Hashing_Technique *hash_method){
+static void driver_function(std::string file_path, Chunking_Technique *chunk_method, std::unique_ptr<Hashing_Technique>& hash_method){
     /**
      * @brief Uses the specified chunking technique to chunk the file, hash it using the specified hashing technique 
      *        and print the hashes
@@ -73,7 +76,7 @@ int main(int argc, char * argv[]){
 		 * 
 		 */
 		Chunking_Technique *chunk_method = nullptr;
-		Hashing_Technique *hash_method = nullptr;
+		std::unique_ptr<Hashing_Technique> hash_method;
 		
 		// Set parameters for hashing technique and call relevant constructors
 		switch (chunking_technique) {
@@ -87,10 +90,13 @@ int main(int argc, char * argv[]){
 
 		switch (hashing_technique) {
 			case HashingTech::STD:
-				hash_method = (Hashing_Technique *)new Std_Hashing();
+				hash_method = std::make_unique<Std_Hashing>();
 				break;
 			case HashingTech::FNV:
-				hash_method = (Hashing_Technique *)new Fnv_Hashing();
+				hash_method = std::make_unique<Fnv_Hashing>();
+				break;
+			case HashingTech::SHA1:
+				hash_method = std::make_unique<SHA1_Hashing>();
 				break;
 			default:
 				std::cerr << "Unimplemented hashing technique" << std::endl;
@@ -101,7 +107,6 @@ int main(int argc, char * argv[]){
 		driver_function(file_path, chunk_method, hash_method);
 
 		// Cleanup pointers
-		delete hash_method;
 		delete chunk_method;
 	} catch (const ConfigError& e) {
 		std::cerr << e.what() << std::endl;

@@ -16,6 +16,9 @@
 #include <string>
 #include <vector>
 
+typedef unsigned char BYTE;
+
+
 class Hashing_Technique{
     /**
      * @brief Interface for all hashing techniques to follow.
@@ -40,5 +43,8 @@ void print_hashes(std::vector<std::string> hash_list);
 
 // Write all given hash values in list to output file
 void write_hashes_to_file(std::vector<std::string> hash_list, std::string out_file_path);
+
+// Convert an array of bytes to hex string
+std::string bytes_to_hex_str(const BYTE* data, unsigned int len);
 
 #endif

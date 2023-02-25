@@ -23,6 +23,8 @@ HashingTech Config::get_hashing_tech() const {
 			return HashingTech::STD;
 		} else if (value == "fnv") {
 			return HashingTech::FNV;
+		} else if (value == "sha1") {
+			return HashingTech::SHA1;
 		}
 	} catch (const std::out_of_range) {}
 	throw ConfigError("The configuration file does not specify a valid hashing technique");

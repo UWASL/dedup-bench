@@ -26,7 +26,7 @@ typedef struct File_Chunk{
     uint64_t chunk_size;
 
     // Chunk Data
-    char *chunk_data;
+    const char *chunk_data;
 
     // Constructor
     File_Chunk(char *_chunk_data, uint32_t _chunk_size){
