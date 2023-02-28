@@ -10,8 +10,6 @@
  */
 
 #include "fixed_chunking.hpp"
-#include "std_hashing.hpp"
-#include "fnv_hashing.hpp"
 #include "sha1_hashing.hpp"
 #include "config.hpp"
 #include "config_error.hpp"
@@ -41,7 +39,7 @@ static void driver_function(std::string file_path, Chunking_Technique *chunk_met
     std::cout << "Total chunks: " << file_chunks.size() << std::endl;
 
     // Hash chunks using specified Hashing_Technique
-    std::vector<std::string> hash_list = hash_method->hash_chunks(file_chunks);
+    std::vector<Hash> hash_list = hash_method->hash_chunks(file_chunks);
 
     // Print hashes
     print_hashes(hash_list);
@@ -89,12 +87,6 @@ int main(int argc, char * argv[]){
 		}
 
 		switch (hashing_technique) {
-			case HashingTech::STD:
-				hash_method = std::make_unique<Std_Hashing>();
-				break;
-			case HashingTech::FNV:
-				hash_method = std::make_unique<Fnv_Hashing>();
-				break;
 			case HashingTech::SHA1:
 				hash_method = std::make_unique<SHA1_Hashing>();
 				break;

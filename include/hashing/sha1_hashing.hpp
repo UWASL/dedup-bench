@@ -2,6 +2,7 @@
 #define _SHA1_HASHING_
 
 #include "hashing_common.hpp"
+#include "hash.hpp"
 
 
 class SHA1_Hashing: public virtual Hashing_Technique{
@@ -11,11 +12,11 @@ class SHA1_Hashing: public virtual Hashing_Technique{
      */
     public:
         // Function to hash a given chunk
-        std::string hash_chunk(File_Chunk file_chunk) override;
+        Hash hash_chunk(File_Chunk file_chunk) override;
 
         SHA1_Hashing() {
-            technique_name = "SHA1-Hashing";
-        }
+			technique_name = "SHA1-Hashing";
+		}
 };
 
 #endif

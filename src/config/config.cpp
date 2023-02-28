@@ -19,11 +19,7 @@ ChunkingTech Config::get_chunking_tech() const {
 HashingTech Config::get_hashing_tech() const {
 	try {
 		std::string value = parser.get_property(HASHING_TECH);
-		if (value == "std") {
-			return HashingTech::STD;
-		} else if (value == "fnv") {
-			return HashingTech::FNV;
-		} else if (value == "sha1") {
+		if (value == "sha1") {
 			return HashingTech::SHA1;
 		}
 	} catch (const std::out_of_range) {}
