@@ -15,8 +15,8 @@ class SHA1_Hashing: public virtual Hashing_Technique{
         Hash hash_chunk(File_Chunk file_chunk) override;
 
         SHA1_Hashing() {
-			technique_name = "SHA1-Hashing";
-		}
+            technique_name = "SHA1-Hashing";
+        }
 };
 
 #endif
