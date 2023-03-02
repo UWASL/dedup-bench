@@ -15,8 +15,7 @@
 
 #include <string>
 #include <vector>
-
-typedef unsigned char BYTE;
+#include "hash.hpp"
 
 
 class Hashing_Technique{
@@ -29,22 +28,19 @@ class Hashing_Technique{
 
     std::string technique_name;
     // Return a hash value for a given File_Chunk
-    virtual std::string hash_chunk(File_Chunk) = 0;
+    virtual Hash hash_chunk(File_Chunk) = 0;
     
     // Hash all chunks in a given vector of chunks
-    std::vector<std::string> hash_chunks(std::vector<File_Chunk>);
+    std::vector<Hash> hash_chunks(std::vector<File_Chunk>);
 
     // Virtual destructor to support delete on base class ptr
     virtual ~Hashing_Technique(){}
 };
 
 // Print all given hash values in list
-void print_hashes(std::vector<std::string> hash_list);
+void print_hashes(std::vector<Hash> hash_list);
 
 // Write all given hash values in list to output file
-void write_hashes_to_file(std::vector<std::string> hash_list, std::string out_file_path);
-
-// Convert an array of bytes to hex string
-std::string bytes_to_hex_str(const BYTE* data, unsigned int len);
+void write_hashes_to_file(std::vector<Hash> hash_list, std::string out_file_path);
 
 #endif

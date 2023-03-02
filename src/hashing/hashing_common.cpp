@@ -12,20 +12,21 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
+#include "hash.hpp"
 
-void print_hashes(std::vector<std::string> hash_list){
+
+void print_hashes(std::vector<Hash> hash_list){
     /**
      * @brief Print all hash values from the given list
      * @param hash_list: Vector containing hash values
      * 
      */
-    for (std::string hash_string: hash_list){
-        std::cout << "Hash: " << hash_string << std::endl;
+    for (const Hash& hash: hash_list){
+        std::cout << "Hash: " << hash.toString() << std::endl;
     }
 }
 
-void write_hashes_to_file(std::vector<std::string> hash_list, std::string out_file_path){
+void write_hashes_to_file(std::vector<Hash> hash_list, std::string out_file_path){
     /**
      * @brief Write all given hash values to file
      * @param hash_list: Vector containing hash values
@@ -37,35 +38,26 @@ void write_hashes_to_file(std::vector<std::string> hash_list, std::string out_fi
     out_stream.open(out_file_path, std::ios::out);
     
     // Iterate over hash values and write them to file
-    for(std::string hash_value: hash_list){
-        out_stream << hash_value << std::endl;
+    for (Hash hash: hash_list) {
+        out_stream << hash.toString() << std::endl;
     }
 
     out_stream.close();
 }
 
-std::vector<std::string> Hashing_Technique::hash_chunks(std::vector<File_Chunk> file_chunks){
+std::vector<Hash> Hashing_Technique::hash_chunks(std::vector<File_Chunk> file_chunks){
     /**
      * @brief Hash all chunks in a given vector using the relevant hash_chunk() implementation
      * @param file_chunks: Vector containing struct File_Chunk
      * @return: Vector of hashes (strings)
      */
-    std::vector<std::string> hash_vector;
+    std::vector<Hash> hash_vector;
 
     // Iterate over all chunks and generate hash values
     for(File_Chunk fc: file_chunks){
-        std::string chunk_hash = hash_chunk(fc);
+        Hash chunk_hash = hash_chunk(fc);
         hash_vector.push_back(chunk_hash);
     }
 
     return hash_vector; 
-}
-
-std::string bytes_to_hex_str(const BYTE* data, unsigned int len) {
-    std::stringstream ss;
-    ss << std::hex;
-    for (unsigned int i = 0; i < len; ++i) {
-        ss << std::setw(2) << std::setfill('0') << (uint32_t)data[i];
-    }
-    return ss.str();
 }
