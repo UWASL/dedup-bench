@@ -4,5 +4,5 @@
 ConfigError::ConfigError(const std::string& msg): msg{msg} {};
 
 const char* ConfigError::what() const noexcept {
-	return msg.c_str();
+    return msg.c_str();
 }

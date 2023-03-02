@@ -63,47 +63,47 @@ int main(int argc, char * argv[]){
     }
 
     std::string file_path = std::string(argv[1]);
-	try {
-		Config config{std::string(argv[2])};
-		ChunkingTech chunking_technique = config.get_chunking_tech();
-		HashingTech hashing_technique = config.get_hashing_tech();
+    try {
+        Config config{std::string(argv[2])};
+        ChunkingTech chunking_technique = config.get_chunking_tech();
+        HashingTech hashing_technique = config.get_hashing_tech();
 
-		// Pointers used to hold derived instances of Chunking_Technique and Hashing_Technique
-		/**
-		 * @todo: Change this to use RAII instead to avoid possible memory leak
-		 * 
-		 */
-		Chunking_Technique *chunk_method = nullptr;
-		std::unique_ptr<Hashing_Technique> hash_method;
-		
-		// Set parameters for hashing technique and call relevant constructors
-		switch (chunking_technique) {
-			case ChunkingTech::FIXED:
-				chunk_method = (Chunking_Technique *)new Fixed_Chunking(config);
-				break;
-			default:
-				std::cerr << "Unimplemented chunking technique" << std::endl;
-				exit(EXIT_FAILURE);
-		}
+        // Pointers used to hold derived instances of Chunking_Technique and Hashing_Technique
+        /**
+         * @todo: Change this to use RAII instead to avoid possible memory leak
+         * 
+         */
+        Chunking_Technique *chunk_method = nullptr;
+        std::unique_ptr<Hashing_Technique> hash_method;
+        
+        // Set parameters for hashing technique and call relevant constructors
+        switch (chunking_technique) {
+            case ChunkingTech::FIXED:
+                chunk_method = (Chunking_Technique *)new Fixed_Chunking(config);
+                break;
+            default:
+                std::cerr << "Unimplemented chunking technique" << std::endl;
+                exit(EXIT_FAILURE);
+        }
 
-		switch (hashing_technique) {
-			case HashingTech::SHA1:
-				hash_method = std::make_unique<SHA1_Hashing>();
-				break;
-			default:
-				std::cerr << "Unimplemented hashing technique" << std::endl;
-				exit(EXIT_FAILURE);
-		}
+        switch (hashing_technique) {
+            case HashingTech::SHA1:
+                hash_method = std::make_unique<SHA1_Hashing>();
+                break;
+            default:
+                std::cerr << "Unimplemented hashing technique" << std::endl;
+                exit(EXIT_FAILURE);
+        }
 
-		// Call driver function
-		driver_function(file_path, chunk_method, hash_method);
+        // Call driver function
+        driver_function(file_path, chunk_method, hash_method);
 
-		// Cleanup pointers
-		delete chunk_method;
-	} catch (const ConfigError& e) {
-		std::cerr << e.what() << std::endl;
-		exit(EXIT_FAILURE);
-	}
+        // Cleanup pointers
+        delete chunk_method;
+    } catch (const ConfigError& e) {
+        std::cerr << e.what() << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
     exit(EXIT_SUCCESS);
 }
