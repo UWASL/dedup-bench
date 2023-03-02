@@ -83,7 +83,7 @@ int main(int argc, char * argv[]){
                 chunk_method = (Chunking_Technique *)new Fixed_Chunking(config);
                 break;
             case ChunkingTech::RABINS:
-                hash_method = (Hashing_Technique *)new Rabins_Chunking();
+                chunk_method = (Hashing_Technique *)new Rabins_Chunking();
                 break;
             default:
                 std::cerr << "Unimplemented chunking technique" << std::endl;
