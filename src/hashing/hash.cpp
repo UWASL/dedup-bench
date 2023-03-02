@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <sstream>
 
-Hash::Hash(HashingTech hashType, unsigned int size, BYTE* hash): hashType{hashType}, size{size}, hash{hash}  {}
+Hash::Hash(HashingTech hashType, unsigned int size, BYTE* hash) noexcept: hashType{hashType}, size{size}, hash{hash}  {}
 
 Hash::Hash(HashingTech hashType, unsigned int size): hashType{hashType}, size{size}, hash{new BYTE[size]}  {}
 
@@ -11,7 +11,7 @@ Hash::Hash(const Hash& other): Hash(other.hashType, other.size) {
     memcpy(this->hash, other.hash, this->size);
 }
 
-Hash::Hash(Hash&& other) noexcept : Hash(other.hashType, other.size, other.hash) {}
+Hash::Hash(Hash&& other) noexcept: Hash(other.hashType, other.size, other.hash) {}
 
 Hash::~Hash() {
     delete[] hash;
