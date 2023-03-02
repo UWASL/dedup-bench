@@ -7,7 +7,7 @@
 #define FC_SIZE "fc_size"
 
 // define the possible chunking algorithms
-enum class ChunkingTech { FILE, FIXED };
+enum class ChunkingTech { FILE, FIXED,RABINS };
 // define the possible hashing algorithms
 enum class HashingTech { SHA1 };
 

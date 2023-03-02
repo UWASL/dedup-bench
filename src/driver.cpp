@@ -14,6 +14,7 @@
 #include "config.hpp"
 #include "config_error.hpp"
 #include "chunking_common.hpp"
+#include "rabins_chunking.hpp"
 
 #include <fstream>
 #include <memory>
@@ -80,6 +81,9 @@ int main(int argc, char * argv[]){
         switch (chunking_technique) {
             case ChunkingTech::FIXED:
                 chunk_method = (Chunking_Technique *)new Fixed_Chunking(config);
+                break;
+            case ChunkingTech::RABINS:
+                hash_method = (Hashing_Technique *)new Rabins_Chunking();
                 break;
             default:
                 std::cerr << "Unimplemented chunking technique" << std::endl;
