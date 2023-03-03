@@ -9,134 +9,64 @@
  *
  */
 #include "rabins_chunking.hpp"
-#include <fstream>
+
 #include <errno.h>
 
-bool Rabins_Chunking::set_min_block_size(uint64_t _min_block_size)
-{
+#include <fstream>
+
+void Rabins_Chunking::reset_stream() {
     /**
-     * @brief Sets min chunk size.
-     * @param _min_chunk_size: New min chunk size
-     * @return: True if success, False otherwise
+     * @brief resets the current stream
      */
-    Rabins_Chunking::min_block_size = _min_block_size;
 
-    if (min_block_size == _min_block_size)
-        return true;
-    else
-        return false;
-}
-uint64_t Rabins_Chunking::get_min_block_size()
-{
-    /**
-     * @brief Returns min block size
-     * @return: uint64_t with window size value
-     */
-    return Rabins_Chunking::min_block_size;
-}
-
-bool Rabins_Chunking::set_avg_block_size(uint64_t _avg_block_size)
-{
-    /**
-     * @brief Sets min chunk size.
-     * @param _avg_chunk_size: New min chunk size
-     * @return: True if success, False otherwise
-     */
-    Rabins_Chunking::min_block_size = _avg_block_size;
-
-    if (avg_block_size == _avg_block_size)
-        return true;
-    else
-        return false;
-}
-
-uint64_t Rabins_Chunking::get_avg_block_size()
-{
-    /**
-     * @brief Returns avg block size
-     * @return: uint64_t with avg block size value
-     */
-    return Rabins_Chunking::avg_block_size;
-}
-
-bool Rabins_Chunking::set_max_block_size(uint64_t _max_block_size)
-{
-    /**
-     * @brief Sets min chunk size.
-     * @param _max_chunk_size: New min chunk size
-     * @return: True if success, False otherwise
-     */
-    Rabins_Chunking::max_block_size = _max_block_size;
-
-    if (max_block_size == _max_block_size)
-        return true;
-    else
-        return false;
-}
-
-uint64_t Rabins_Chunking::get_max_block_size()
-{
-    /**
-     * @brief Returns max block size
-     * @return: uint64_t with max block size value
-     */
-    return Rabins_Chunking::max_block_size;
-}
-
-bool Rabins_Chunking::set_buffer_size(uint64_t _buffer_size)
-{
-    /**
-     * @brief Sets internal buffer size.
-     * @param _buffer_size: New buffer size
-     * @return: True if success, False otherwise
-     */
-    Rabins_Chunking::inbuf_size = _buffer_size;
-
-    if (inbuf_size == _buffer_size)
-        return true;
-    else
-        return false;
-}
-
-uint64_t Rabins_Chunking::get_buffer_size()
-{
-    /**
-     * @brief Returns buffer size
-     * @return: uint64_t with buffer size value
-     */
-    return Rabins_Chunking::inbuf_size;
-}
-
-bool Rabins_Chunking::init_stream()
-{
     inbuf_data_size = 0;
     block_size = 0;
     block_streampos = 0;
     block_addr = inbuf;
+    bzero((char *)inbuf, inbuf_size * sizeof(unsigned char));
 }
-size_t Rabins_Chunking::rp_stream_read(unsigned char *dst, size_t size)
-{
+
+void Rabins_Chunking::init() {
+    /**
+     * @brief initilize the needed varibles for chunking
+     */
+    min_block_size = DEFAULT_MIN_BLOCK_SIZE;
+    avg_block_size = DEFAULT_AVG_BLOCK_SIZE;
+    max_block_size = DEFAULT_MAX_BLOCK_SIZE;
+
+    inbuf_size = max_block_size * 10;
+    fingerprint_mask = (1 << (fls32(avg_block_size) - 1)) - 1;
+    inbuf = (unsigned char *)malloc(inbuf_size * sizeof(unsigned char));
+    r_hash = new Rabins_Hashing();
+    technique_name = "Rabins Chunking";
+}
+
+size_t Rabins_Chunking::rp_stream_read(unsigned char *dst, size_t size) {
+    /**
+     * @brief reads data from a stream and sotre it in dst param
+     * @param dst pointer to array of char where the data will be stored
+     * @param size the size of data to read
+
+     * @return the number of bytes that has been read
+     * 
+     */
     size_t count = fread(dst, 1, size, stream);
     error = 0;
-    if (count == 0)
-    {
-        if (ferror(stream))
-        {
+    if (count == 0) {
+        if (ferror(stream)) {
             error = errno;
-        }
-        else if (feof(stream))
-        {
+        } else if (feof(stream)) {
             error = EOF;
         }
     }
     return count;
 }
 
-#define CUR_ADDR block_addr + block_size
-#define INBUF_END inbuf + inbuf_size
-int Rabins_Chunking::rp_block_next()
-{
-
+int Rabins_Chunking::rp_block_next() {
+    /**
+     * @brief searches for the next cut point
+     * @return 0 if a cut point has been found. a positive value if error has occured or eof has been reached (based on error flag)
+     */
     block_streampos += block_size;
     block_addr += block_size;
     block_size = 0;
@@ -157,17 +87,12 @@ int Rabins_Chunking::rp_block_next()
      */
     size_t skip = min_block_size - 256;
     size_t data_remaining = inbuf_data_size - (block_addr - inbuf);
-    if ((data_remaining > min_block_size + 1) &&
-        (min_block_size > 512))
-    {
+    if ((data_remaining > min_block_size + 1) && (min_block_size > 512)) {
         block_size += skip;
     }
 
-    while (true)
-    {
-
-        if (CUR_ADDR == INBUF_END)
-        {
+    while (true) {
+        if (block_addr + block_size == inbuf + inbuf_size) {
             /* end of input buffer: there's a partial block at the end
              * of the buffer; move it to the beginning of the buffer
              * so we can append more from input stream
@@ -177,34 +102,27 @@ int Rabins_Chunking::rp_block_next()
             inbuf_data_size = block_size;
         }
 
-        if (CUR_ADDR == inbuf + inbuf_data_size)
-        {
+        if (block_addr + block_size == inbuf + inbuf_data_size) {
             /* no more valid data in input buffer */
             int count = 0;
-            if (!error)
-            {
+            if (!error) {
                 /* use rp_stream_read to refill buffer */
                 int size = inbuf_size - inbuf_data_size;
                 assert(size > 0);
                 count = rp_stream_read(inbuf + inbuf_data_size, size);
-                if (!count)
-                {
+                if (!count) {
                     assert(error);
                 }
                 inbuf_data_size += count;
             }
-            if (error && (count == 0))
-            {
+            if (error && (count == 0)) {
                 /* we're either carrying an error from earlier, or the
                  * rp_stream_read above just threw one
                  */
-                if (block_size == 0)
-                {
+                if (block_size == 0) {
                     /* we're done. caller shouldn't call us again */
                     return error;
-                }
-                else
-                {
+                } else {
                     /* give final block to caller; caller should call
                      * us again to get e.g. eof error
                      */
@@ -234,38 +152,38 @@ int Rabins_Chunking::rp_block_next()
          */
         if ((block_size == max_block_size) ||
             ((block_size >= min_block_size) &&
-             ((r_hash->fingerprint & fingerprint_mask) == fingerprint_mask)))
-        {
+             ((r_hash->fingerprint & fingerprint_mask) == fingerprint_mask))) {
             /* full block or fingerprint boundary */
             return 0;
         }
     }
 }
 
-std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path)
-{
+std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
+    /**
+     * @brief chunk a file using rabins algorithms
+     * @param file_path the path of the file to be chunked
+     * @return A vector of chunks
+     */
 
     FILE *stream = fopen(file_path.c_str(), "rb");
-    if (!stream)
-    {
+    if (!stream) {
         error = errno;
     }
-    init_stream();
-    r_hash->init();
-    std::vector<File_Chunk> file_chunks;
+    // prepare the stream for the new file
+    reset_stream();
+    // reset the hash function
+    r_hash->init(window_size);
 
-    while (true)
-    {
+    std::vector<File_Chunk> file_chunks;
+    while (true) {
         int rc = rp_block_next();
-        printf("%d", r_hash->fingerprint);
         char *chunk_data = new char[block_size];
         memccpy(chunk_data, block_addr, 0, block_size);
-        if (rc == 0)
-        {
+        if (rc == 0) {
             File_Chunk new_chunk(chunk_data, block_size);
         }
-        if (rc)
-        {
+        if (rc) {
             assert(rc == EOF);
             break;
         }
