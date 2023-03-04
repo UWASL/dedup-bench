@@ -42,10 +42,7 @@ class Rabins_Hashing {
     u_int64_t slide8(unsigned char m);
     void init(int window_size);
 
-    Rabins_Hashing() {
-        poly = FINGERPRINT_PT;
-        calcT();
-    }
+    Rabins_Hashing();
 };
 
 #endif

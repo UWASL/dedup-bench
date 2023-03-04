@@ -5,10 +5,10 @@
 #define CHUNKING_TECH "chunking_algo"
 #define HASHING_TECH "hashing_algo"
 #define FC_SIZE "fc_size"
-#define WINDOW_SIZE "window_size"
-#define MIN_BLOCK_SIZE "min_block_size"
-#define AVG_BLOCK_SIZE "avg_block_size"
-#define MAX_BLOCK_SIZE "max_block_size"
+#define RABINC_WINDOW_SIZE "rabinc_window_size"
+#define RABINC_MIN_BLOCK_SIZE "rabinc_min_block_size"
+#define RABINC_AVG_BLOCK_SIZE "rabinc_avg_block_size"
+#define RABINC_MAX_BLOCK_SIZE "rabinc_max_block_size"
 
 
 
@@ -55,7 +55,7 @@ class Config {
          * 
          * @return HashingTech 
          */
-        uint64_t get_window_size() const;
+        uint64_t get_rabinc_window_size() const;
         
         /**
          * @brief Get the minimum size of a block for CDC  techniques
@@ -63,7 +63,7 @@ class Config {
          * 
          * @return HashingTech 
          */
-        uint64_t get_min_block_size() const;
+        uint64_t get_rabinc_min_block_size() const;
 
         /**
          * @brief Get the desired avg size of the block when using CDC techniques
@@ -71,7 +71,7 @@ class Config {
          * 
          * @return HashingTech 
          */
-        uint64_t get_avg_block_size() const;
+        uint64_t get_rabinc_avg_block_size() const;
 
 
         /**
@@ -80,7 +80,7 @@ class Config {
          * 
          * @return HashingTech 
          */
-        uint64_t get_max_block_size() const;
+        uint64_t get_rabinc_max_block_size() const;
 
 };
 

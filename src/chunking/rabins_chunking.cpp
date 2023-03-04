@@ -14,6 +14,22 @@
 
 #include <fstream>
 
+Rabins_Chunking::Rabins_Chunking() {
+    /**
+     * @brief Default constructor. defines all parameters to defualt values
+     * @return: void
+     */
+    init();
+}
+
+Rabins_Chunking::Rabins_Chunking(const Config &config) {
+    init();
+    min_block_size = config.get_rabinc_min_block_size();
+    avg_block_size = config.get_rabinc_avg_block_size();
+    max_block_size = config.get_rabinc_max_block_size();
+
+    window_size = config.get_rabinc_window_size();
+}
 void Rabins_Chunking::reset_stream() {
     /**
      * @brief resets the current stream
@@ -30,9 +46,9 @@ void Rabins_Chunking::init() {
     /**
      * @brief initilize the needed varibles for chunking
      */
-    min_block_size = DEFAULT_MIN_BLOCK_SIZE;
-    avg_block_size = DEFAULT_AVG_BLOCK_SIZE;
-    max_block_size = DEFAULT_MAX_BLOCK_SIZE;
+    min_block_size = DEFAULT_RABINC_MIN_BLOCK_SIZE;
+    avg_block_size = DEFAULT_RABINC_AVG_BLOCK_SIZE;
+    max_block_size = DEFAULT_RABINC_MAX_BLOCK_SIZE;
 
     inbuf_size = max_block_size * 10;
     fingerprint_mask = (1 << (fls32(avg_block_size) - 1)) - 1;
@@ -48,7 +64,7 @@ size_t Rabins_Chunking::rp_stream_read(unsigned char *dst, size_t size) {
      * @param size the size of data to read
 
      * @return the number of bytes that has been read
-     * 
+     *
      */
     size_t count = fread(dst, 1, size, stream);
     error = 0;
@@ -65,7 +81,8 @@ size_t Rabins_Chunking::rp_stream_read(unsigned char *dst, size_t size) {
 int Rabins_Chunking::rp_block_next() {
     /**
      * @brief searches for the next cut point
-     * @return 0 if a cut point has been found. a positive value if error has occured or eof has been reached (based on error flag)
+     * @return 0 if a cut point has been found. a positive value if error has
+     * occured or eof has been reached (based on error flag)
      */
     block_streampos += block_size;
     block_addr += block_size;

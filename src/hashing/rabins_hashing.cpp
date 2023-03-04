@@ -2,6 +2,11 @@
 
 #include <string>
 
+Rabins_Hashing::Rabins_Hashing() {
+    poly = FINGERPRINT_PT;
+    calcT();
+}
+
 inline u_int32_t fls32(u_int32_t num) {
     /**
     @brief find last set bit in a 32-bit number
@@ -59,8 +64,6 @@ void Rabins_Hashing::init(int window_size) {
     circbuf_pos = -1;
     bzero((char *)circbuf, window_size * sizeof(unsigned char));
 }
-
-
 
 u_int64_t Rabins_Hashing::polymod(u_int64_t nh, u_int64_t nl, u_int64_t d) {
     int i;
@@ -144,7 +147,8 @@ u_int64_t Rabins_Hashing::slide8(unsigned char m) {
 
 u_int64_t Rabins_Hashing::append8(u_int64_t p, unsigned char m) {
     /**
-     * @brief helper function to append the mod value from U table. to help add more randomization to the fingerprint.
+     * @brief helper function to append the mod value from U table. to help add
+     * more randomization to the fingerprint.
      * @return the current fingerprint
      */
 

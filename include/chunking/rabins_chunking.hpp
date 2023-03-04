@@ -5,10 +5,10 @@
 #include "config.hpp"
 #include "rabins_hashing.hpp"
 
-#define DEFAULT_WINDOW_SIZE 32
-#define DEFAULT_MIN_BLOCK_SIZE 1024
-#define DEFAULT_AVG_BLOCK_SIZE 8192
-#define DEFAULT_MAX_BLOCK_SIZE 65536
+#define DEFAULT_RABINC_WINDOW_SIZE 32
+#define DEFAULT_RABINC_MIN_BLOCK_SIZE 1024
+#define DEFAULT_RABINC_AVG_BLOCK_SIZE 8192
+#define DEFAULT_RABINC_MAX_BLOCK_SIZE 65536
 
 class Rabins_Chunking : public virtual Chunking_Technique {
     /**
@@ -46,24 +46,10 @@ class Rabins_Chunking : public virtual Chunking_Technique {
 
 
    public:
-    Rabins_Chunking() {
-        /**
-         * @brief Default constructor. defines all parameters to defualt values
-         * @return: void
-         */
-        init();
-    }
+    Rabins_Chunking();
 
-    Rabins_Chunking(const Config &config) {
-        init();
-        min_block_size = config.get_min_block_size();
-        avg_block_size = config.get_avg_block_size();
-        max_block_size = config.get_max_block_size();
+    Rabins_Chunking(const Config &config);
 
-        window_size = config.get_window_size();
-    }
-
-    // Implementation of chunk_file from Chunking_Technique
     std::vector<File_Chunk> chunk_file(std::string file_path);
 };
 
