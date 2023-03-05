@@ -4,7 +4,7 @@
 #include <openssl/sha.h>
 
 Hash SHA256_Hashing::hash_chunk(File_Chunk file_chunk) {
-    Hash hash{HashingTech::SHA256, 32};
+    Hash hash{HashingTech::SHA256, SHA256_DIGEST_LENGTH};
 
     SHA256((const unsigned char*)file_chunk.chunk_data, file_chunk.chunk_size, hash.getHash());
     return hash;
