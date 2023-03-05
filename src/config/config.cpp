@@ -23,6 +23,8 @@ HashingTech Config::get_hashing_tech() const {
             return HashingTech::SHA1;
         } else if (value == "sha256") {
             return HashingTech::SHA256;
+        } else if (value == "md5") {
+            return HashingTech::MD5;
         }
     } catch (const std::out_of_range) {}
     throw ConfigError("The configuration file does not specify a valid hashing technique");

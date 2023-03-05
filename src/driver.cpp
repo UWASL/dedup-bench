@@ -12,6 +12,7 @@
 #include "fixed_chunking.hpp"
 #include "sha1_hashing.hpp"
 #include "sha256_hashing.hpp"
+#include "md5_hashing.hpp"
 #include "config.hpp"
 #include "config_error.hpp"
 #include "chunking_common.hpp"
@@ -88,6 +89,9 @@ int main(int argc, char * argv[]){
         }
 
         switch (hashing_technique) {
+            case HashingTech::MD5:
+                hash_method = std::make_unique<MD5_Hashing>();
+                break;
             case HashingTech::SHA1:
                 hash_method = std::make_unique<SHA1_Hashing>();
                 break;
