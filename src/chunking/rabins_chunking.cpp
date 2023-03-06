@@ -15,10 +15,6 @@
 #include <fstream>
 
 Rabins_Chunking::Rabins_Chunking() {
-    /**
-     * @brief Default constructor. defines all parameters to defualt values
-     * @return: void
-     */
     init();
 }
 
@@ -31,10 +27,6 @@ Rabins_Chunking::Rabins_Chunking(const Config &config) {
     window_size = config.get_rabinc_window_size();
 }
 void Rabins_Chunking::reset_stream() {
-    /**
-     * @brief resets the current stream
-     */
-
     inbuf_data_size = 0;
     block_size = 0;
     block_streampos = 0;
@@ -43,9 +35,6 @@ void Rabins_Chunking::reset_stream() {
 }
 
 void Rabins_Chunking::init() {
-    /**
-     * @brief initilize the needed varibles for chunking
-     */
     min_block_size = DEFAULT_RABINC_MIN_BLOCK_SIZE;
     avg_block_size = DEFAULT_RABINC_AVG_BLOCK_SIZE;
     max_block_size = DEFAULT_RABINC_MAX_BLOCK_SIZE;
@@ -58,14 +47,6 @@ void Rabins_Chunking::init() {
 }
 
 size_t Rabins_Chunking::rp_stream_read(unsigned char *dst, size_t size) {
-    /**
-     * @brief reads data from a stream and sotre it in dst param
-     * @param dst pointer to array of char where the data will be stored
-     * @param size the size of data to read
-
-     * @return the number of bytes that has been read
-     *
-     */
     size_t count = fread(dst, 1, size, stream);
     error = 0;
     if (count == 0) {
@@ -79,11 +60,6 @@ size_t Rabins_Chunking::rp_stream_read(unsigned char *dst, size_t size) {
 }
 
 int Rabins_Chunking::rp_block_next() {
-    /**
-     * @brief searches for the next cut point
-     * @return 0 if a cut point has been found. a positive value if error has
-     * occured or eof has been reached (based on error flag)
-     */
     block_streampos += block_size;
     block_addr += block_size;
     block_size = 0;
@@ -177,11 +153,6 @@ int Rabins_Chunking::rp_block_next() {
 }
 
 std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
-    /**
-     * @brief chunk a file using rabins algorithms
-     * @param file_path the path of the file to be chunked
-     * @return A vector of chunks
-     */
 
     FILE *stream = fopen(file_path.c_str(), "rb");
     if (!stream) {

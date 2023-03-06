@@ -54,10 +54,7 @@ inline char fls64(u_int64_t num) {
 }
 
 void Rabins_Hashing::init(int window_size) {
-    /**
-    @brief initlize the internal varibles. call after each file to reset
-    @param window_size: the size of the window to operate on
-    */
+
     this->window_size = window_size;
     circbuf = (unsigned char *)malloc(window_size * sizeof(unsigned char));
     fingerprint = 0;
@@ -105,11 +102,7 @@ u_int64_t Rabins_Hashing::polymmult(u_int64_t x, u_int64_t y, u_int64_t d) {
 }
 
 void Rabins_Hashing::calcT() {
-    /**
-     * @brief Initialize the T[] and U[] array for faster computation of
-     *  rabin fingerprint.  Called only once from the constructer
-     * initialization.
-     */
+
     unsigned int i;
     int xshift = fls64(poly) - 1;
     shift = xshift - 8;
@@ -130,11 +123,6 @@ void Rabins_Hashing::calcT() {
 }
 
 u_int64_t Rabins_Hashing::slide8(unsigned char m) {
-    /**
-     * @brief Feed a new byte into the rabin sliding window and update the rabin
-     *       fingerprint.
-     * @return the current fingerprint
-     */
 
     circbuf_pos++;
     if (circbuf_pos >= window_size) {
@@ -146,11 +134,6 @@ u_int64_t Rabins_Hashing::slide8(unsigned char m) {
 }
 
 u_int64_t Rabins_Hashing::append8(u_int64_t p, unsigned char m) {
-    /**
-     * @brief helper function to append the mod value from U table. to help add
-     * more randomization to the fingerprint.
-     * @return the current fingerprint
-     */
 
     return ((p << 8) | m) ^ T[p >> shift];
 }
