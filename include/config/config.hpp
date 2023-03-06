@@ -48,7 +48,6 @@ class Config {
          */
         uint64_t get_fc_size() const;
 
-
         /**
          * @brief Get the size of the sliding window when using any sliding window chunking technique
          * throws ConfigError if the key does not exist or if the value is invalid
@@ -72,7 +71,6 @@ class Config {
          * @return HashingTech 
          */
         uint64_t get_rabinc_avg_block_size() const;
-
 
         /**
          * @brief Get the maximum size of a block that can be reached before inserting a cut point
