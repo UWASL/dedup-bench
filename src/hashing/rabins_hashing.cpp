@@ -1,6 +1,6 @@
 #include "rabins_hashing.hpp"
 
-#include <string>
+#include <string.h>
 
 Rabins_Hashing::Rabins_Hashing() {
     poly = FINGERPRINT_PT;
