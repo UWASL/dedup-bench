@@ -2,6 +2,7 @@
 #include "config.hpp"
 #include <iomanip>
 #include <sstream>
+#include <cstring>
 
 Hash::Hash(HashingTech hashType, unsigned int size, BYTE* hash) noexcept: hashType{hashType}, size{size}, hash{hash}  {}
 
