@@ -11,8 +11,8 @@
 #include "rabins_chunking.hpp"
 
 #include <errno.h>
-
 #include <fstream>
+#include <cassert>
 
 Rabins_Chunking::Rabins_Chunking() {
     init();
