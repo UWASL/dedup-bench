@@ -74,3 +74,21 @@ uint64_t Config::get_rabinc_max_block_size() const {
     catch (const std::invalid_argument&) {}
     throw ConfigError("The configuration file does not specify a valid maximum block size");
 }
+
+uint64_t Config::get_ae_avg_block_size() const {
+    try {
+        std::string value = parser.get_property(AE_AVG_BLOCK_SIZE);
+        return std::stoull(value);
+    } catch (const std::out_of_range&) {}
+    catch (const std::invalid_argument&) {}
+    throw ConfigError("The configuration file does not specify a valid maximum block size");
+}
+
+std::string Config::get_ae_extreme_mode() const {
+    try {
+        std::string value = parser.get_property(AE_EXTREME_MODE);
+        return value;
+    } catch (const std::out_of_range&) {}
+    catch (const std::invalid_argument&) {}
+    throw ConfigError("The configuration file does not specify a valid maximum block size");
+}
