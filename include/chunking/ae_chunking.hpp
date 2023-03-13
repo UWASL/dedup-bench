@@ -16,8 +16,28 @@ class AE_Chunking : public virtual Chunking_Technique {
     uint64_t avg_block_size;
     uint64_t window_size;
     uint64_t curr_pos;
+    AE_Mode extreme_mode;
 
-    enum Mode { MAX, MIN } extreme_mode;
+    /**
+     * @brief check if a file exits in the path
+     * @param file_path:  path of the file
+     * @return: whether the file exits.
+     */
+    bool check_file_exits(std::string file_path);
+
+    /**
+     * @brief tries to open a file for reading
+     * @param file_path:  path of the file
+     * @param file:  pointer to the file
+     */
+    bool read_file(std::string file_path, std::ifstream& file);
+
+    /**
+     * @brief gets the size of a file 
+     * @param file:  pointer to the file
+     * @return size of the file
+     */
+    uint64_t get_file_size(std::ifstream& file);
 
     /**
      * @brief compares a new value with the current extreme and returns whether
@@ -50,27 +70,6 @@ class AE_Chunking : public virtual Chunking_Technique {
      * @return: void
      */
     AE_Chunking(const Config& config);
-
-    /**
-     * @brief check if a file exits in the path
-     * @param file_path:  path of the file
-     * @return: whether the file exits.
-     */
-    bool check_file_exits(std::string file_path);
-
-    /**
-     * @brief tries to open a file for reading
-     * @param file_path:  path of the file
-     * @param file:  pointer to the file
-     */
-    bool read_file(std::string file_path, std::ifstream& file);
-
-    /**
-     * @brief gets the size of a file 
-     * @param file:  pointer to the file
-     * @return size of the file
-     */
-    uint64_t get_file_size(std::ifstream& file);
 
     /**
         @brief Divides a file into chunks using ae algorithm

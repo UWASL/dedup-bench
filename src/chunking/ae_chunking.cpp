@@ -1,17 +1,16 @@
 /**
- * @file chunking.cpp
+ * @file ae_chunking.cpp
  * @author WASL
- * @brief Implementations for fixed chunking technique
+ * @brief Implementations for AE chunking technique
  * @version 0.1
- * @date 2023-01-31
+ * @date 2023-3-10
  *
  * @copyright Copyright (c) 2023
  *
  */
 
-#include "ae_chunking.hpp"
-
 #include <fstream>
+#include "ae_chunking.hpp"
 
 AE_Chunking::AE_Chunking() {
     avg_block_size = DEFAULT_AE_AVG_BLOCK_SIZE;
@@ -20,11 +19,7 @@ AE_Chunking::AE_Chunking() {
 }
 
 AE_Chunking::AE_Chunking(const Config& config) {
-    if (config.get_ae_extreme_mode() == "min") {
-        extreme_mode = MIN;
-    } else {
-        extreme_mode = MAX;
-    }
+    extreme_mode = config.get_ae_extreme_mode();
     avg_block_size = config.get_ae_avg_block_size();
     window_size = avg_block_size / (exp(1) - 1);  // avg_block size / e-1
 

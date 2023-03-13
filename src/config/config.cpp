@@ -84,11 +84,15 @@ uint64_t Config::get_ae_avg_block_size() const {
     throw ConfigError("The configuration file does not specify a valid maximum block size");
 }
 
-std::string Config::get_ae_extreme_mode() const {
+AE_Mode Config::get_ae_extreme_mode() const {
     try {
         std::string value = parser.get_property(AE_EXTREME_MODE);
-        return value;
+        if (value == "min"){
+           return AE_Mode::MIN;
+        }else{
+           return AE_Mode::MAX;
+        }
     } catch (const std::out_of_range&) {}
     catch (const std::invalid_argument&) {}
-    throw ConfigError("The configuration file does not specify a valid maximum block size");
+    throw ConfigError("The configuration file does not specify AE extreme mode");
 }

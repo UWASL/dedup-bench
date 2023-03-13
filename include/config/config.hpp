@@ -18,6 +18,7 @@ enum class ChunkingTech { FILE, FIXED, RABINS, AE };
 // define the possible hashing algorithms
 enum class HashingTech { MD5, SHA1, SHA256 };
 
+enum AE_Mode { MAX, MIN };
 
 class Config {
     const Parser parser;
@@ -95,7 +96,7 @@ class Config {
          * 
          * @return AE extreme mode (max or min)
          */
-        std::string get_ae_extreme_mode() const;
+        AE_Mode get_ae_extreme_mode() const;
         
 };
 
