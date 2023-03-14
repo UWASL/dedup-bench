@@ -12,7 +12,9 @@ Hash::Hash(const Hash& other): Hash(other.hashType, other.size) {
     memcpy(this->hash, other.hash, this->size);
 }
 
-Hash::Hash(Hash&& other) noexcept: Hash(other.hashType, other.size, other.hash) {}
+Hash::Hash(Hash&& other) noexcept: Hash(other.hashType, other.size, other.hash) {
+    other.hash = nullptr;
+}
 
 Hash::~Hash() {
     delete[] hash;
