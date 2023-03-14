@@ -9,6 +9,7 @@
 #define RABINC_MIN_BLOCK_SIZE "rabinc_min_block_size"
 #define RABINC_AVG_BLOCK_SIZE "rabinc_avg_block_size"
 #define RABINC_MAX_BLOCK_SIZE "rabinc_max_block_size"
+#define OUTPUT_FILE "output_file"
 
 
 
@@ -80,6 +81,12 @@ class Config {
          */
         uint64_t get_rabinc_max_block_size() const;
 
+        /**
+         * @brief Get the file name to write the hashes to. Defaults to "hashes.out"
+         * 
+         * @return std::string
+         */
+        std::string get_output_file() const;
 };
 
 #endif

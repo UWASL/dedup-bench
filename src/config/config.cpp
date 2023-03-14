@@ -74,3 +74,11 @@ uint64_t Config::get_rabinc_max_block_size() const {
     catch (const std::invalid_argument&) {}
     throw ConfigError("The configuration file does not specify a valid maximum block size");
 }
+
+std::string Config::get_output_file() const {
+    try {
+        std::string value = parser.get_property(OUTPUT_FILE);
+        return value;
+    } catch (const std::out_of_range&) {}
+    return "hashes.txt";
+}
