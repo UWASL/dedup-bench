@@ -2,7 +2,6 @@
 #define _AE_CHUNKING_
 
 #include <math.h>
-
 #include <iostream>
 
 #include "chunking_common.hpp"

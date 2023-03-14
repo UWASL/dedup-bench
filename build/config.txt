@@ -1,4 +1,6 @@
 chunking_algo = ae
 hashing_algo= sha1
+ae_extreme_mode= maxw
+ae_avg_block_size=4000
 # comment
 

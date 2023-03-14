@@ -86,7 +86,7 @@ uint64_t Config::get_ae_avg_block_size() const {
         return std::stoull(value);
     } catch (const std::out_of_range&) {}
     catch (const std::invalid_argument&) {}
-    throw ConfigError("The configuration file does not specify a valid maximum block size");
+    throw ConfigError("The configuration file does not specify a valid ae avarage block size");
 }
 
 AE_Mode Config::get_ae_extreme_mode() const {
@@ -99,5 +99,5 @@ AE_Mode Config::get_ae_extreme_mode() const {
         }
     } catch (const std::out_of_range&) {}
     catch (const std::invalid_argument&) {}
-    throw ConfigError("The configuration file does not specify AE extreme mode");
+    throw ConfigError("The configuration file does not specify a valid AE extreme mode");
 }
