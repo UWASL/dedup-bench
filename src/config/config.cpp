@@ -11,6 +11,11 @@ ChunkingTech Config::get_chunking_tech() const {
         std::string value = parser.get_property(CHUNKING_TECH);
         if (value == "fixed") {
             return ChunkingTech::FIXED;
+        }else if(value == "rabins"){
+            return ChunkingTech::RABINS;
+        }
+        else if(value == "ae"){
+            return ChunkingTech::AE;
         }
     } catch (const std::out_of_range&) {}
     throw ConfigError("The configuration file does not specify a valid chunking technique");
@@ -89,7 +94,7 @@ AE_Mode Config::get_ae_extreme_mode() const {
         std::string value = parser.get_property(AE_EXTREME_MODE);
         if (value == "min"){
            return AE_Mode::MIN;
-        }else{
+        }else if(value == "max"){
            return AE_Mode::MAX;
         }
     } catch (const std::out_of_range&) {}

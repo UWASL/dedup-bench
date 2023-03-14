@@ -17,7 +17,7 @@
 enum class ChunkingTech { FILE, FIXED, RABINS, AE };
 // define the possible hashing algorithms
 enum class HashingTech { MD5, SHA1, SHA256 };
-
+// define the the extreme value type of AE algorithm
 enum AE_Mode { MAX, MIN };
 
 class Config {
