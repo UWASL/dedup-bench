@@ -27,25 +27,6 @@ void print_hashes(std::vector<Hash> hash_list){
     }
 }
 
-void write_hashes_to_file(std::vector<Hash> hash_list, std::string out_file_path){
-    /**
-     * @brief Write all given hash values to file
-     * @param hash_list: Vector containing hash values
-     * @param out_file_path: Path to output file where hashes will be written to
-     * 
-     */
-    
-    std::ofstream out_stream;
-    out_stream.open(out_file_path, std::ios::out);
-    
-    // Iterate over hash values and write them to file
-    for (Hash hash: hash_list) {
-        out_stream << hash.toString() << std::endl;
-    }
-
-    out_stream.close();
-}
-
 std::vector<std::tuple<Hash, uint64_t>> Hashing_Technique::hash_chunks(std::vector<File_Chunk> file_chunks) {
     /**
      * @brief Hash all chunks in a given vector using the relevant hash_chunk() implementation

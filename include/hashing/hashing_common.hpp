@@ -41,7 +41,4 @@ class Hashing_Technique{
 // Print all given hash values in list
 void print_hashes(std::vector<Hash> hash_list);
 
-// Write all given hash values in list to output file
-void write_hashes_to_file(std::vector<Hash> hash_list, std::string out_file_path);
-
 #endif
