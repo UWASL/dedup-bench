@@ -80,5 +80,5 @@ std::string Config::get_output_file() const {
         std::string value = parser.get_property(OUTPUT_FILE);
         return value;
     } catch (const std::out_of_range&) {}
-    return "hashes.txt";
+    return "hashes.out";
 }
