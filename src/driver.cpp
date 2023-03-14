@@ -21,10 +21,13 @@
 #include <ios>
 #include <fstream>
 #include <memory>
+#include <vector>
+#include <tuple>
+#include <filesystem>
 
 
 static void driver_function(
-    const std::string& file_path, Chunking_Technique *chunk_method, std::unique_ptr<Hashing_Technique>& hash_method,
+    const std::filesystem::path& dir_path, Chunking_Technique *chunk_method, std::unique_ptr<Hashing_Technique>& hash_method,
     const std::string& output_file) {
     /**
      * @brief Uses the specified chunking technique to chunk the file, hash it using the specified hashing technique 
@@ -37,30 +40,48 @@ static void driver_function(
      * @return: void
      * 
      */
+    const std::string delimiter = ", ";
+    uint64_t chunk_count = 0;
     
-    std::vector<File_Chunk> file_chunks;
-
-    // Chunk file using specified Chunking_Technique
-    file_chunks = chunk_method->chunk_file(file_path);
-
-    std::cout << "Total chunks: " << file_chunks.size() << std::endl;
-
-    // Hash chunks using specified Hashing_Technique
-    std::vector<Hash> hash_list = hash_method->hash_chunks(file_chunks);
-
-    // Write the hashes to a file
-    std::ofstream out_file(output_file, std::ios::out | std::ios::trunc);
-    if (out_file.is_open()) {
-        for (const Hash& hash: hash_list){
-            out_file << hash.toString() << std::endl;
-        }
-        out_file.close();
-    } else {
-        std::cerr << "Failed to open " << output_file << " for writing" << std::endl;
+    if (!std::filesystem::is_directory(dir_path)) {
+        std::cerr << dir_path << " is not a directory" << std::endl;
+        return;
     }
 
-    // Cleanup chunk memory
-    cleanup_chunks(file_chunks);
+    // open the output file for writing the hashes to
+    std::ofstream out_file(output_file, std::ios::out | std::ios::trunc);
+    if (!out_file.is_open()) {
+        std::cerr << "Failed to open " << output_file << " for writing" << std::endl;
+        return;
+    }
+
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(dir_path)) {
+        std::filesystem::path file_path = entry.path();
+        if (std::filesystem::is_directory(file_path)) {
+            // Avoid trying to chunk a directory path
+            continue;
+        }
+        std::cout << "Chunking " << file_path << " ..." << std::endl;
+
+        // Chunk file using specified Chunking_Technique
+        std::vector<File_Chunk> file_chunks = chunk_method->chunk_file(file_path);
+        chunk_count += file_chunks.size();
+
+        // Hash chunks using specified Hashing_Technique
+        std::vector<std::tuple<Hash, uint64_t>> hash_list = hash_method->hash_chunks(file_chunks);
+
+        for (const std::tuple<Hash, uint64_t> tup: hash_list){
+            const Hash hash = std::get<0>(tup);
+            uint64_t chunk_size = std::get<1>(tup);
+            out_file << hash.toString() << delimiter << chunk_size << std::endl;
+        }
+
+        // Cleanup chunk memory
+        cleanup_chunks(file_chunks);
+    }
+
+    out_file.close();
+    std::cout << "Total number of chunks: " << chunk_count << std::endl;
 }
 
 
@@ -77,7 +98,7 @@ int main(int argc, char * argv[]){
         exit(EXIT_FAILURE);
     }
 
-    std::string file_path = std::string(argv[1]);
+    std::string dir_path = std::string(argv[1]);
     std::string output_file;
     try {
         Config config{std::string(argv[2])};
@@ -122,7 +143,7 @@ int main(int argc, char * argv[]){
         }
 
         // Call driver function
-        driver_function(file_path, chunk_method, hash_method, output_file);
+        driver_function(dir_path, chunk_method, hash_method, output_file);
 
         // Cleanup pointers
         delete chunk_method;

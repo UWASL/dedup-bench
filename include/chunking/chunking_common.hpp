@@ -33,7 +33,7 @@ typedef struct File_Chunk{
         chunk_size = _chunk_size;
         chunk_data = _chunk_data;
     }
-   
+
 }File_Chunk;
 
 class Chunking_Technique{

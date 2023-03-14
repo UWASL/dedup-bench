@@ -37,7 +37,7 @@ SRC_CONFIG = $(wildcard $(SRC_PATH_CONFIG)/*.cpp)
 OBJS_CONFIG = $(SRC_CONFIG:$(SRC_PATH_CONFIG)/%.cpp=%.o)
 DEPS_CONFIG = $(wildcard $(INCLUDE_PATH_CONFIG)/*.hpp)
 
-COMPILER_FLAGS= -std=c++14 -Wall -Wextra -Wno-format
+COMPILER_FLAGS= -std=c++17 -Wall -Wextra -Wno-format
 
 CC = g++
 RM = rm -f

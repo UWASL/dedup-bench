@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <tuple>
 #include "hash.hpp"
 
 
@@ -45,19 +46,18 @@ void write_hashes_to_file(std::vector<Hash> hash_list, std::string out_file_path
     out_stream.close();
 }
 
-std::vector<Hash> Hashing_Technique::hash_chunks(std::vector<File_Chunk> file_chunks){
+std::vector<std::tuple<Hash, uint64_t>> Hashing_Technique::hash_chunks(std::vector<File_Chunk> file_chunks) {
     /**
      * @brief Hash all chunks in a given vector using the relevant hash_chunk() implementation
      * @param file_chunks: Vector containing struct File_Chunk
-     * @return: Vector of hashes (strings)
+     * @return: Vector of Tuples of hash (strings) and the chunk size (int)
      */
-    std::vector<Hash> hash_vector;
+    std::vector<std::tuple<Hash, uint64_t>> result_vector;
 
     // Iterate over all chunks and generate hash values
-    for(File_Chunk fc: file_chunks){
-        Hash chunk_hash = hash_chunk(fc);
-        hash_vector.push_back(chunk_hash);
+    for (const File_Chunk& fc: file_chunks) {
+        result_vector.emplace_back(hash_chunk(fc), fc.chunk_size);
     }
 
-    return hash_vector; 
+    return result_vector; 
 }
