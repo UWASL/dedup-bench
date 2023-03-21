@@ -15,6 +15,7 @@
 
 #include <string>
 #include <vector>
+#include <tuple>
 #include "hash.hpp"
 
 
@@ -30,17 +31,14 @@ class Hashing_Technique{
     // Return a hash value for a given File_Chunk
     virtual Hash hash_chunk(File_Chunk) = 0;
     
-    // Hash all chunks in a given vector of chunks
-    std::vector<Hash> hash_chunks(std::vector<File_Chunk>);
+    // Hash all chunks in a given vector of chunks, and return a vector of hash and chunk size
+    std::vector<std::tuple<Hash, uint64_t>> hash_chunks(std::vector<File_Chunk>);
 
     // Virtual destructor to support delete on base class ptr
-    virtual ~Hashing_Technique(){}
+    virtual ~Hashing_Technique() {}
 };
 
 // Print all given hash values in list
 void print_hashes(std::vector<Hash> hash_list);
-
-// Write all given hash values in list to output file
-void write_hashes_to_file(std::vector<Hash> hash_list, std::string out_file_path);
 
 #endif

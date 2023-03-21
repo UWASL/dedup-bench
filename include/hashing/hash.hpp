@@ -10,7 +10,7 @@ class Hash {
     const HashingTech hashType;
     const unsigned int size;
     // byte array to hold the hash value
-    BYTE* const hash;
+    BYTE* hash;
 
     /**
      * @brief Private constructor used by the move constructor

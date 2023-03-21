@@ -9,6 +9,7 @@
 #define RABINC_MIN_BLOCK_SIZE "rabinc_min_block_size"
 #define RABINC_AVG_BLOCK_SIZE "rabinc_avg_block_size"
 #define RABINC_MAX_BLOCK_SIZE "rabinc_max_block_size"
+#define OUTPUT_FILE "output_file"
 #define AE_AVG_BLOCK_SIZE "ae_avg_block_size"
 #define AE_EXTREME_MODE "ae_extreme_mode"
 
@@ -83,6 +84,13 @@ class Config {
         uint64_t get_rabinc_max_block_size() const;
 
         /**
+         * @brief Get the file name to write the hashes to. Defaults to "hashes.out"
+         * 
+         * @return std::string
+         */
+        std::string get_output_file() const;
+        
+         /**
          * @brief Get the desired avg size of the block when using AE chunking
          * throws ConfigError if the key does not exist or if the value is invalid
          * 
@@ -97,7 +105,6 @@ class Config {
          * @return AE extreme mode (max or min)
          */
         AE_Mode get_ae_extreme_mode() const;
-        
 };
 
 #endif
