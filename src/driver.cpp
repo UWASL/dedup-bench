@@ -29,8 +29,8 @@
 
 
 static void driver_function(
-    const std::filesystem::path& dir_path, Chunking_Technique *chunk_method, std::unique_ptr<Hashing_Technique>& hash_method,
-    const std::string& output_file) {
+                            const std::filesystem::path& dir_path, Chunking_Technique *chunk_method,
+                            std::unique_ptr<Hashing_Technique>& hash_method, const std::string& output_file) {
     /**
      * @brief Uses the specified chunking technique to chunk the file, hash it using the specified hashing technique 
      *        and print the hashes
