@@ -86,6 +86,7 @@ std::string Config::get_output_file() const {
         return value;
     } catch (const std::out_of_range&) {}
     return "hashes.out";
+}
 
 uint64_t Config::get_ae_avg_block_size() const {
     try {
