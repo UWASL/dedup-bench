@@ -29,10 +29,10 @@ class Hashing_Technique{
 
     std::string technique_name;
     // Return a hash value for a given File_Chunk
-    virtual Hash hash_chunk(File_Chunk) = 0;
+    virtual void hash_chunk(File_Chunk&) = 0;
     
-    // Hash all chunks in a given vector of chunks, and return a vector of hash and chunk size
-    std::vector<std::tuple<Hash, uint64_t>> hash_chunks(std::vector<File_Chunk>);
+    // Hash all chunks in a given vector of chunks
+    void hash_chunks(std::vector<File_Chunk>&);
 
     // Virtual destructor to support delete on base class ptr
     virtual ~Hashing_Technique() {}

@@ -11,7 +11,7 @@ class SHA256_Hashing: public virtual Hashing_Technique{
      */
     public:
         // Function to hash a given chunk
-        Hash hash_chunk(File_Chunk file_chunk) override;
+        void hash_chunk(File_Chunk& file_chunk) override;
 
         SHA256_Hashing() {
             technique_name = "SHA256-Hashing";

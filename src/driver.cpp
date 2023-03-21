@@ -70,16 +70,11 @@ static void driver_function(
         chunk_count += file_chunks.size();
 
         // Hash chunks using specified Hashing_Technique
-        std::vector<std::tuple<Hash, uint64_t>> hash_list = hash_method->hash_chunks(file_chunks);
+        hash_method->hash_chunks(file_chunks);
 
-        for (const std::tuple<Hash, uint64_t> tup: hash_list){
-            const Hash hash = std::get<0>(tup);
-            uint64_t chunk_size = std::get<1>(tup);
-            out_file << hash.toString() << delimiter << chunk_size << std::endl;
+        for (const File_Chunk& fc : file_chunks){
+            out_file << fc.to_string() << std::endl;
         }
-
-        // Cleanup chunk memory
-        cleanup_chunks(file_chunks);
     }
 
     out_file.close();

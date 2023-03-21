@@ -12,7 +12,7 @@ class SHA1_Hashing: public virtual Hashing_Technique{
      */
     public:
         // Function to hash a given chunk
-        Hash hash_chunk(File_Chunk file_chunk) override;
+        void hash_chunk(File_Chunk& file_chunk) override;
 
         SHA1_Hashing() {
             technique_name = "SHA1-Hashing";
