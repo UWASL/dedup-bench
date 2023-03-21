@@ -11,6 +11,11 @@ ChunkingTech Config::get_chunking_tech() const {
         std::string value = parser.get_property(CHUNKING_TECH);
         if (value == "fixed") {
             return ChunkingTech::FIXED;
+        }else if(value == "rabins"){
+            return ChunkingTech::RABINS;
+        }
+        else if(value == "ae"){
+            return ChunkingTech::AE;
         }
     } catch (const std::out_of_range&) {}
     throw ConfigError("The configuration file does not specify a valid chunking technique");
@@ -81,4 +86,25 @@ std::string Config::get_output_file() const {
         return value;
     } catch (const std::out_of_range&) {}
     return "hashes.out";
+
+uint64_t Config::get_ae_avg_block_size() const {
+    try {
+        std::string value = parser.get_property(AE_AVG_BLOCK_SIZE);
+        return std::stoull(value);
+    } catch (const std::out_of_range&) {}
+    catch (const std::invalid_argument&) {}
+    throw ConfigError("The configuration file does not specify a valid ae avarage block size");
+}
+
+AE_Mode Config::get_ae_extreme_mode() const {
+    try {
+        std::string value = parser.get_property(AE_EXTREME_MODE);
+        if (value == "min"){
+           return AE_Mode::MIN;
+        }else if(value == "max"){
+           return AE_Mode::MAX;
+        }
+    } catch (const std::out_of_range&) {}
+    catch (const std::invalid_argument&) {}
+    throw ConfigError("The configuration file does not specify a valid AE extreme mode");
 }

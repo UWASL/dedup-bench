@@ -10,14 +10,16 @@
 #define RABINC_AVG_BLOCK_SIZE "rabinc_avg_block_size"
 #define RABINC_MAX_BLOCK_SIZE "rabinc_max_block_size"
 #define OUTPUT_FILE "output_file"
-
+#define AE_AVG_BLOCK_SIZE "ae_avg_block_size"
+#define AE_EXTREME_MODE "ae_extreme_mode"
 
 
 // define the possible chunking algorithms
-enum class ChunkingTech { FILE, FIXED, RABINS };
+enum class ChunkingTech { FILE, FIXED, RABINS, AE };
 // define the possible hashing algorithms
 enum class HashingTech { MD5, SHA1, SHA256 };
-
+// define the the extreme value type of AE algorithm
+enum AE_Mode { MAX, MIN };
 
 class Config {
     const Parser parser;
@@ -87,6 +89,22 @@ class Config {
          * @return std::string
          */
         std::string get_output_file() const;
+        
+         /**
+         * @brief Get the desired avg size of the block when using AE chunking
+         * throws ConfigError if the key does not exist or if the value is invalid
+         * 
+         * @return AE desired avg block size   
+         */
+        uint64_t get_ae_avg_block_size() const;
+
+        /**
+         * @brief get the operating mode of ae (can be maximum or minimum)
+         * throws ConfigError if the key does not exist or if the value is invalid
+         * 
+         * @return AE extreme mode (max or min)
+         */
+        AE_Mode get_ae_extreme_mode() const;
 };
 
 #endif

@@ -17,6 +17,8 @@
 #include "config_error.hpp"
 #include "chunking_common.hpp"
 #include "rabins_chunking.hpp"
+#include "ae_chunking.hpp"
+
 
 #include <ios>
 #include <fstream>
@@ -121,6 +123,9 @@ int main(int argc, char * argv[]){
                 break;
             case ChunkingTech::RABINS:
                 chunk_method = (Chunking_Technique *)new Rabins_Chunking(config);
+                break;
+            case ChunkingTech::AE:
+                chunk_method = (Chunking_Technique *)new AE_Chunking(config);
                 break;
             default:
                 std::cerr << "Unimplemented chunking technique" << std::endl;
