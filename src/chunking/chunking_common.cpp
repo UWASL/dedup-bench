@@ -58,11 +58,6 @@ std::string File_Chunk::to_string() const {
 }
 
 void File_Chunk::print() const {
-    /**
-     * @brief Print details of the chunk
-     * @return: void
-     */
-
     std::cout << "\tChunk Size: " <<  chunk_size << std::endl;
     std::cout << "\tChunk Hash: " << chunk_hash->toString() << std::endl;
     std::cout << "\tChunk Data: " << chunk_data << std::endl;

@@ -22,23 +22,25 @@
 class Hashing_Technique{
     /**
      * @brief Interface for all hashing techniques to follow.
-     *        Currently, all hash values are stored as strings to support a wide variety of algorithms
      * 
      */
     public:
 
     std::string technique_name;
+
     // Return a hash value for a given File_Chunk
-    virtual void hash_chunk(File_Chunk&) = 0;
+    virtual void hash_chunk(File_Chunk& file_chunk) = 0;
     
-    // Hash all chunks in a given vector of chunks
-    void hash_chunks(std::vector<File_Chunk>&);
+    /**
+     * @brief Hash all chunks in a given vector using the relevant hash_chunk() implementation
+     * @param file_chunks: Vector containing struct File_Chunk
+     * 
+     * @return: void
+     */
+    void hash_chunks(std::vector<File_Chunk>& file_chunks);
 
     // Virtual destructor to support delete on base class ptr
     virtual ~Hashing_Technique() {}
 };
-
-// Print all given hash values in list
-void print_hashes(std::vector<Hash> hash_list);
 
 #endif
