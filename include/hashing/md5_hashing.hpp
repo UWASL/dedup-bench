@@ -11,7 +11,7 @@ class MD5_Hashing: public virtual Hashing_Technique{
      */
     public:
         // Function to hash a given chunk
-        Hash hash_chunk(File_Chunk file_chunk) override;
+        void hash_chunk(File_Chunk& file_chunk) override;
 
         MD5_Hashing() {
             technique_name = "MD5-Hashing";

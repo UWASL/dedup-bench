@@ -167,10 +167,10 @@ std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
     std::vector<File_Chunk> file_chunks;
     while (true) {
         int rc = rp_block_next();
-        char *chunk_data = new char[block_size];
-        memccpy(chunk_data, block_addr, 0, block_size);
         if (rc == 0) {
-            File_Chunk new_chunk(chunk_data, block_size);
+            File_Chunk new_chunk(block_size);
+            memccpy(new_chunk.get_data(), block_addr, 0, block_size);
+            file_chunks.push_back(new_chunk);
         }
         if (rc) {
             assert(rc == EOF);

@@ -57,19 +57,17 @@ std::vector<File_Chunk> Fixed_Chunking::chunk_file(std::string file_path){
 
     // Seek back to beginning and set up bytes_to_read
     file_ptr.seekg(0,std::ios_base::beg);
-    uint64_t bytes_to_read = std::min(chunk_size, file_size_bytes);
+    uint32_t bytes_to_read = std::min(chunk_size, file_size_bytes);
     
 
-    uint64_t curr_bytes_read = 0;
+    uint32_t curr_bytes_read = 0;
     while(curr_bytes_read < file_size_bytes){
         // Create buffer to store chunks
-        char *block_buffer = new char[chunk_size];
-   
+        File_Chunk new_chunk{bytes_to_read};
         
-        file_ptr.read(block_buffer, bytes_to_read);
+        file_ptr.read(new_chunk.get_data(), bytes_to_read);
         
         // Create new chunk and push it into vector
-        File_Chunk new_chunk(block_buffer, bytes_to_read);
         file_chunks.push_back(new_chunk);
 
         curr_bytes_read += bytes_to_read;

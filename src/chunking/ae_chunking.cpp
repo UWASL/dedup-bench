@@ -94,10 +94,9 @@ std::vector<File_Chunk> AE_Chunking::chunk_file(std::string file_path) {
             // find cutpoint
             uint32_t cutpoint = find_cutpoint(read_buffer, read_buff_end);
             // create new chunk and push it to the vector
-            int chunk_size = cutpoint + 1;
-            char* chunk = new char[chunk_size];
-            memccpy(chunk, read_buffer, 0, chunk_size);
-            File_Chunk new_chunk(chunk, chunk_size);
+            uint32_t chunk_size = cutpoint + 1;
+            File_Chunk new_chunk{chunk_size};
+            memccpy(new_chunk.get_data(), read_buffer, 0, chunk_size);
             file_chunks.push_back(new_chunk);
 
             /* there's a partial block at the end
@@ -118,10 +117,9 @@ std::vector<File_Chunk> AE_Chunking::chunk_file(std::string file_path) {
         while ((int)read_buff_end > pos) {
             uint32_t cutpoint =
                 find_cutpoint(&read_buffer[pos], read_buff_end - pos);
-            int chunk_size = cutpoint + 1;
-            char* chunk = new char[chunk_size];
-            memccpy(chunk, &read_buffer[pos], 0, chunk_size);
-            File_Chunk new_chunk(chunk, chunk_size);
+            uint32_t chunk_size = cutpoint + 1;
+            File_Chunk new_chunk{chunk_size};
+            memccpy(new_chunk.get_data(), &read_buffer[pos], 0, chunk_size);
             file_chunks.push_back(new_chunk);
             pos += chunk_size;
         }

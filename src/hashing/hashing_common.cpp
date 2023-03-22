@@ -9,36 +9,12 @@
  * 
  */
 #include "hashing_common.hpp"
-
-#include <iostream>
-#include <fstream>
-#include <tuple>
 #include "hash.hpp"
 
 
-void print_hashes(std::vector<Hash> hash_list){
-    /**
-     * @brief Print all hash values from the given list
-     * @param hash_list: Vector containing hash values
-     * 
-     */
-    for (const Hash& hash: hash_list){
-        std::cout << "Hash: " << hash.toString() << std::endl;
+void Hashing_Technique::hash_chunks(std::vector<File_Chunk>& file_chunks){
+    // Iterate over all chunks and generate their hash values
+    for (File_Chunk& fc: file_chunks) {
+        hash_chunk(fc);
     }
-}
-
-std::vector<std::tuple<Hash, uint64_t>> Hashing_Technique::hash_chunks(std::vector<File_Chunk> file_chunks) {
-    /**
-     * @brief Hash all chunks in a given vector using the relevant hash_chunk() implementation
-     * @param file_chunks: Vector containing struct File_Chunk
-     * @return: Vector of Tuples of hash (strings) and the chunk size (int)
-     */
-    std::vector<std::tuple<Hash, uint64_t>> result_vector;
-
-    // Iterate over all chunks and generate hash values
-    for (const File_Chunk& fc: file_chunks) {
-        result_vector.emplace_back(hash_chunk(fc), fc.chunk_size);
-    }
-
-    return result_vector; 
 }
