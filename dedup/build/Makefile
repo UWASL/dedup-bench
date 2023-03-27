@@ -3,8 +3,9 @@
 # if the number of headers ever grow too big
 # =========================
 MAKEFILE = Makefile
-
+EXEC_NAME = dedup
 BUILD_DIR_PATH = ../../build
+
 
 INCLUDE_PATH = ../include/
 INCLUDE_PATH_CHUNKING = ../include/chunking
@@ -51,15 +52,15 @@ ifeq ($(DEBUG), 1)
 endif
 
 
-default: dedup
-all: dedup
+default: $(EXEC_NAME)
+all: $(EXEC_NAME)
 
-dedup: $(OBJS_MAIN) $(OBJS_CHUNKING) $(OBJS_HASHING) $(OBJS_CONFIG) 
+$(EXEC_NAME): $(OBJS_MAIN) $(OBJS_CHUNKING) $(OBJS_HASHING) $(OBJS_CONFIG) 
 	@echo ""
 	@echo "Linking $@ ....."
 	@echo "============================"
-	$(CC) -o dedup.exe $(OBJS_MAIN) $(OBJS_CHUNKING) $(OBJS_HASHING) $(OBJS_CONFIG) $(INCLUDE_FLAGS) $(COMPILER_FLAGS) $(LD_FLAGS)
-	cp dedup.exe $(BUILD_DIR_PATH)/dedup.exe
+	$(CC) -o $(EXEC_NAME).exe $(OBJS_MAIN) $(OBJS_CHUNKING) $(OBJS_HASHING) $(OBJS_CONFIG) $(INCLUDE_FLAGS) $(COMPILER_FLAGS) $(LD_FLAGS)
+	cp $(EXEC_NAME).exe $(BUILD_DIR_PATH)/$(EXEC_NAME).exe
 	@echo ""
 
 # Driver related build rules
