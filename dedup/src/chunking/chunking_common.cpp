@@ -52,7 +52,7 @@ void File_Chunk::init_hash(HashingTech hashing_tech, uint64_t size) {
 
 std::string File_Chunk::to_string() const {
     if (chunk_hash) {
-        return chunk_hash->toString() + ", " + std::to_string(chunk_size);
+        return chunk_hash->toString() + "," + std::to_string(chunk_size);
     }
     return "INVALID HASH";
 }

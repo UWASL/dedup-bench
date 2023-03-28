@@ -34,7 +34,8 @@ Parser::Parser(const std::string& config_file_path) {
         to_lower(line);
         size_t idx = line.find(delimiter);
         dict[trim(line.substr(0, idx))] = trim(line.substr(idx+1, line.length()-idx-1));
-      }
+    }
+    infile.close();
 }
 
 std::string Parser::get_property(const std::string& key) const {
