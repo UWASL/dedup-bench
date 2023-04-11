@@ -4,8 +4,6 @@
 #include "chunking_common.hpp"
 #include "config.hpp"
 
-#define GHASH_MASK_MD = 0x0000d90303530000
-
 class Gear_Chunking : public virtual Chunking_Technique {
     /**
      * @brief Class implementing gear's based chunking
@@ -105,6 +103,28 @@ class Gear_Chunking : public virtual Chunking_Technique {
         0x08c956ac24d7ba44,
     };
 
+    /**
+     * @brief calculate the next gear hash
+     * @param h the current hash value
+     * @param ch the next byte to add
+     * @return the new hash value
+     */
+    uint64_t ghash(uint64_t h, unsigned char ch);
+
+    /**
+     * @brief Find the next cutting point within given data.
+     * @param data data stream to to look for the cut point in.
+     * @return Index value at which data must be cut.
+     */
+    uint64_t cut(const std::vector<unsigned char>& data);
+
+    /**
+     * @brief Split given data stream into chunks.
+     * @param data data stream to be divided.
+     * @return a vector of File_Chunk containing all the resulting chunks from the data stream.
+     */
+    std::vector<File_Chunk> chop(const std::vector<unsigned char>& data);
+
    public:
     /**
      * @brief Default constructor. defines all parameters to defualt values
@@ -116,28 +136,12 @@ class Gear_Chunking : public virtual Chunking_Technique {
      * @brief Defines all parameters based on values from the config file
      * @return: void
      */
-    Gear_Chunking(const Config &config);
-
-    uint64_t ghash(uint64_t h, unsigned char ch);
-
-    /**
-     * @brief Find the next cutting point within given data.
-     * @param data the path of the file to be chunked
-     * @return Index value at which data must be cut.
-     */
-    uint64_t cut(const std::vector<unsigned char>& data);
-
-    /**
-     * @brief Find the next cutting point within given data.
-     * @param data the path of the file to be chunked
-     * @return Index value at which data must be cut.
-     */
-    std::vector<File_Chunk> chop(const std::vector<unsigned char>& data);
+    Gear_Chunking(const Config& config);
 
     /**
      * @brief chunk a file using gear hasing
-     * @param data Data stream to cut.
-     * @return A vector of chunks
+     * @param data Data stream to chunk.
+     * @return A vector of File_Chuncks
      */
     std::vector<File_Chunk> chunk_file(std::string file_path);
 };

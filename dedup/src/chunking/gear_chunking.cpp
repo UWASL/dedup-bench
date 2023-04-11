@@ -11,9 +11,9 @@
 
 #include "gear_chunking.hpp"
 
-#include <iostream>
 #include <cstring>
 #include <fstream>
+#include <iostream>
 
 Gear_Chunking::Gear_Chunking(const Config& config) {
     min_block_size = config.get_gear_min_block_size();
@@ -54,21 +54,19 @@ std::vector<File_Chunk> Gear_Chunking::chop(
     uint64_t ct_idx = data.size();
 
     std::vector<File_Chunk> chunks;
-    
+
     while (ct_idx != ck_end) {
         ck_end =
             ck_start + cut(std::vector<unsigned char>(data.begin() + ck_start,
                                                       data.begin() + ct_idx));
-        File_Chunk new_chunk{ck_end - ck_start };
+        File_Chunk new_chunk{ck_end - ck_start};
 
-        memccpy(new_chunk.get_data(), data.data(), ck_start,
-                ck_end - ck_start );
+        memccpy(new_chunk.get_data(), data.data(), ck_start, ck_end - ck_start);
 
         chunks.push_back(new_chunk);
 
         ck_start = ck_end;
         ct_idx = std::min(ck_end + max_block_size, data.size());
-
     }
     return chunks;
 }

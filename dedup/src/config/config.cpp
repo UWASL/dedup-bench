@@ -119,7 +119,7 @@ uint64_t Config::get_gear_min_block_size() const {
         return std::stoull(value);
     } catch (const std::out_of_range&) {}
     catch (const std::invalid_argument&) {}
-    throw ConfigError("The configuration file does not specify a valid ae avarage block size");
+    throw ConfigError("The configuration file does not specify a valid ae minimum block size for gear hash");
 }
 
 uint64_t Config::get_gear_max_block_size() const {
@@ -128,5 +128,5 @@ uint64_t Config::get_gear_max_block_size() const {
         return std::stoull(value);
     } catch (const std::out_of_range&) {}
     catch (const std::invalid_argument&) {}
-    throw ConfigError("The configuration file does not specify a valid ae avarage block size");
+    throw ConfigError("The configuration file does not specify a valid ae maximum block size for gear hash");
 }
