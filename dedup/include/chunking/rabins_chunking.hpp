@@ -5,6 +5,9 @@
 #include "config.hpp"
 #include "rabins_hashing.hpp"
 
+#include <cstring>
+
+
 #define DEFAULT_RABINC_WINDOW_SIZE 32
 #define DEFAULT_RABINC_MIN_BLOCK_SIZE 1024
 #define DEFAULT_RABINC_AVG_BLOCK_SIZE 8192

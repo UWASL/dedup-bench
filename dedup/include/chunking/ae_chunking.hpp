@@ -7,6 +7,8 @@
 #include "chunking_common.hpp"
 #include "config.hpp"
 
+#include <cstring>
+
 #define DEFAULT_AE_AVG_BLOCK_SIZE 4096
 #define BUFFER_SIZE 65535
 
