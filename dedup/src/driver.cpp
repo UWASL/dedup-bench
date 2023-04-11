@@ -18,6 +18,8 @@
 #include "chunking_common.hpp"
 #include "rabins_chunking.hpp"
 #include "ae_chunking.hpp"
+#include "gear_chunking.hpp"
+
 
 
 #include <ios>
@@ -121,6 +123,9 @@ int main(int argc, char * argv[]){
                 break;
             case ChunkingTech::AE:
                 chunk_method = (Chunking_Technique *)new AE_Chunking(config);
+                break;
+            case ChunkingTech::GEAR:
+                chunk_method = (Chunking_Technique *)new Gear_Chunking(config);
                 break;
             default:
                 std::cerr << "Unimplemented chunking technique" << std::endl;
