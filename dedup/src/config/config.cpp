@@ -17,6 +17,9 @@ ChunkingTech Config::get_chunking_tech() const {
         else if(value == "ae"){
             return ChunkingTech::AE;
         }
+        else if(value == "gear"){
+            return ChunkingTech::GEAR;
+        }
     } catch (const std::out_of_range&) {}
     throw ConfigError("The configuration file does not specify a valid chunking technique");
 }
@@ -108,4 +111,22 @@ AE_Mode Config::get_ae_extreme_mode() const {
     } catch (const std::out_of_range&) {}
     catch (const std::invalid_argument&) {}
     throw ConfigError("The configuration file does not specify a valid AE extreme mode");
+}
+
+uint64_t Config::get_gear_min_block_size() const {
+    try {
+        std::string value = parser.get_property(GEAR_MIN_BLOCK_SIZE);
+        return std::stoull(value);
+    } catch (const std::out_of_range&) {}
+    catch (const std::invalid_argument&) {}
+    throw ConfigError("The configuration file does not specify a valid ae avarage block size");
+}
+
+uint64_t Config::get_gear_max_block_size() const {
+    try {
+        std::string value = parser.get_property(GEAR_MAX_BLOCK_SIZE);
+        return std::stoull(value);
+    } catch (const std::out_of_range&) {}
+    catch (const std::invalid_argument&) {}
+    throw ConfigError("The configuration file does not specify a valid ae avarage block size");
 }

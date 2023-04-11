@@ -12,10 +12,11 @@
 #define OUTPUT_FILE "output_file"
 #define AE_AVG_BLOCK_SIZE "ae_avg_block_size"
 #define AE_EXTREME_MODE "ae_extreme_mode"
-
+#define GEAR_MIN_BLOCK_SIZE "gear_min_block_size"
+#define GEAR_MAX_BLOCK_SIZE "gear_max_block_size"
 
 // define the possible chunking algorithms
-enum class ChunkingTech { FILE, FIXED, RABINS, AE };
+enum class ChunkingTech { FILE, FIXED, RABINS, AE, GEAR};
 // define the possible hashing algorithms
 enum class HashingTech { MD5, SHA1, SHA256 };
 // define the the extreme value type of AE algorithm
@@ -105,6 +106,22 @@ class Config {
          * @return AE extreme mode (max or min)
          */
         AE_Mode get_ae_extreme_mode() const;
+
+        /**
+         * @brief Get the desired minimum size of the block when using Gear chunking
+         * throws ConfigError if the key does not exist or if the value is invalid
+         * 
+         * @return AE desired avg block size   
+         */
+        uint64_t get_gear_min_block_size() const;
+
+        /**
+         * @brief Get the desired maximum size of the block when using Gear chunking
+         * throws ConfigError if the key does not exist or if the value is invalid
+         * 
+         * @return AE desired avg block size   
+         */
+        uint64_t get_gear_max_block_size() const;
 };
 
 #endif
