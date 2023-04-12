@@ -36,7 +36,7 @@ class File_Chunk {
 
     public:
         // Constructors
-        File_Chunk(uint32_t _chunk_size);
+        File_Chunk(uint64_t _chunk_size);
 
         File_Chunk(const File_Chunk& other);
 

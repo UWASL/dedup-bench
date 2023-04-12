@@ -66,7 +66,9 @@ std::vector<File_Chunk> Gear_Chunking::chop(
         chunks.push_back(new_chunk);
 
         ck_start = ck_end;
-        ct_idx = std::min(ck_end + max_block_size, data.size());
+        // casting size_t to uint64_t which may be an issue if size_t is larger than
+        // what uint64_t can hold
+        ct_idx = std::min(ck_end + max_block_size, (uint64_t)data.size());
     }
     return chunks;
 }

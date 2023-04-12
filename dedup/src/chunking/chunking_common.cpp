@@ -15,7 +15,7 @@
 #include <string>
 
 
-File_Chunk::File_Chunk(uint32_t _chunk_size) {
+File_Chunk::File_Chunk(uint64_t _chunk_size) {
     chunk_size = _chunk_size;
     chunk_data = std::make_unique<char[]>(_chunk_size);
 }
@@ -58,7 +58,9 @@ std::string File_Chunk::to_string() const {
 }
 
 void File_Chunk::print() const {
-    std::cout << "\tChunk Size: " <<  chunk_size << std::endl;
-    std::cout << "\tChunk Hash: " << chunk_hash->toString() << std::endl;
+    std::cout << "\tChunk Size: " << chunk_size << std::endl;
+    if (chunk_hash) {
+        std::cout << "\tChunk Hash: " << chunk_hash->toString() << std::endl;
+    }
     std::cout << "\tChunk Data: " << chunk_data << std::endl;
 }
