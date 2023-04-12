@@ -18,6 +18,7 @@ class AE_Chunking : public virtual Chunking_Technique {
     uint64_t window_size;
     uint64_t curr_pos;
     AE_Mode extreme_mode;
+    char* read_buffer;
 
     /**
      * @brief check if a file exits in the path
@@ -71,6 +72,8 @@ class AE_Chunking : public virtual Chunking_Technique {
      * @return: void
      */
     AE_Chunking(const Config& config);
+
+    ~AE_Chunking();
 
     /**
         @brief Divides a file into chunks using ae algorithm

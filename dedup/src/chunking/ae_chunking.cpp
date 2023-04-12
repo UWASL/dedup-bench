@@ -16,14 +16,20 @@ AE_Chunking::AE_Chunking() {
     avg_block_size = DEFAULT_AE_AVG_BLOCK_SIZE;
     extreme_mode = MAX;
     technique_name = "AE Chunking";
+    read_buffer = new char[BUFFER_SIZE];
 }
 
 AE_Chunking::AE_Chunking(const Config& config) {
     extreme_mode = config.get_ae_extreme_mode();
     avg_block_size = config.get_ae_avg_block_size();
     window_size = avg_block_size / (exp(1) - 1);  // avg_block size / e-1
+    read_buffer = new char[BUFFER_SIZE];
 
     technique_name = "AE Chunking";
+}
+
+AE_Chunking::~AE_Chunking() {
+    delete[] read_buffer;
 }
 
 bool AE_Chunking::is_extreme(uint64_t new_val, uint64_t current_extr) {
@@ -79,7 +85,6 @@ uint64_t AE_Chunking::get_file_size(std::ifstream& file) {
 
 std::vector<File_Chunk> AE_Chunking::chunk_file(std::string file_path) {
     std::vector<File_Chunk> file_chunks;
-    char* read_buffer = new char[BUFFER_SIZE];
     uint64_t read_buff_end = 0;
     std::ifstream file_ptr;
     if (read_file(file_path, file_ptr)) {
