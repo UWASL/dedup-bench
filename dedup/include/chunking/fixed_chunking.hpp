@@ -3,6 +3,7 @@
 
 #include "chunking_common.hpp"
 #include "config.hpp"
+#include <istream>
 
 #define DEFAULT_FIXED_CHUNK_SIZE 4096
 
@@ -17,7 +18,7 @@ class Fixed_Chunking: public virtual Chunking_Technique{
 
     public:
 
-        Fixed_Chunking(){
+        Fixed_Chunking() {
             /**
              * @brief Default constructor. Initializes fixed_chunk_size to DEFAULT_CHUNK_SIZE
              * @return: void
@@ -42,6 +43,7 @@ class Fixed_Chunking: public virtual Chunking_Technique{
 
         // Implementation of chunk_file from Chunking_Technique
         std::vector<File_Chunk> chunk_file(std::string file_path) override;
+        void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
 };
 
 #endif

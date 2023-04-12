@@ -118,3 +118,49 @@ std::vector<File_Chunk> Gear_Chunking::chunk_file(std::string file_path) {
 
     return file_chunks;
 }
+
+void Gear_Chunking::chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) {
+    return;
+
+    // std::vector<unsigned char> remain;
+    // std::vector<unsigned char> buffer(max_block_size);
+
+    // std::ifstream file_ptr(file_path, std::ios::binary);
+
+    // while (true) {
+    //     file_ptr.read((char*)buffer.data(), max_block_size);
+    //     uint64_t read_bytes = file_ptr.gcount();
+
+    //     if (read_bytes == 0) {
+    //         break;
+    //     }
+
+    //     // prepend remaining data from previous iteration before chopping.
+    //     buffer.insert(buffer.begin(), remain.begin(), remain.end());
+
+    //     // read data can be lower than actual buffer size.
+
+    //     uint64_t bf_end = read_bytes + remain.size();
+
+    //     std::vector<File_Chunk> chunks = chop(std::vector<unsigned char>(
+    //         buffer.begin(), buffer.begin() + bf_end));
+
+    //     File_Chunk last = chunks.back();
+    //     remain = std::vector<unsigned char>(last.get_data(),
+    //                                         last.get_data() + last.get_size());
+    //     chunks.pop_back();
+    //     for (uint32_t i = 0; i < chunks.size(); i++) {
+    //         file_chunks.push_back(chunks[i]);
+    //     }
+    //     buffer.resize(max_block_size);
+    // }
+
+    // if (remain.size() > 0) {
+    //     std::vector<File_Chunk> chunks = chop(remain);
+    //     for (uint32_t i = 0; i < chunks.size(); i++) {
+    //         file_chunks.push_back(chunks[i]);
+    //     }
+    // }
+
+    // return file_chunks;
+}

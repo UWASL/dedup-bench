@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <sstream>
+#include <istream>
 #include "hash.hpp"
 #include "config.hpp"
 
@@ -98,14 +100,33 @@ class Chunking_Technique{
 
     public:
         std::string technique_name;
-        virtual std::vector<File_Chunk> chunk_file(std::string file_path) = 0;
+
         /**
          * @brief Chunk a file using a chunking technique and return the struct File_Chunks from this operation
+         * 
          * @param file_path: String containing path to file
          * @return: Vector of struct File_Chunk
          */
+        virtual std::vector<File_Chunk> chunk_file(std::string file_path) = 0;
+
+        /**
+         * @brief Chunk a stream using a chunking technique and append the struct File_Chunks from this operation
+         * to the vector passed in
+         * 
+         * @param stream: input stream containing the data to be chunked
+         * @return: void
+         */
+        virtual void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) = 0;
 
         virtual ~Chunking_Technique() {};
+
+        /**
+         * @brief Read every file in the directory and subdirectories into a buffer for each file and return it
+         * 
+         * @param dir_path : String containing path to the directory. Must be a valid directory path
+         * @return std::vector<std::istringstream> 
+         */
+        static std::vector<std::istringstream> read_files_to_buffers(std::string dir_path);
 };
 
 #endif

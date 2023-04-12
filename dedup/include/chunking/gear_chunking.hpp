@@ -143,7 +143,8 @@ class Gear_Chunking : public virtual Chunking_Technique {
      * @param data Data stream to chunk.
      * @return A vector of File_Chuncks
      */
-    std::vector<File_Chunk> chunk_file(std::string file_path);
+    std::vector<File_Chunk> chunk_file(std::string file_path) override;
+    void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
 };
 
 #endif

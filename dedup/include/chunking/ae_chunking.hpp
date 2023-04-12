@@ -39,7 +39,7 @@ class AE_Chunking : public virtual Chunking_Technique {
      * @param file:  pointer to the file
      * @return size of the file
      */
-    uint64_t get_file_size(std::ifstream& file);
+    uint64_t get_file_size(std::istream& file);
 
     /**
      * @brief compares a new value with the current extreme and returns whether
@@ -84,6 +84,7 @@ class AE_Chunking : public virtual Chunking_Technique {
         @return: Vector containing fixed size chunks from file
     */
     std::vector<File_Chunk> chunk_file(std::string file_path) override;
+    void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
 };
 
 #endif
