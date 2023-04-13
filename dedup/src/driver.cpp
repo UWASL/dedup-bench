@@ -31,7 +31,7 @@
 
 
 static void driver_function(
-                            const std::filesystem::path& dir_path, Chunking_Technique *chunk_method,
+                            const std::filesystem::path& dir_path, std::unique_ptr<Chunking_Technique>& chunk_method,
                             std::unique_ptr<Hashing_Technique>& hash_method, const std::string& output_file) {
     /**
      * @brief Uses the specified chunking technique to chunk the file, hash it using the specified hashing technique 
@@ -85,7 +85,7 @@ static void driver_function(
 }
 
 static void driver_function_stream(
-                                   const std::filesystem::path& dir_path, Chunking_Technique *chunk_method,
+                                   const std::filesystem::path& dir_path, std::unique_ptr<Chunking_Technique>& chunk_method,
                                    std::unique_ptr<Hashing_Technique>& hash_method, const std::string& output_file) {
     /**
      * @brief Uses the specified chunking technique to chunk the file, hash it using the specified hashing technique 
@@ -176,22 +176,22 @@ int main(int argc, char * argv[]) {
          * @todo: Change this to use RAII instead to avoid possible memory leak
          * 
          */
-        Chunking_Technique *chunk_method = nullptr;
+        std::unique_ptr<Chunking_Technique> chunk_method;
         std::unique_ptr<Hashing_Technique> hash_method;
         
         // Set parameters for hashing technique and call relevant constructors
         switch (chunking_technique) {
             case ChunkingTech::FIXED:
-                chunk_method = (Chunking_Technique *)new Fixed_Chunking(config);
+                chunk_method = std::make_unique<Fixed_Chunking>(config);
                 break;
             case ChunkingTech::RABINS:
-                chunk_method = (Chunking_Technique *)new Rabins_Chunking(config);
+                chunk_method = std::make_unique<Rabins_Chunking>(config);
                 break;
             case ChunkingTech::AE:
-                chunk_method = (Chunking_Technique *)new AE_Chunking(config);
+                chunk_method = std::make_unique<AE_Chunking>(config);
                 break;
             case ChunkingTech::GEAR:
-                chunk_method = (Chunking_Technique *)new Gear_Chunking(config);
+                chunk_method = std::make_unique<Gear_Chunking>(config);
                 break;
             default:
                 std::cerr << "Unimplemented chunking technique" << std::endl;
@@ -216,9 +216,6 @@ int main(int argc, char * argv[]) {
         // Call driver function
         // driver_function(dir_path, chunk_method, hash_method, output_file);
         driver_function_stream(dir_path, chunk_method, hash_method, output_file);
-
-        // Cleanup pointers
-        delete chunk_method;
     } catch (const ConfigError& e) {
         std::cerr << e.what() << std::endl;
         exit(EXIT_FAILURE);
