@@ -18,6 +18,7 @@ class AE_Chunking : public virtual Chunking_Technique {
     uint64_t window_size;
     uint64_t curr_pos;
     AE_Mode extreme_mode;
+    char* read_buffer;
 
     /**
      * @brief check if a file exits in the path
@@ -38,7 +39,7 @@ class AE_Chunking : public virtual Chunking_Technique {
      * @param file:  pointer to the file
      * @return size of the file
      */
-    uint64_t get_file_size(std::ifstream& file);
+    uint64_t get_file_size(std::istream& file);
 
     /**
      * @brief compares a new value with the current extreme and returns whether
@@ -72,6 +73,8 @@ class AE_Chunking : public virtual Chunking_Technique {
      */
     AE_Chunking(const Config& config);
 
+    ~AE_Chunking();
+
     /**
         @brief Divides a file into chunks using ae algorithm
        these chunks
@@ -81,6 +84,7 @@ class AE_Chunking : public virtual Chunking_Technique {
         @return: Vector containing fixed size chunks from file
     */
     std::vector<File_Chunk> chunk_file(std::string file_path) override;
+    void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
 };
 
 #endif

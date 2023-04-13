@@ -33,7 +33,7 @@ uint64_t Fixed_Chunking:: get_fixed_chunk_size(){
     return Fixed_Chunking::fixed_chunk_size;
 }
 
-std::vector<File_Chunk> Fixed_Chunking::chunk_file(std::string file_path){
+std::vector<File_Chunk> Fixed_Chunking::chunk_file(std::string file_path) {
     /**
         @brief Divides a file into fixed size chunks and returns a vector with these chunks
         @param file_path: Path to input file
@@ -77,4 +77,36 @@ std::vector<File_Chunk> Fixed_Chunking::chunk_file(std::string file_path){
     }
 
     return file_chunks;
+}
+
+void Fixed_Chunking::chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) {
+    // Get chunk size from object
+    uint64_t chunk_size = get_fixed_chunk_size();
+
+    // Get size of file
+    stream.seekg(0,std::ios_base::end);
+    uint64_t file_size_bytes = stream.tellg();
+
+    // Seek back to beginning and set up bytes_to_read
+    stream.seekg(0,std::ios_base::beg);
+    uint32_t bytes_to_read = std::min(chunk_size, file_size_bytes);
+    
+
+    uint32_t curr_bytes_read = 0;
+    while(curr_bytes_read < file_size_bytes){
+        // Create buffer to store chunks
+        File_Chunk new_chunk{bytes_to_read};
+        
+        stream.read(new_chunk.get_data(), bytes_to_read);
+        
+        // Create new chunk and push it into vector
+        result.push_back(new_chunk);
+
+        curr_bytes_read += bytes_to_read;
+
+        // Handles the last chunk being smaller than @param chunk_size
+        bytes_to_read = std::min(chunk_size, file_size_bytes - curr_bytes_read);
+    }
+
+    return;
 }

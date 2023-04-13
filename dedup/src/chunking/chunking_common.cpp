@@ -13,9 +13,11 @@
 #include <cstring>
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <filesystem>
 
 
-File_Chunk::File_Chunk(uint32_t _chunk_size) {
+File_Chunk::File_Chunk(uint64_t _chunk_size) {
     chunk_size = _chunk_size;
     chunk_data = std::make_unique<char[]>(_chunk_size);
 }
@@ -58,7 +60,43 @@ std::string File_Chunk::to_string() const {
 }
 
 void File_Chunk::print() const {
-    std::cout << "\tChunk Size: " <<  chunk_size << std::endl;
-    std::cout << "\tChunk Hash: " << chunk_hash->toString() << std::endl;
-    std::cout << "\tChunk Data: " << chunk_data << std::endl;
+    std::cout << "\tChunk Size: " << chunk_size << std::endl;
+    if (chunk_hash) {
+        std::cout << "\tChunk Hash: " << chunk_hash->toString() << std::endl;
+    }
+    std::cout << "\tChunk Data: ";
+    for (uint64_t i = 0; i < chunk_size; ++i) {
+        // this only works if the data is ASCII
+        std::cout << chunk_data[i];
+    }
+    std::cout << std::endl;
+}
+
+// ========== Chunking_Techniques =============
+std::vector<std::istringstream> Chunking_Technique::read_files_to_buffers(std::string dir_path) {
+    std::vector<std::istringstream> buffers;
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(dir_path)) {
+        std::filesystem::path file_path = entry.path();
+        if (std::filesystem::is_directory(file_path)) {
+            continue;
+        }
+
+        std::ifstream file_ptr;
+        file_ptr.open(file_path, std::ios::in);
+        // get length of file:
+        file_ptr.seekg (0, std::ios::end);
+        long length = file_ptr.tellg();
+        file_ptr.seekg (0, std::ios::beg);
+        // allocate memory:
+        char *buffer = new char[length + 1];
+        // read data from file into the buffer
+        file_ptr.read(buffer, length);
+        buffer[length] = '\0';
+        // create string stream from the buffer (string will create a copy of the buffer)
+        buffers.emplace_back(std::string{buffer});
+        // cleanup
+        delete[] buffer;
+        file_ptr.close();
+    }
+    return buffers;
 }

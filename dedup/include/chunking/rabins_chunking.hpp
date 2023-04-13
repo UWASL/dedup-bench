@@ -89,7 +89,8 @@ class Rabins_Chunking : public virtual Chunking_Technique {
      * @param file_path the path of the file to be chunked
      * @return A vector of chunks
      */
-    std::vector<File_Chunk> chunk_file(std::string file_path);
+    std::vector<File_Chunk> chunk_file(std::string file_path) override;
+    void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
 };
 
 #endif

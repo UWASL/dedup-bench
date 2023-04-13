@@ -180,3 +180,31 @@ std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
 
     return file_chunks;
 }
+
+void Rabins_Chunking::chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) {
+    return;
+
+    // FILE *stream = fopen(file_path.c_str(), "rb");
+    // if (!stream) {
+    //     error = errno;
+    // }
+    // // prepare the stream for the new file
+    // reset_stream();
+    // // reset the hash function
+    // r_hash->init(window_size);
+
+    // while (true) {
+    //     int rc = rp_block_next();
+    //     if (rc == 0) {
+    //         File_Chunk new_chunk(block_size);
+    //         memccpy(new_chunk.get_data(), block_addr, 0, block_size);
+    //         file_chunks.push_back(new_chunk);
+    //     }
+    //     if (rc) {
+    //         assert(rc == EOF);
+    //         break;
+    //     }
+    // }
+
+    // return file_chunks;
+}
