@@ -114,33 +114,39 @@ static void driver_function_stream(
     }
 
     std::cout << "Begin reading files into memory..." << std::endl;
-    std::vector<std::istringstream> buffers = Chunking_Technique::read_files_to_buffers(dir_path);
-    std::cout << "Done!" << std::endl;
+    std::vector<std::unique_ptr<std::istream>> buffers = Chunking_Technique::read_files_to_buffers(dir_path);
+    std::cout << "Done! read " << buffers.size() << " files in total" << std::endl;
+
+    std::cout << "Begin Chunking..." << std::endl;
     // Start timer
     auto begin = std::chrono::high_resolution_clock::now();
-    for (std::istringstream& iss : buffers) {
+    for (const std::unique_ptr<std::istream>& is_ptr : buffers) {
         // Note that chunk_stream takes in a stream reference so the stream may become invalid to use afterward
-        chunk_method->chunk_stream(file_chunks, iss);
+        chunk_method->chunk_stream(file_chunks, *is_ptr);
     }
     // End timer
     auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - begin);
+    std::chrono::duration<double, std::milli> ms_double = end - begin;
+    std::cout << "Done!" << std::endl;
 
     // Hash chunks using specified Hashing_Technique
+    std::cout << "Begin Hashing..." << std::endl;
     hash_method->hash_chunks(file_chunks);
+    std::cout << "Done!" << std::endl;
+
     // Write the hashes to the output file
     uint64_t total_bytes = 0;
     for (const File_Chunk& fc : file_chunks){
         total_bytes += fc.get_size();
         out_file << fc.to_string() << std::endl;
-        //fc.print();
+        // fc.print();
     }
     out_file.close();
 
     // Print stats
     std::cout << "Total number of chunks: " << file_chunks.size() << std::endl;
     std::cout << "Total bytes chunked: " << total_bytes << std::endl;
-    std::cout << "Chunking Throughput (MB/sec): " << (double)total_bytes / 1000000 / time_span.count() << std::endl;
+    std::cout << "Chunking Throughput (MB/sec): " << total_bytes / 1000 / ms_double.count() << std::endl;
 }
 
 

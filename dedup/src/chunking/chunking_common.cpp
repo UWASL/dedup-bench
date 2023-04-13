@@ -15,6 +15,7 @@
 #include <string>
 #include <fstream>
 #include <filesystem>
+#include <cmath>
 
 
 File_Chunk::File_Chunk(uint64_t _chunk_size) {
@@ -78,8 +79,12 @@ void File_Chunk::print() const {
 }
 
 // ========== Chunking_Techniques =============
-std::vector<std::istringstream> Chunking_Technique::read_files_to_buffers(std::string dir_path) {
-    std::vector<std::istringstream> buffers;
+std::vector<std::unique_ptr<std::istream>> Chunking_Technique::read_files_to_buffers(std::string dir_path) {
+    std::vector<std::unique_ptr<std::istream>> buffers;
+    // buffer of size 1MiB
+    const uint64_t buffer_size = pow(2, 20);
+    auto buffer = std::make_unique<char[]>(buffer_size);
+
     for (const auto& entry : std::filesystem::recursive_directory_iterator(dir_path)) {
         std::filesystem::path file_path = entry.path();
         if (std::filesystem::is_directory(file_path)) {
@@ -87,20 +92,25 @@ std::vector<std::istringstream> Chunking_Technique::read_files_to_buffers(std::s
         }
 
         std::ifstream file_ptr;
-        file_ptr.open(file_path, std::ios::in);
+        file_ptr.open(file_path, std::ios::in | std::ios::binary);
         // get length of file:
-        file_ptr.seekg (0, std::ios::end);
-        long length = file_ptr.tellg();
-        file_ptr.seekg (0, std::ios::beg);
-        // allocate memory:
-        char *buffer = new char[length + 1];
-        // read data from file into the buffer
-        file_ptr.read(buffer, length);
-        buffer[length] = '\0';
-        // create string stream from the buffer (string will create a copy of the buffer)
-        buffers.emplace_back(std::string{buffer});
+        file_ptr.seekg(0, std::ios::end);
+        uint64_t length = file_ptr.tellg();
+        file_ptr.seekg(0, std::ios::beg);
+        auto ss = std::make_unique<std::stringstream>();
+
+        uint64_t curr_bytes_read = 0;
+        uint64_t bytes_to_read = std::min(buffer_size, length);
+        while(curr_bytes_read < length) {
+            // read data from file into the buffer
+            file_ptr.read(buffer.get(), bytes_to_read);
+            ss->write(buffer.get(), bytes_to_read);
+            curr_bytes_read += bytes_to_read;
+            bytes_to_read = std::min(buffer_size, length - curr_bytes_read);
+        }
+        buffers.emplace_back(std::move(ss));
+
         // cleanup
-        delete[] buffer;
         file_ptr.close();
     }
     return buffers;
