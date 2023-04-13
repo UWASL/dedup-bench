@@ -24,13 +24,18 @@ File_Chunk::File_Chunk(uint64_t _chunk_size) {
 
 File_Chunk::File_Chunk(const File_Chunk& other): File_Chunk(other.chunk_size) {
     memcpy(this->chunk_data.get(), other.chunk_data.get(), this->chunk_size);
+    if (other.chunk_hash) {
+        this->chunk_hash = std::make_unique<Hash>(*other.chunk_hash);
+    }
 }
 
 File_Chunk::File_Chunk(File_Chunk&& other) noexcept {
     this->chunk_size = other.chunk_size;
     this->chunk_data = std::move(other.chunk_data);
-    // release ownership of the chunk data
+    this->chunk_hash = std::move(other.chunk_hash);
+    // release ownership of the data in the other object
     other.chunk_data.release();
+    other.chunk_hash.release();
 }
 
 uint64_t File_Chunk::get_size() const {
