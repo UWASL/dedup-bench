@@ -97,7 +97,7 @@ std::vector<File_Chunk> AE_Chunking::chunk_file(std::string file_path) {
             // mark the end of logical buffer
             read_buff_end += file_ptr.gcount() - 1;
             // find cutpoint
-            uint32_t cutpoint = find_cutpoint(read_buffer, read_buff_end);
+            uint32_t cutpoint = find_cutpoint(read_buffer, read_buff_end+1);
             // create new chunk and push it to the vector
             uint32_t chunk_size = cutpoint + 1;
             File_Chunk new_chunk{chunk_size};
