@@ -57,7 +57,7 @@ class Rabins_Chunking : public virtual Chunking_Technique {
 
     int error;
 
-    unsigned char *inbuf;    // input buffer
+    unsigned char *inbuf = nullptr;    // input buffer
     size_t inbuf_size;       // size of input buffer
     size_t inbuf_data_size;  // size of valid data in input buffer
 
@@ -81,6 +81,12 @@ class Rabins_Chunking : public virtual Chunking_Technique {
      * @return: void
      */
     Rabins_Chunking(const Config &config);
+
+    /**
+     * @brief Destructor to free the internal buffer
+     * @return: void
+     */
+    ~Rabins_Chunking();
 
     /**
      * @brief chunk a file using rabins algorithms
