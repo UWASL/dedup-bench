@@ -97,7 +97,7 @@ uint64_t Config::get_ae_avg_block_size() const {
         return std::stoull(value);
     } catch (const std::out_of_range&) {}
     catch (const std::invalid_argument&) {}
-    throw ConfigError("The configuration file does not specify a valid ae avarage block size");
+    throw ConfigError("The configuration file does not specify a valid AE avarage block size");
 }
 
 AE_Mode Config::get_ae_extreme_mode() const {
@@ -119,7 +119,7 @@ uint64_t Config::get_gear_min_block_size() const {
         return std::stoull(value);
     } catch (const std::out_of_range&) {}
     catch (const std::invalid_argument&) {}
-    throw ConfigError("The configuration file does not specify a valid ae minimum block size for gear hash");
+    throw ConfigError("The configuration file does not specify a valid gear minimum block size for gear hash");
 }
 
 uint64_t Config::get_gear_max_block_size() const {
@@ -128,5 +128,14 @@ uint64_t Config::get_gear_max_block_size() const {
         return std::stoull(value);
     } catch (const std::out_of_range&) {}
     catch (const std::invalid_argument&) {}
-    throw ConfigError("The configuration file does not specify a valid ae maximum block size for gear hash");
+    throw ConfigError("The configuration file does not specify a valid gear maximum block size for gear hash");
+}
+
+uint64_t Config::get_gear_avg_block_size() const {
+    try {
+        std::string value = parser.get_property(GEAR_AVG_BLOCK_SIZE);
+        return std::stoull(value);
+    } catch (const std::out_of_range&) {}
+    catch (const std::invalid_argument&) {}
+    throw ConfigError("The configuration file does not specify a valid gear maximum block size for gear hash");
 }

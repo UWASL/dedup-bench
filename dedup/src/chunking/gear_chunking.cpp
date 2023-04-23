@@ -11,6 +11,7 @@
 
 #include "gear_chunking.hpp"
 
+#include <cmath>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -18,6 +19,18 @@
 Gear_Chunking::Gear_Chunking(const Config& config) {
     min_block_size = config.get_gear_min_block_size();
     max_block_size = config.get_gear_max_block_size();
+    avg_block_size = config.get_gear_avg_block_size();
+
+    int number_of_ones = log2(avg_block_size);
+
+    mask = 0x0000000000000000;
+    for (int i = 0; i < 64; i++) {
+        if(number_of_ones-- >= 0){
+            mask +=1;
+        }
+        mask = mask << 1;
+    }
+    std::cout << mask;
 }
 
 uint64_t Gear_Chunking::ghash(uint64_t h, unsigned char ch) {
@@ -27,9 +40,6 @@ uint64_t Gear_Chunking::ghash(uint64_t h, unsigned char ch) {
 uint64_t Gear_Chunking::cut(const std::vector<unsigned char>& data) {
     uint64_t hash = 0;
     uint64_t idx = min_block_size;
-
-    // avarage size 8kb
-    uint64_t mask = 0x0000d90303530000;
 
     // If given data is lower than the minimum chunk size, return data length.
     if (data.size() <= min_block_size) {
@@ -66,8 +76,8 @@ std::vector<File_Chunk> Gear_Chunking::chop(
         chunks.push_back(new_chunk);
 
         ck_start = ck_end;
-        // casting size_t to uint64_t which may be an issue if size_t is larger than
-        // what uint64_t can hold
+        // casting size_t to uint64_t which may be an issue if size_t is larger
+        // than what uint64_t can hold
         ct_idx = std::min(ck_end + max_block_size, (uint64_t)data.size());
     }
     return chunks;
@@ -116,10 +126,15 @@ std::vector<File_Chunk> Gear_Chunking::chunk_file(std::string file_path) {
         }
     }
 
+    for(File_Chunk c : file_chunks){
+        c.print();
+    }
+
     return file_chunks;
 }
 
-void Gear_Chunking::chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) {
+void Gear_Chunking::chunk_stream(std::vector<File_Chunk>& result,
+                                 std::istream& stream) {
     return;
 
     // std::vector<unsigned char> remain;
@@ -147,7 +162,8 @@ void Gear_Chunking::chunk_stream(std::vector<File_Chunk>& result, std::istream& 
 
     //     File_Chunk last = chunks.back();
     //     remain = std::vector<unsigned char>(last.get_data(),
-    //                                         last.get_data() + last.get_size());
+    //                                         last.get_data() +
+    //                                         last.get_size());
     //     chunks.pop_back();
     //     for (uint32_t i = 0; i < chunks.size(); i++) {
     //         file_chunks.push_back(chunks[i]);

@@ -13,6 +13,10 @@ class Gear_Chunking : public virtual Chunking_Technique {
    private:
     uint64_t min_block_size;
     uint64_t max_block_size;
+    uint64_t avg_block_size;
+    uint64_t mask;
+
+
 
     const uint64_t GEAR_TABLE[256] = {
         0xd1a16514dc206650, 0x4ddab180952e6a74, 0x7ed1d26a9f4a2d9b,
