@@ -155,7 +155,7 @@ int Rabins_Chunking::rp_block_next() {
 
 std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
 
-    FILE *stream = fopen(file_path.c_str(), "rb");
+    stream = fopen(file_path.c_str(), "rb");
     if (!stream) {
         error = errno;
     }
@@ -177,7 +177,9 @@ std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
             break;
         }
     }
-
+    for (File_Chunk ch : file_chunks){
+        ch.print();
+    }
     return file_chunks;
 }
 
