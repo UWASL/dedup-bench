@@ -36,7 +36,7 @@ uint64_t Gear_Chunking::cut(const std::vector<unsigned char>& data) {
         return data.size();
     }
 
-    while (idx < data.size()) {
+    while (idx < data.size() && idx < max_block_size) {
         hash = ghash(hash, data[idx]);
         if (!(hash & mask)) {
             return idx;
