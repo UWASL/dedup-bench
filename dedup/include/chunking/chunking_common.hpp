@@ -126,7 +126,7 @@ class Chunking_Technique{
          * @param dir_path : String containing path to the directory. Must be a valid directory path
          * @return std::vector<std::istringstream> 
          */
-        static std::vector<std::istringstream> read_files_to_buffers(std::string dir_path);
+        static std::vector<std::unique_ptr<std::istream>> read_files_to_buffers(std::string dir_path);
 };
 
 #endif
