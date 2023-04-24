@@ -23,10 +23,13 @@ Gear_Chunking::Gear_Chunking(const Config& config) {
 
     int number_of_ones = log2(avg_block_size);
 
+    // to produce chunks that are 8KB. Using the
+    // formula log2(8192) = 13, we can use a mask with the 13 most-significant
+    // bits set to 1
     mask = 0x0000000000000000;
     for (int i = 0; i < 64; i++) {
-        if(number_of_ones-- >= 0){
-            mask +=1;
+        if (number_of_ones-- >= 0) {
+            mask += 1;
         }
         mask = mask << 1;
     }
@@ -126,7 +129,7 @@ std::vector<File_Chunk> Gear_Chunking::chunk_file(std::string file_path) {
         }
     }
 
-    for(File_Chunk c : file_chunks){
+    for (File_Chunk c : file_chunks) {
         c.print();
     }
 
