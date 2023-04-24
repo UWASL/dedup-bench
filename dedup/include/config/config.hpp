@@ -14,6 +14,7 @@
 #define AE_EXTREME_MODE "ae_extreme_mode"
 #define GEAR_MIN_BLOCK_SIZE "gear_min_block_size"
 #define GEAR_MAX_BLOCK_SIZE "gear_max_block_size"
+#define GEAR_AVG_BLOCK_SIZE "gear_avg_block_size"
 
 // define the possible chunking algorithms
 enum class ChunkingTech { FILE, FIXED, RABINS, AE, GEAR};
@@ -111,15 +112,23 @@ class Config {
          * @brief Get the desired minimum size of the block when using Gear chunking
          * throws ConfigError if the key does not exist or if the value is invalid
          * 
-         * @return AE desired avg block size   
+         * @return gear desired avg block size   
          */
         uint64_t get_gear_min_block_size() const;
+
+        /**
+         * @brief Get the desired avarqage size of the block when using Gear chunking
+         * throws ConfigError if the key does not exist or if the value is invalid
+         * 
+         * @return gear desired avg block size   
+         */
+        uint64_t get_gear_avg_block_size() const; 
 
         /**
          * @brief Get the desired maximum size of the block when using Gear chunking
          * throws ConfigError if the key does not exist or if the value is invalid
          * 
-         * @return AE desired avg block size   
+         * @return gear desired avg block size   
          */
         uint64_t get_gear_max_block_size() const;
 };
