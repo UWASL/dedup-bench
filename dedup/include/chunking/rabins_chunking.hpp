@@ -1,12 +1,13 @@
 #ifndef _RABINS_CHUNKING_
 #define _RABINS_CHUNKING_
 
+#include <cstring>
+#include <fstream>
+
+
 #include "chunking_common.hpp"
 #include "config.hpp"
 #include "rabins_hashing.hpp"
-
-#include <cstring>
-
 
 #define DEFAULT_RABINC_WINDOW_SIZE 32
 #define DEFAULT_RABINC_MIN_BLOCK_SIZE 1024
@@ -64,14 +65,11 @@ class Rabins_Chunking : public virtual Chunking_Technique {
     unsigned char *block_addr;  // starting address of current block
     size_t block_size;          // size of the current block
 
-    FILE *stream;
+    std::ifstream stream;
 
     Rabins_Hashing *r_hash;
 
-
-
    public:
-
     /**
      * @brief Default constructor. defines all parameters to defualt values
      * @return: void
@@ -90,7 +88,8 @@ class Rabins_Chunking : public virtual Chunking_Technique {
      * @return A vector of chunks
      */
     std::vector<File_Chunk> chunk_file(std::string file_path) override;
-    void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
+    void chunk_stream(std::vector<File_Chunk> &result,
+                      std::istream &stream) override;
 };
 
 #endif

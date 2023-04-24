@@ -11,12 +11,11 @@
 #include "rabins_chunking.hpp"
 
 #include <errno.h>
-#include <fstream>
-#include <cassert>
 
-Rabins_Chunking::Rabins_Chunking() {
-    init();
-}
+#include <cassert>
+#include <fstream>
+
+Rabins_Chunking::Rabins_Chunking() { init(); }
 
 Rabins_Chunking::Rabins_Chunking(const Config &config) {
     init();
@@ -28,11 +27,12 @@ Rabins_Chunking::Rabins_Chunking(const Config &config) {
 }
 
 void Rabins_Chunking::reset_stream() {
+    error = 0;
     inbuf_data_size = 0;
     block_size = 0;
     block_streampos = 0;
     block_addr = inbuf;
-    bzero((char *)inbuf, inbuf_size * sizeof(unsigned char));
+    bzero((unsigned char *)inbuf, inbuf_size * sizeof(unsigned char));
 }
 
 void Rabins_Chunking::init() {
@@ -40,22 +40,19 @@ void Rabins_Chunking::init() {
     avg_block_size = DEFAULT_RABINC_AVG_BLOCK_SIZE;
     max_block_size = DEFAULT_RABINC_MAX_BLOCK_SIZE;
 
-    inbuf_size = max_block_size * 10;
+    inbuf_size = DEFAULT_RABINC_MAX_BLOCK_SIZE * 10;
     fingerprint_mask = (1 << (fls32(avg_block_size) - 1)) - 1;
-    inbuf = (unsigned char *)malloc(inbuf_size * sizeof(unsigned char));
+    inbuf = new unsigned char [inbuf_size];
     r_hash = new Rabins_Hashing();
     technique_name = "Rabins Chunking";
 }
 
 size_t Rabins_Chunking::rp_stream_read(unsigned char *dst, size_t size) {
-    size_t count = fread(dst, 1, size, stream);
+    stream.read((char*)dst, size);
+    size_t count = stream.gcount();
     error = 0;
     if (count == 0) {
-        if (ferror(stream)) {
-            error = errno;
-        } else if (feof(stream)) {
-            error = EOF;
-        }
+        error = EOF;
     }
     return count;
 }
@@ -154,11 +151,8 @@ int Rabins_Chunking::rp_block_next() {
 }
 
 std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
+    stream.open(file_path, std::ios::binary);
 
-    stream = fopen(file_path.c_str(), "rb");
-    if (!stream) {
-        error = errno;
-    }
     // prepare the stream for the new file
     reset_stream();
     // reset the hash function
@@ -177,13 +171,15 @@ std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
             break;
         }
     }
-    for (File_Chunk ch : file_chunks){
+    stream.close();
+    for (File_Chunk ch : file_chunks) {
         ch.print();
     }
     return file_chunks;
 }
 
-void Rabins_Chunking::chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) {
+void Rabins_Chunking::chunk_stream(std::vector<File_Chunk> &result,
+                                   std::istream &stream) {
     return;
 
     // FILE *stream = fopen(file_path.c_str(), "rb");
