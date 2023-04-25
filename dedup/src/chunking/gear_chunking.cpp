@@ -89,7 +89,8 @@ std::vector<File_Chunk> Gear_Chunking::chop(const char* data, size_t size) {
 std::vector<File_Chunk> Gear_Chunking::chunk_file(std::string file_path) {
     std::vector<File_Chunk> file_chunks;
 
-    const uint64_t BUFFER_SIZE = 2 * max_block_size;
+    // buffer size will be max of 2 * max_block_size and 8 Mebibytes
+    const uint64_t BUFFER_SIZE = std::max((double)2 * max_block_size, 8 * pow(2, 20));
     std::unique_ptr<char[]> buffer = std::make_unique<char[]>(BUFFER_SIZE);
     char* const ptr = buffer.get();
     size_t prev_num_bytes_chunked = 0;
@@ -134,7 +135,8 @@ std::vector<File_Chunk> Gear_Chunking::chunk_file(std::string file_path) {
 
 void Gear_Chunking::chunk_stream(std::vector<File_Chunk>& result,
                                  std::istream& stream) {
-    const uint64_t BUFFER_SIZE = 2 * max_block_size;
+    // buffer size will be max of 2 * max_block_size and 8 Mebibytes
+    const uint64_t BUFFER_SIZE = std::max((double)2 * max_block_size, 8 * pow(2, 20));
     std::unique_ptr<char[]> buffer = std::make_unique<char[]>(BUFFER_SIZE);
     char* const ptr = buffer.get();
     size_t prev_num_bytes_chunked = 0;
