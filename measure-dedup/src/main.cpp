@@ -41,6 +41,6 @@ int main(int argc, char * argv[]){
     std::cout << "Total bytes without dedup: " << non_dedup_bytes << std::endl;
     std::cout << "Total bytes with dedup: " << actual_bytes << std::endl;
     std::cout.precision(4);
-    std::cout << std::setw(7) << "Dedup ratio: " << (double)(non_dedup_bytes - actual_bytes) * 100 / (double)non_dedup_bytes << "%" << std::endl;
+    std::cout << std::setw(7) << "Dedup ratio: " <<  (double)non_dedup_bytes / (double)actual_bytes << std::endl;
     exit(EXIT_SUCCESS);
 }

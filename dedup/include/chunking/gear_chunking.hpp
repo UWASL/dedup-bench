@@ -120,14 +120,14 @@ class Gear_Chunking : public virtual Chunking_Technique {
      * @param data data stream to to look for the cut point in.
      * @return Index value at which data must be cut.
      */
-    uint64_t cut(const std::vector<unsigned char>& data);
+    uint64_t cut(const char* data, size_t size);
 
     /**
      * @brief Split given data stream into chunks.
      * @param data data stream to be divided.
      * @return a vector of File_Chunk containing all the resulting chunks from the data stream.
      */
-    std::vector<File_Chunk> chop(const std::vector<unsigned char>& data);
+    std::vector<File_Chunk> chop(const char* data, size_t size );
 
    public:
     /**
