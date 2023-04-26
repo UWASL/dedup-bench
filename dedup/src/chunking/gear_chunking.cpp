@@ -76,7 +76,7 @@ std::vector<File_Chunk> Gear_Chunking::chop(const char* data, size_t size) {
 
         memcpy(new_chunk.get_data(), data + ck_start, ck_end - ck_start);
 
-        chunks.push_back(new_chunk);
+        chunks.emplace_back(std::move(new_chunk));
 
         ck_start = ck_end;
         // casting size_t to uint64_t which may be an issue if size_t is larger
