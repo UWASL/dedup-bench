@@ -1,9 +1,11 @@
 #ifndef _RABINS_CHUNKING_
 #define _RABINS_CHUNKING_
 
+#include <errno.h>
+#include <stdint.h>
+
 #include <cstring>
 #include <fstream>
-
 
 #include "chunking_common.hpp"
 #include "config.hpp"
@@ -13,6 +15,10 @@
 #define DEFAULT_RABINC_MIN_BLOCK_SIZE 1024
 #define DEFAULT_RABINC_AVG_BLOCK_SIZE 8192
 #define DEFAULT_RABINC_MAX_BLOCK_SIZE 65536
+
+#define POLYNOMIAL 0x3DA3358B4DC173LL
+#define POLYNOMIAL_DEGREE 53
+#define POL_SHIFT (POLYNOMIAL_DEGREE - 8)
 
 class Rabins_Chunking : public virtual Chunking_Technique {
     /**
@@ -24,50 +30,76 @@ class Rabins_Chunking : public virtual Chunking_Technique {
     uint64_t avg_block_size;
     uint64_t max_block_size;
     uint64_t min_block_size;
-    uint64_t window_size;
-
     uint64_t fingerprint_mask;
 
-    /**
-     * @brief initilize the needed varibles for chunking
-     */
-    void init();
+    uint8_t *window;
+    unsigned int wpos;
+    unsigned int count;
+    unsigned int pos;
+    unsigned int start;
+    uint64_t digest;
+    uint64_t window_size;
+
+    bool tables_initialized;
+    uint64_t mod_table[256];
+    uint64_t out_table[256];
+
 
     /**
-     * @brief resets the current stream
+     * @brief initialize rabin chunking algorithm
      */
-    void reset_stream();
+    void rabin_init(void);
 
     /**
-     * @brief reads data from a stream and sotre it in dst param
-     * @param dst pointer to array of char where the data will be stored
-     * @param size the size of data to read
-
-     * @return the number of bytes that has been read
-     *
+     * @brief reset all internal buffers and counters
      */
-    size_t rp_stream_read(unsigned char *dst, size_t size);
+    void rabin_reset();
 
     /**
-     * @brief searches for the next cut point
-     * @return 0 if a cut point has been found. a positive value if error has
-     * occured or eof has been reached (based on error flag)
+     * @brief insert new byte b to the window
      */
-    int rp_block_next();
+    void rabin_slide(uint8_t b);
 
-    int error;
+    /**
+     * @brief adds a new byte to hash
+     */
+    void rabin_append(uint8_t b);
 
-    unsigned char *inbuf = nullptr;    // input buffer
-    size_t inbuf_size;       // size of input buffer
-    size_t inbuf_data_size;  // size of valid data in input buffer
+    /**
+     * @brief finds the next chunk boundary
+     * @return: the index after the chunk boundry relative to the buffer
+     */
+    int rabin_next_chunk(char *buf, unsigned int len);
 
-    size_t block_streampos;     // block start position in input stream
-    unsigned char *block_addr;  // starting address of current block
-    size_t block_size;          // size of the current block
+    /**
+     * @brief reset the buffer and empty last chunk if any
+     * @return: last chunk or null if the buffer is empty
+     */
+    struct chunk_t *rabin_finalize();
 
-    std::ifstream stream;
+    /**
+     * @brief calculates the mod of x to p
+     * @return: mod of x to p
+     */
+    uint64_t mod(uint64_t x, uint64_t p);
 
-    Rabins_Hashing *r_hash;
+    /**
+     * @brief calculates the degree of the polynomyal p
+     * @return: the degree of the polynomyal
+     */
+    int deg(uint64_t p);
+
+    /**
+     * @brief appends byte b to the hash using polynomyal pol
+     * @return: the new hash
+     */
+    uint64_t append_byte(uint64_t hash, uint8_t b, uint64_t pol);
+
+    /**
+     * @brief initlize mod tables 
+     * @return: void
+     */
+    void calc_tables(void);
 
    public:
     /**
