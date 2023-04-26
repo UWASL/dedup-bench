@@ -210,10 +210,8 @@ std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
     // large buffer to increase dedup ratio as last chunk will be incomplete 
     char *buf = new char[40*1024 * 1024];
     size_t bytes;
-    FILE *fptr;
     std::ifstream file_ptr(file_path, std::ios::binary);
 
-    // fptr = fopen(file_path.c_str(), "rb");
     char *ptr;
     while (true) {
         file_ptr.read(buf, sizeof(buf));
@@ -251,29 +249,43 @@ std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
 
 void Rabins_Chunking::chunk_stream(std::vector<File_Chunk> &result,
                                    std::istream &stream) {
+    // 40 MiB buffer
+    rabin_init();
+    // large buffer to increase dedup ratio as last chunk will be incomplete 
+    char *buf = new char[40*1024 * 1024];
+    size_t bytes;
+
+    char *ptr;
+    while (true) {
+        stream.read(buf, sizeof(buf));
+        size_t len = stream.gcount();
+        if (len == 0) {
+            break;
+        }
+        ptr = &buf[0];
+
+        bytes += len;
+
+        while (1) {
+            int remaining = rabin_next_chunk(ptr, len);
+
+            // ch.print();
+            if (remaining < 0) {
+                break;
+            }
+            File_Chunk ch{last_chunk.length};
+            memcpy(ch.get_data(), ptr, last_chunk.length);
+            result.push_back(ch);
+            len -= remaining;
+            ptr += remaining;
+        }
+    }
+
+    if (rabin_finalize() != NULL) {
+        File_Chunk ch{last_chunk.length};
+        memcpy(ch.get_data(), ptr, last_chunk.length);
+        result.push_back(ch);
+    }
+    delete [] buf;
     return;
-
-    // FILE *stream = fopen(file_path.c_str(), "rb");
-    // if (!stream) {
-    //     error = errno;
-    // }
-    // // prepare the stream for the new file
-    // reset_stream();
-    // // reset the hash function
-    // r_hash->init(window_size);
-
-    // while (true) {
-    //     int rc = rp_block_next();
-    //     if (rc == 0) {
-    //         File_Chunk new_chunk(block_size);
-    //         memccpy(new_chunk.get_data(), block_addr, 0, block_size);
-    //         file_chunks.push_back(new_chunk);
-    //     }
-    //     if (rc) {
-    //         assert(rc == EOF);
-    //         break;
-    //     }
-    // }
-
-    // return file_chunks;
 }
