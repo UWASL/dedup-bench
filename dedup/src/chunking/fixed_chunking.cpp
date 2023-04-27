@@ -69,7 +69,7 @@ std::vector<File_Chunk> Fixed_Chunking::chunk_file(std::string file_path) {
         file_ptr.read(new_chunk.get_data(), bytes_to_read);
         
         // Create new chunk and push it into vector
-        file_chunks.push_back(new_chunk);
+        file_chunks.emplace_back(std::move(new_chunk));
 
         curr_bytes_read += bytes_to_read;
 
@@ -101,7 +101,7 @@ void Fixed_Chunking::chunk_stream(std::vector<File_Chunk>& result, std::istream&
         stream.read(new_chunk.get_data(), bytes_to_read);
         
         // Create new chunk and push it into vector
-        result.push_back(new_chunk);
+        result.emplace_back(std::move(new_chunk));
 
         curr_bytes_read += bytes_to_read;
 

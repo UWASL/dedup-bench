@@ -102,7 +102,7 @@ std::vector<File_Chunk> AE_Chunking::chunk_file(std::string file_path) {
             uint32_t chunk_size = cutpoint + 1;
             File_Chunk new_chunk{chunk_size};
             memccpy(new_chunk.get_data(), read_buffer, 0, chunk_size);
-            file_chunks.push_back(new_chunk);
+            file_chunks.emplace_back(std::move(new_chunk));
 
             /* there's a partial block at the end
              * of the buffer; move it to the beginning of the buffer
@@ -125,7 +125,7 @@ std::vector<File_Chunk> AE_Chunking::chunk_file(std::string file_path) {
             uint32_t chunk_size = cutpoint + 1;
             File_Chunk new_chunk{chunk_size};
             memccpy(new_chunk.get_data(), &read_buffer[pos], 0, chunk_size);
-            file_chunks.push_back(new_chunk);
+            file_chunks.emplace_back(std::move(new_chunk));
             pos += chunk_size;
         }
     }
@@ -149,7 +149,7 @@ void AE_Chunking::chunk_stream(std::vector<File_Chunk>& result, std::istream& st
         uint32_t chunk_size = cutpoint + 1;
         File_Chunk new_chunk{chunk_size};
         memccpy(new_chunk.get_data(), read_buffer, 0, chunk_size);
-        result.push_back(new_chunk);
+        result.emplace_back(std::move(new_chunk));
 
         /* there's a partial block at the end
             * of the buffer; move it to the beginning of the buffer
@@ -172,7 +172,7 @@ void AE_Chunking::chunk_stream(std::vector<File_Chunk>& result, std::istream& st
         uint32_t chunk_size = cutpoint + 1;
         File_Chunk new_chunk{chunk_size};
         memccpy(new_chunk.get_data(), &read_buffer[pos], 0, chunk_size);
-        result.push_back(new_chunk);
+        result.emplace_back(std::move(new_chunk));
         pos += chunk_size;
     }
     return;
