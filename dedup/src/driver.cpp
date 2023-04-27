@@ -190,11 +190,6 @@ int main(int argc, char * argv[]) {
         HashingTech hashing_technique = config.get_hashing_tech();
         output_file = config.get_output_file();
 
-        // Pointers used to hold derived instances of Chunking_Technique and Hashing_Technique
-        /**
-         * @todo: Change this to use RAII instead to avoid possible memory leak
-         * 
-         */
         std::unique_ptr<Chunking_Technique> chunk_method;
         std::unique_ptr<Hashing_Technique> hash_method;
         
