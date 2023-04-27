@@ -106,13 +106,6 @@ static void driver_function_stream(
         return;
     }
 
-    // open the output file for writing the hashes to
-    std::ofstream out_file(output_file, std::ios::out | std::ios::trunc);
-    if (!out_file.is_open()) {
-        std::cerr << "Failed to open " << output_file << " for writing" << std::endl;
-        return;
-    }
-
     std::cout << "Begin reading files into memory..." << std::endl;
     std::vector<std::unique_ptr<std::istream>> buffers = Chunking_Technique::read_files_to_buffers(dir_path);
     std::cout << "Done! read " << buffers.size() << " files in total" << std::endl;
@@ -129,19 +122,32 @@ static void driver_function_stream(
     std::chrono::duration<double, std::milli> ms_double = end - begin;
     std::cout << "Done!" << std::endl;
 
-    // Hash chunks using specified Hashing_Technique
-    std::cout << "Begin Hashing..." << std::endl;
-    hash_method->hash_chunks(file_chunks);
-    std::cout << "Done!" << std::endl;
-
-    // Write the hashes to the output file
     uint64_t total_bytes = 0;
-    for (const File_Chunk& fc : file_chunks){
-        total_bytes += fc.get_size();
-        out_file << fc.to_string() << std::endl;
-        // fc.print();
+    if (hash_method) {
+        // Hash chunks using specified Hashing_Technique
+        std::cout << "Begin Hashing..." << std::endl;
+        hash_method->hash_chunks(file_chunks);
+        std::cout << "Done!" << std::endl;
+
+        // open the output file for writing the hashes to
+        std::ofstream out_file(output_file, std::ios::out | std::ios::trunc);
+        if (!out_file.is_open()) {
+            std::cerr << "Failed to open " << output_file << " for writing" << std::endl;
+            return;
+        }
+
+        // Write the hashes to the output file
+        for (const File_Chunk& fc : file_chunks){
+            total_bytes += fc.get_size();
+            out_file << fc.to_string() << std::endl;
+            // fc.print();
+        }
+        out_file.close();
+    } else {
+        for (const File_Chunk& fc : file_chunks){
+            total_bytes += fc.get_size();
+        }
     }
-    out_file.close();
 
     // Print stats
     std::cout << "Total number of chunks: " << file_chunks.size() << std::endl;
@@ -155,12 +161,25 @@ int main(int argc, char * argv[]) {
      * @brief Main entry point for dedup.exe. Parses arguments and calls driver_function()
      * @todo: Add Config class which takes in parameters
      */ 
-    if(argc != 3){
-        std::cout << "Usage: ./dedup.exe <file_path> <config_file_path>" << std::endl;
+    if (argc > 4 || argc < 3){
+        std::cout << "Usage: ./dedup.exe <file_path> <config_file_path> [bool]" << std::endl;
         std::cout << "\t  <file_path>: Path to file to run chunking and hashing on." << std::endl;
         std::cout << "\t  <config_file_path>: Path to the config file." << std::endl;
+        std::cout << "\t  [bool]: t or f indicating whether to only perform chunking. {f}" << std::endl;
 
         exit(EXIT_FAILURE);
+    }
+
+    bool is_only_chunking = false;
+    if (argc == 4) {
+        std::string bool_val = std::string(argv[3]);
+        if (bool_val != "t" && bool_val != "f") {
+            std::cerr << bool_val << " is not valid. Must be either 't' or 'f'" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        if (bool_val == "t") {
+            is_only_chunking = true;
+        }
     }
 
     std::string dir_path = std::string(argv[1]);
@@ -198,19 +217,21 @@ int main(int argc, char * argv[]) {
                 exit(EXIT_FAILURE);
         }
 
-        switch (hashing_technique) {
-            case HashingTech::MD5:
-                hash_method = std::make_unique<MD5_Hashing>();
-                break;
-            case HashingTech::SHA1:
-                hash_method = std::make_unique<SHA1_Hashing>();
-                break;
-            case HashingTech::SHA256:
-                hash_method = std::make_unique<SHA256_Hashing>();
-                break;
-            default:
-                std::cerr << "Unimplemented hashing technique" << std::endl;
-                exit(EXIT_FAILURE);
+        if (!is_only_chunking) {
+            switch (hashing_technique) {
+                case HashingTech::MD5:
+                    hash_method = std::make_unique<MD5_Hashing>();
+                    break;
+                case HashingTech::SHA1:
+                    hash_method = std::make_unique<SHA1_Hashing>();
+                    break;
+                case HashingTech::SHA256:
+                    hash_method = std::make_unique<SHA256_Hashing>();
+                    break;
+                default:
+                    std::cerr << "Unimplemented hashing technique" << std::endl;
+                    exit(EXIT_FAILURE);
+            }
         }
 
         // Call driver function
