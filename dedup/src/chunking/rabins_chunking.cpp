@@ -97,7 +97,7 @@ void Rabins_Chunking::calc_tables(void) {
         uint64_t hash = 0;
 
         hash = append_byte(hash, (uint8_t)b, POLYNOMIAL);
-        for (int i = 0; i < window_size - 1; i++) {
+        for (uint64_t i = 0; i < window_size - 1; i++) {
             hash = append_byte(hash, 0, POLYNOMIAL);
         }
         out_table[b] = hash;
@@ -134,7 +134,7 @@ void Rabins_Chunking::rabin_slide(uint8_t b) {
 }
 
 void Rabins_Chunking::rabin_reset() {
-    for (int i = 0; i < window_size; i++) window[i] = 0;
+    for (uint64_t i = 0; i < window_size; i++) window[i] = 0;
     wpos = 0;
     count = 0;
     digest = 0;
@@ -208,13 +208,15 @@ std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
     // 40 MiB buffer
     rabin_init();
     // large buffer to increase dedup ratio as last chunk will be incomplete 
-    char *buf = new char[40*1024 * 1024];
-    size_t bytes;
+    const uint64_t BUFFER_SIZE = 40*1024*1024;
+    std::unique_ptr<char[]> buf_ptr = std::make_unique<char[]>(BUFFER_SIZE);
+    char* const buf = buf_ptr.get();
+    size_t bytes = 0;
     std::ifstream file_ptr(file_path, std::ios::binary);
 
     char *ptr;
     while (true) {
-        file_ptr.read(buf, sizeof(buf));
+        file_ptr.read(buf, BUFFER_SIZE);
         size_t len = file_ptr.gcount();
         if (len == 0) {
             break;
@@ -232,7 +234,7 @@ std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
             }
             File_Chunk ch{last_chunk.length};
             memcpy(ch.get_data(), ptr, last_chunk.length);
-            file_chunks.push_back(ch);
+            file_chunks.emplace_back(std::move(ch));
             len -= remaining;
             ptr += remaining;
         }
@@ -241,9 +243,8 @@ std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
     if (rabin_finalize() != NULL) {
         File_Chunk ch{last_chunk.length};
         memcpy(ch.get_data(), ptr, last_chunk.length);
-        file_chunks.push_back(ch);
+        file_chunks.emplace_back(std::move(ch));
     }
-    delete [] buf;
     return file_chunks;
 }
 
@@ -252,12 +253,14 @@ void Rabins_Chunking::chunk_stream(std::vector<File_Chunk> &result,
     // 40 MiB buffer
     rabin_init();
     // large buffer to increase dedup ratio as last chunk will be incomplete 
-    char *buf = new char[40*1024 * 1024];
-    size_t bytes;
+    const uint64_t BUFFER_SIZE = 40*1024*1024;
+    std::unique_ptr<char[]> buf_ptr = std::make_unique<char[]>(BUFFER_SIZE);
+    char* const buf = buf_ptr.get();
+    size_t bytes = 0;
 
     char *ptr;
     while (true) {
-        stream.read(buf, sizeof(buf));
+        stream.read(buf, BUFFER_SIZE);
         size_t len = stream.gcount();
         if (len == 0) {
             break;
@@ -275,7 +278,7 @@ void Rabins_Chunking::chunk_stream(std::vector<File_Chunk> &result,
             }
             File_Chunk ch{last_chunk.length};
             memcpy(ch.get_data(), ptr, last_chunk.length);
-            result.push_back(ch);
+            result.emplace_back(std::move(ch));
             len -= remaining;
             ptr += remaining;
         }
@@ -284,8 +287,7 @@ void Rabins_Chunking::chunk_stream(std::vector<File_Chunk> &result,
     if (rabin_finalize() != NULL) {
         File_Chunk ch{last_chunk.length};
         memcpy(ch.get_data(), ptr, last_chunk.length);
-        result.push_back(ch);
+        result.emplace_back(std::move(ch));
     }
-    delete [] buf;
     return;
 }
