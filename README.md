@@ -1,2 +1,3 @@
-# secure-dedup
-Code for the Secure Deduplication Project
+# dedup-bench
+
+Code for the DedupBench project
