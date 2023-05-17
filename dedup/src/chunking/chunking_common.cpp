@@ -170,7 +170,3 @@ std::vector<File_Chunk> Chunking_Technique::chunk_file(std::string file_path) {
 
     return file_chunks;
 }
-
-// uint64_t Chunking_Technique::find_cutpoint(char* buff, uint64_t size) {
-//     return 0;
-// }
