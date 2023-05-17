@@ -107,8 +107,23 @@ class Chunking_Technique{
          * @param file_path: String containing path to file
          * @return: Vector of struct File_Chunk
          */
-        virtual std::vector<File_Chunk> chunk_file(std::string file_path) = 0;
+        virtual uint64_t find_cutpoint(char*, uint64_t) {};
 
+        /**
+         * @brief calculates the size of the given file
+         * 
+         * @param file_ptr: ifstream pointer to the file   
+         * @return: the size of the file
+         */
+        uint64_t get_file_size(std::ifstream* file_ptr);
+
+        /**
+         * @brief Chunk a file using a chunking technique and return the struct File_Chunks from this operation
+         * 
+         * @param file_path: String containing path to file
+         * @return: Vector of struct File_Chunk
+         */
+        std::vector<File_Chunk> chunk_file(std::string file_path);
         /**
          * @brief Chunk a stream using a chunking technique and append the struct File_Chunks from this operation
          * to the vector passed in
