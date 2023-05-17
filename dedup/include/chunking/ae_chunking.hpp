@@ -55,15 +55,6 @@ class AE_Chunking : public virtual Chunking_Technique {
 
     ~AE_Chunking();
 
-    // /**
-    //     @brief Divides a file into chunks using ae algorithm
-    //    these chunks
-    //     @param file_path: Path to input file
-    //     @param chunk_size: Size of each chunk
-
-    //     @return: Vector containing fixed size chunks from file
-    // */
-    // std::vector<File_Chunk> chunk_file(std::string file_path) override;
     void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
 };
 
