@@ -31,9 +31,9 @@ AE_Chunking::~AE_Chunking() {
 
 bool AE_Chunking::is_extreme(uint64_t new_val, uint64_t current_extr) {
     if (extreme_mode == MAX) {
-        return new_val >= current_extr;
+        return new_val > current_extr;
     } else {
-        return new_val <= current_extr;
+        return new_val < current_extr;
     }
 }
 

@@ -142,9 +142,9 @@ uint64_t Config::get_gear_avg_block_size() const {
     catch (const std::invalid_argument&) {}
     throw ConfigError("The configuration file does not specify a valid gear maximum block size for gear hash");
 }
+
 uint64_t Config::get_fastcdc_min_block_size() const {
     try {
-
         std::string value = parser.get_property(FASTCDC_MIN_BLOCK_SIZE);
         return std::stoull(value);
     } catch (const std::out_of_range&) {}
