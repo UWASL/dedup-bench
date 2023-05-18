@@ -128,8 +128,6 @@ class FastCDC : public virtual Chunking_Technique {
 
     ~FastCDC();
 
-    void chunk_stream(std::vector<File_Chunk>& result,
-                      std::istream& stream) override;
 };
 
 #endif

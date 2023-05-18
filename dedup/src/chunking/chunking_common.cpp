@@ -80,7 +80,7 @@ void File_Chunk::print() const {
 
 // ========== Chunking_Techniques =============
 
-uint64_t Chunking_Technique::get_file_size(std::ifstream* file_ptr) {
+uint64_t Chunking_Technique::get_file_size(std::istream* file_ptr) {
     file_ptr->seekg(0, std::ios_base::end);
     uint64_t file_size = file_ptr -> tellg();
     file_ptr->seekg(0, std::ios_base::beg);
@@ -147,7 +147,7 @@ std::vector<File_Chunk> Chunking_Technique::chunk_file(std::string file_path) {
         }
         buffer_end += bytes_to_read;
         chunk_size = find_cutpoint(buffer.data(), buffer_end);
-
+        
         // create chunk
         File_Chunk new_chunk{chunk_size};
         memcpy(new_chunk.get_data(),buffer.data(), chunk_size);
@@ -169,4 +169,48 @@ std::vector<File_Chunk> Chunking_Technique::chunk_file(std::string file_path) {
     }
 
     return file_chunks;
+}
+
+void Chunking_Technique::chunk_stream(std::vector<File_Chunk>& result, std::istream& stream){
+    std::vector<char> buffer;
+    std::ifstream file_ptr;
+    int64_t buffer_size = 65535;
+    int64_t bytes_left = get_file_size(&stream);
+    // reserve 4 * max_size
+    buffer.reserve(buffer_size << 2);
+    int64_t chunk_size = (buffer_size << 1);
+    // logical buffer end
+    int64_t buffer_end = 0;
+
+    while (true) {
+        uint32_t bytes_to_read =
+            std::min((int64_t)(buffer_size << 1), std::min(bytes_left, chunk_size));
+        stream.read(buffer.data() + buffer_end, bytes_to_read);
+        if(stream.gcount()==0){
+            break;
+        }
+        buffer_end += bytes_to_read;
+        chunk_size = find_cutpoint(buffer.data(), buffer_end);
+        
+        // create chunk
+        File_Chunk new_chunk{chunk_size};
+        memcpy(new_chunk.get_data(),buffer.data(), chunk_size);
+        result.emplace_back(std::move(new_chunk));
+        buffer_end -= chunk_size;
+        memmove(&buffer[0], &buffer[chunk_size], buffer_end);
+        bytes_left -= bytes_to_read;
+    }
+    // finalize 
+    while(buffer_end > 0) {
+        chunk_size = find_cutpoint(buffer.data(), buffer_end);
+        buffer_end -= chunk_size;
+        // create chunk
+        File_Chunk new_chunk{chunk_size};
+        memcpy(new_chunk.get_data(),buffer.data(), chunk_size);
+        result.emplace_back(std::move(new_chunk));
+
+        memmove(&buffer[0], &buffer[chunk_size], buffer_end);
+    }
+
+    return;
 }

@@ -55,7 +55,6 @@ class AE_Chunking : public virtual Chunking_Technique {
 
     ~AE_Chunking();
 
-    void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
 };
 
 #endif

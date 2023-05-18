@@ -234,8 +234,8 @@ int main(int argc, char * argv[]) {
         }
 
         // Call driver function
-        driver_function(dir_path, chunk_method, hash_method, output_file);
-        // driver_function_stream(dir_path, chunk_method, hash_method, output_file);
+        // driver_function(dir_path, chunk_method, hash_method, output_file);
+        driver_function_stream(dir_path, chunk_method, hash_method, output_file);
     } catch (const ConfigError& e) {
         std::cerr << e.what() << std::endl;
         exit(EXIT_FAILURE);

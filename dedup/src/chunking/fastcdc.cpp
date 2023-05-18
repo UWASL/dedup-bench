@@ -68,6 +68,3 @@ uint64_t FastCDC::find_cutpoint(char* data, uint64_t len) {
 
 FastCDC::~FastCDC() {}
 
-
-void FastCDC::chunk_stream(std::vector<File_Chunk>& result,
-                           std::istream& stream) {}

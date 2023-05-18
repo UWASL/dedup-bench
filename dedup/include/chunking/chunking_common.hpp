@@ -115,7 +115,7 @@ class Chunking_Technique{
          * @param file_ptr: ifstream pointer to the file   
          * @return: the size of the file
          */
-        uint64_t get_file_size(std::ifstream* file_ptr);
+        uint64_t get_file_size(std::istream* file_ptr);
 
         /**
          * @brief Chunk a file using a chunking technique and return the struct File_Chunks from this operation
@@ -131,7 +131,7 @@ class Chunking_Technique{
          * @param stream: input stream containing the data to be chunked
          * @return: void
          */
-        virtual void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) = 0;
+        virtual void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream);
 
         virtual ~Chunking_Technique() {};
 
