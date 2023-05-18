@@ -16,27 +16,24 @@ AE_Chunking::AE_Chunking() {
     avg_block_size = DEFAULT_AE_AVG_BLOCK_SIZE;
     extreme_mode = MAX;
     technique_name = "AE Chunking";
-    read_buffer = new char[BUFFER_SIZE];
 }
 
 AE_Chunking::AE_Chunking(const Config& config) {
     extreme_mode = config.get_ae_extreme_mode();
     avg_block_size = config.get_ae_avg_block_size();
     window_size = avg_block_size / (exp(1) - 1);  // avg_block size / e-1
-    read_buffer = new char[BUFFER_SIZE];
 
     technique_name = "AE Chunking";
 }
 
 AE_Chunking::~AE_Chunking() {
-    delete[] read_buffer;
 }
 
 bool AE_Chunking::is_extreme(uint64_t new_val, uint64_t current_extr) {
     if (extreme_mode == MAX) {
-        return new_val > current_extr;
+        return new_val >= current_extr;
     } else {
-        return new_val < current_extr;
+        return new_val <= current_extr;
     }
 }
 

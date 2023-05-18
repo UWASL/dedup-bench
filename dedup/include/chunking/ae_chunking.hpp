@@ -10,7 +10,6 @@
 #include <cstring>
 
 #define DEFAULT_AE_AVG_BLOCK_SIZE 4096
-#define BUFFER_SIZE 65535
 
 class AE_Chunking : public virtual Chunking_Technique {
    private:
@@ -18,7 +17,6 @@ class AE_Chunking : public virtual Chunking_Technique {
     uint64_t window_size;
     uint64_t curr_pos;
     AE_Mode extreme_mode;
-    char* read_buffer;
 
 
     /**
