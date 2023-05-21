@@ -14,17 +14,19 @@ class FastCDC : public virtual Chunking_Technique {
     uint64_t min_block_size;
     uint64_t max_block_size;
     uint64_t avg_block_size;
-    uint64_t threshold;
-    static constexpr size_t kHashBits = sizeof(uint64_t) * 8;
+    int notmalization_level;
+
+    uint64_t small_mask;
+    uint64_t large_mask;
 
     /**
      * @brief finds the next cut point in an array of bytes
      * @param buff: the buff to find the cutpoint in.
      * @param size: the size of the buffer
-     * @return: cutpoint position in the buffer 
+     * @return: cutpoint position in the buffer
      */
     uint64_t find_cutpoint(char* buff, uint64_t size) override;
-    
+
     static constexpr uint64_t GEAR_TABLE[256] = {
         0x651748f5a15f8222, 0xd6eda276c877d8ea, 0x66896ef9591b326b,
         0xcd97506b21370a12, 0x8c9c5c9acbeb2a05, 0xb8b9553ee17665ef,
@@ -127,7 +129,6 @@ class FastCDC : public virtual Chunking_Technique {
     FastCDC(const Config& config);
 
     ~FastCDC();
-
 };
 
 #endif

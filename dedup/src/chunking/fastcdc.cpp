@@ -12,6 +12,7 @@
 #include "fastcdc.hpp"
 
 #include <cassert>
+#include <cmath>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -22,49 +23,39 @@ FastCDC::FastCDC(const Config& config) {
     min_block_size = config.get_fastcdc_min_block_size();
     avg_block_size = config.get_fastcdc_avg_block_size();
     max_block_size = config.get_fastcdc_max_block_size();
-    threshold = std::numeric_limits<uint64_t>::max() /
-                (avg_block_size - min_block_size + 1);
+    bool disable_normalization = config.get_fastcdc_disable_normalization();
+    if (disable_normalization) {
+        notmalization_level = 0;
+    } else {
+        notmalization_level = config.get_fastcdc_normalization_level();
+    }
+    int mask_bits = int(round(log2(avg_block_size)));
+    small_mask = (1 << (mask_bits + notmalization_level)) - 1 ;
+    large_mask = (1 << (mask_bits - notmalization_level)) - 1 ;
 }
 
-
 uint64_t FastCDC::find_cutpoint(char* data, uint64_t len) {
-    if (len <= min_block_size) {
+    uint64_t fp = 0;
+    int i = min_block_size;  // skip min block size
+    if (len < min_block_size) {
         return len;
     }
-    if (len > max_block_size) {
-        len = max_block_size;
-    }
+    uint64_t length = std::min(len, max_block_size);
+    uint64_t first_phase = std::min(length, avg_block_size);
 
-    // Initialize the regression length to len (the end) and the regression
-    // mask to an empty bitmask (match any hash).
-    size_t rc_len = len;
-    uint64_t rc_mask = 0;
-
-    // Init hash to all 1's to avoid zero-length chunks with min_size=0.
-    uint64_t hash = std::numeric_limits<uint64_t>::max();
-    // Skip the first min_size bytes, but "warm up" the rolling hash for enough
-    // rounds to make sure the hash has gathered full "content history".
-    size_t i = min_block_size > kHashBits ? min_block_size - kHashBits : 0;
-    for (/*empty*/; i < min_block_size; ++i) {
-        hash = (hash << 1) + GEAR_TABLE[data[i]];
-    }
-    for (/*empty*/; i < len; ++i) {
-        if (!(hash & rc_mask)) {
-            if (hash <= threshold) {
-                // This hash matches the target length hash criteria, return it.
-                return i;
-            }
-            // This is a better regression point. Set it as the new rc_len and
-            // update rc_mask to check as many MSBits as this hash would pass.
-            rc_len = i;
-            rc_mask = std::numeric_limits<uint64_t>::max();
-            while (hash & rc_mask) rc_mask <<= 1;
+    for (; i < first_phase; i++) {
+        fp = (fp << 1) + GEAR_TABLE[data[i]];
+        if ((fp & small_mask) == 0) {
+            return i ;
         }
-        hash = (hash << 1) + GEAR_TABLE[data[i]];
     }
-    // Return best regression point we found or the end if it's better.
-    return (hash & rc_mask) ? rc_len : i;
+
+    for (; i < length; i++) {
+        fp = (fp << 1) + GEAR_TABLE[data[i]];
+        if ((fp & large_mask) == 0) {
+            return i;
+        }
+    }
 }
 
 FastCDC::~FastCDC() {}
-

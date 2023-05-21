@@ -18,6 +18,9 @@
 #define FASTCDC_MIN_BLOCK_SIZE "fastcdc_min_block_size"
 #define FASTCDC_MAX_BLOCK_SIZE "fastcdc_max_block_size"
 #define FASTCDC_AVG_BLOCK_SIZE "fastcdc_avg_block_size"
+#define FASTCDC_NORMALIZATION_LEVEL "fastcdc_normalization_level"
+#define FASTCDC_DISABLE_NORMALIZATION "fastcdc_disable_normalization"
+
 // define the possible chunking algorithms
 enum class ChunkingTech { FILE, FIXED, RABINS, AE, GEAR, FASTCDC};
 // define the possible hashing algorithms
@@ -157,6 +160,21 @@ class Config {
          * @return fastcdc desired avg block size   
          */
         uint64_t get_fastcdc_max_block_size() const;
+
+        /**
+         * @brief Get chunk normalization level. It may be set to 1, 2 or 3,
+         * unless DisableNormalization is true, in which case it's ignored
+         * 
+         * @return fastcdc desired normalization level
+         */
+        uint64_t get_fastcdc_normalization_level() const;
+
+        /**
+         * @brief turns normalization off if true
+         * 
+         * @return disable normalization state
+         */
+        bool get_fastcdc_disable_normalization() const;
 
 };
 

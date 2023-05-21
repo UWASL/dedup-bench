@@ -167,5 +167,23 @@ uint64_t Config::get_fastcdc_avg_block_size() const {
         return std::stoull(value);
     } catch (const std::out_of_range&) {}
     catch (const std::invalid_argument&) {}
-    throw ConfigError("The configuration file does not specify a valid fastcdc maximum block size");
+    throw ConfigError("The configuration file does not specify a valid fastcdc avarge block size");
+}
+
+uint64_t Config::get_fastcdc_normalization_level() const {
+    try {
+        std::string value = parser.get_property(FASTCDC_NORMALIZATION_LEVEL);
+        return std::stoull(value);
+    } catch (const std::out_of_range&) {}
+    catch (const std::invalid_argument&) {}
+    throw ConfigError("The configuration file does not specify a valid fastcdc normaliztion level");
+}
+
+bool Config::get_fastcdc_disable_normalization() const {
+    try {
+        std::string value = parser.get_property(FASTCDC_DISABLE_NORMALIZATION);
+        return value== "true" ? true : false;
+    } catch (const std::out_of_range&) {}
+    catch (const std::invalid_argument&) {}
+    throw ConfigError("The configuration file does not specify a valid fastcdc disable normalization option");
 }
