@@ -98,6 +98,17 @@ class Chunking_Technique{
      * 
      */
 
+    private:
+        std::vector<File_Chunk> file_chunks;
+        /**
+         * @brief a helper function to create a chunk from a data buffer
+         * 
+         * @param data: the data buffer
+         * @param buffer_end: the logical size of the buffer in bytes
+         * @return: size of the chunk
+         */
+        int64_t create_chunk(char* data, uint64_t buffer_end);
+
     public:
         std::string technique_name;
 
@@ -107,8 +118,23 @@ class Chunking_Technique{
          * @param file_path: String containing path to file
          * @return: Vector of struct File_Chunk
          */
-        virtual std::vector<File_Chunk> chunk_file(std::string file_path) = 0;
+        virtual uint64_t find_cutpoint(char*, uint64_t) {};
 
+        /**
+         * @brief calculates the size of the given file
+         * 
+         * @param file_ptr: ifstream pointer to the file   
+         * @return: the size of the file
+         */
+        uint64_t get_file_size(std::istream* file_ptr);
+
+        /**
+         * @brief Chunk a file using a chunking technique and return the struct File_Chunks from this operation
+         * 
+         * @param file_path: String containing path to file
+         * @return: Vector of struct File_Chunk
+         */
+        std::vector<File_Chunk> chunk_file(std::string file_path);
         /**
          * @brief Chunk a stream using a chunking technique and append the struct File_Chunks from this operation
          * to the vector passed in
@@ -116,7 +142,7 @@ class Chunking_Technique{
          * @param stream: input stream containing the data to be chunked
          * @return: void
          */
-        virtual void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) = 0;
+        virtual void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream);
 
         virtual ~Chunking_Technique() {};
 

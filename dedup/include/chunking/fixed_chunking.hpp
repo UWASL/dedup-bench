@@ -42,7 +42,7 @@ class Fixed_Chunking: public virtual Chunking_Technique{
         uint64_t get_fixed_chunk_size();
 
         // Implementation of chunk_file from Chunking_Technique
-        std::vector<File_Chunk> chunk_file(std::string file_path) override;
+        std::vector<File_Chunk> chunk_file(std::string file_path);
         void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
 };
 

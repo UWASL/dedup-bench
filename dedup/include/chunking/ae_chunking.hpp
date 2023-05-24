@@ -10,7 +10,6 @@
 #include <cstring>
 
 #define DEFAULT_AE_AVG_BLOCK_SIZE 4096
-#define BUFFER_SIZE 65535
 
 class AE_Chunking : public virtual Chunking_Technique {
    private:
@@ -18,28 +17,7 @@ class AE_Chunking : public virtual Chunking_Technique {
     uint64_t window_size;
     uint64_t curr_pos;
     AE_Mode extreme_mode;
-    char* read_buffer;
 
-    /**
-     * @brief check if a file exits in the path
-     * @param file_path:  path of the file
-     * @return: whether the file exits.
-     */
-    bool check_file_exits(std::string file_path);
-
-    /**
-     * @brief tries to open a file for reading
-     * @param file_path:  path of the file
-     * @param file:  pointer to the file
-     */
-    bool read_file(std::string file_path, std::ifstream& file);
-
-    /**
-     * @brief gets the size of a file 
-     * @param file:  pointer to the file
-     * @return size of the file
-     */
-    uint64_t get_file_size(std::istream& file);
 
     /**
      * @brief compares a new value with the current extreme and returns whether
@@ -55,9 +33,9 @@ class AE_Chunking : public virtual Chunking_Technique {
      * @brief finds the next cut point in an array of bytes
      * @param buff: the buff to find the cutpoint in.
      * @param size: the size of the buffer
-     * @return: cutpoint position in the buffer
+     * @return: cutpoint position in the buffer 
      */
-    uint64_t find_cutpoint(char* buff, uint64_t size);
+    uint64_t find_cutpoint(char* buff, uint64_t size) override;
 
    public:
     /**
@@ -75,16 +53,6 @@ class AE_Chunking : public virtual Chunking_Technique {
 
     ~AE_Chunking();
 
-    /**
-        @brief Divides a file into chunks using ae algorithm
-       these chunks
-        @param file_path: Path to input file
-        @param chunk_size: Size of each chunk
-
-        @return: Vector containing fixed size chunks from file
-    */
-    std::vector<File_Chunk> chunk_file(std::string file_path) override;
-    void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
 };
 
 #endif

@@ -19,6 +19,7 @@
 #include "rabins_chunking.hpp"
 #include "ae_chunking.hpp"
 #include "gear_chunking.hpp"
+#include "fastcdc.hpp"
 
 #include <ios>
 #include <fstream>
@@ -206,6 +207,9 @@ int main(int argc, char * argv[]) {
                 break;
             case ChunkingTech::GEAR:
                 chunk_method = std::make_unique<Gear_Chunking>(config);
+                break;
+            case ChunkingTech::FASTCDC:
+                chunk_method = std::make_unique<FastCDC>(config);
                 break;
             default:
                 std::cerr << "Unimplemented chunking technique" << std::endl;

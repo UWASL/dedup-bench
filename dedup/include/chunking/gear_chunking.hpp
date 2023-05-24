@@ -116,18 +116,13 @@ class Gear_Chunking : public virtual Chunking_Technique {
     uint64_t ghash(uint64_t h, unsigned char ch);
 
     /**
-     * @brief Find the next cutting point within given data.
-     * @param data data stream to to look for the cut point in.
-     * @return Index value at which data must be cut.
+     * @brief finds the next cut point in an array of bytes
+     * @param buff: the buff to find the cutpoint in.
+     * @param size: the size of the buffer
+     * @return: cutpoint position in the buffer 
      */
-    uint64_t cut(const char* data, size_t size);
+    uint64_t find_cutpoint(char* buff, uint64_t size) override;
 
-    /**
-     * @brief Split given data stream into chunks.
-     * @param data data stream to be divided.
-     * @return a vector of File_Chunk containing all the resulting chunks from the data stream.
-     */
-    std::vector<File_Chunk> chop(const char* data, size_t size );
 
    public:
     /**
@@ -147,8 +142,7 @@ class Gear_Chunking : public virtual Chunking_Technique {
      * @param data Data stream to chunk.
      * @return A vector of File_Chuncks
      */
-    std::vector<File_Chunk> chunk_file(std::string file_path) override;
-    void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
+    std::vector<File_Chunk> chunk_file(std::string file_path);
 };
 
 #endif
