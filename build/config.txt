@@ -1,6 +1,24 @@
-chunking_algo = ae
+chunking_algo = fastcdc
 hashing_algo= sha1
-ae_extreme_mode= maxw
-ae_avg_block_size=4000
-# comment
+output_file=hash.out
+fc_size=10000
 
+fastcdc_min_block_size=4096
+fastcdc_avg_block_size=10000
+fastcdc_max_block_size=65536
+fastcdc_normalization_level=2
+fastcdc_disable_normalization=false
+
+gear_min_block_size=4096
+gear_avg_block_size=16384
+gear_max_block_size=65536
+
+rabinc_min_block_size=4096
+rabinc_avg_block_size=16384
+rabinc_max_block_size=65536
+rabinc_window_size=48
+
+ae_extreme_mode= max
+#ae_avg_block_size=4096
+#ae_avg_block_size=8192
+ae_avg_block_size= 10000

@@ -99,15 +99,14 @@ class Chunking_Technique{
      */
 
     private:
-        std::vector<File_Chunk> file_chunks;
         /**
          * @brief a helper function to create a chunk from a data buffer
-         * 
+         * @param file_chunks: chunks vector
          * @param data: the data buffer
          * @param buffer_end: the logical size of the buffer in bytes
          * @return: size of the chunk
          */
-        int64_t create_chunk(char* data, uint64_t buffer_end);
+        int64_t create_chunk(std::vector<File_Chunk>& file_chunks, char* data, uint64_t buffer_end);
 
     public:
         std::string technique_name;

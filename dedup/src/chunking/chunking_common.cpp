@@ -123,14 +123,14 @@ Chunking_Technique::read_files_to_buffers(std::string dir_path) {
 }
 
 std::vector<File_Chunk> Chunking_Technique::chunk_file(std::string file_path) {
-    file_chunks.clear();
+    std::vector<File_Chunk> file_chunks;
     std::ifstream file_ptr;
     file_ptr.open(file_path, std::ios::in);
     chunk_stream(file_chunks, file_ptr);
     return file_chunks;
 }
 
-int64_t Chunking_Technique::create_chunk(char* buffer, uint64_t buffer_end) {
+int64_t Chunking_Technique::create_chunk(std::vector<File_Chunk>& file_chunks, char* buffer, uint64_t buffer_end) {
     int64_t chunk_size = find_cutpoint(buffer, buffer_end);
     // create chunk
     File_Chunk new_chunk{chunk_size};
@@ -159,14 +159,14 @@ void Chunking_Technique::chunk_stream(std::vector<File_Chunk>& result,
         }
         buffer_end += bytes_to_read;
 
-        chunk_size = create_chunk(buffer.data(), buffer_end);
+        chunk_size = create_chunk(result, buffer.data(), buffer_end);
         buffer_end -= chunk_size;
         memmove(&buffer[0], &buffer[chunk_size], buffer_end);
         bytes_left -= bytes_to_read;
     }
     // finalize
     while (buffer_end > 0) {
-        chunk_size = create_chunk(buffer.data(), buffer_end);
+        chunk_size = create_chunk(result, buffer.data(), buffer_end);
         buffer_end -= chunk_size;
         memmove(&buffer[0], &buffer[chunk_size], buffer_end);
     }
