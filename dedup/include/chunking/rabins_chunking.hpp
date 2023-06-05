@@ -69,13 +69,8 @@ class Rabins_Chunking : public virtual Chunking_Technique {
      * @brief finds the next chunk boundary
      * @return: the index after the chunk boundry relative to the buffer
      */
-    int rabin_next_chunk(char *buf, unsigned int len);
+    uint64_t find_cutpoint(char *buf,uint64_t len);
 
-    /**
-     * @brief reset the buffer and empty last chunk if any
-     * @return: last chunk or null if the buffer is empty
-     */
-    struct chunk_t *rabin_finalize();
 
     /**
      * @brief calculates the mod of x to p
@@ -119,13 +114,6 @@ class Rabins_Chunking : public virtual Chunking_Technique {
      * @return: void
      */
     ~Rabins_Chunking();
-
-    /**
-     * @brief chunk a file using rabins algorithms
-     * @param file_path the path of the file to be chunked
-     * @return A vector of chunks
-     */
-    std::vector<File_Chunk> chunk_file(std::string file_path);
 
 };
 

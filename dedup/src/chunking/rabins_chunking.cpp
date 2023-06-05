@@ -9,7 +9,7 @@
  *
  */
 #include "rabins_chunking.hpp"
-
+#include <iostream>
 inline u_int32_t fls32(u_int32_t num) {
     /**
     @brief find last set bit in a 32-bit number
@@ -142,7 +142,7 @@ void Rabins_Chunking::rabin_reset() {
     rabin_slide(1);
 }
 
-int Rabins_Chunking::rabin_next_chunk(char *buf, unsigned int len) {
+uint64_t Rabins_Chunking::find_cutpoint(char *buf, uint64_t len) {
     for (unsigned int i = 0; i < len; i++) {
         char b = *buf++;
 
@@ -153,21 +153,14 @@ int Rabins_Chunking::rabin_next_chunk(char *buf, unsigned int len) {
 
         if ((count >= min_block_size && ((digest & fingerprint_mask) == 0)) ||
             count >= max_block_size) {
-            last_chunk.start = start;
-            last_chunk.length = count;
-            last_chunk.cut_fingerprint = digest;
-
-            // keep position
-            unsigned int tpos = pos;
+            uint64_t size = count;
             rabin_reset();
-            start = tpos;
-            pos = tpos;
-
-            return i + 1;
+            // std::cout << size <<std::endl;
+            return size;
         }
     }
 
-    return -1;
+    return len;
 }
 
 void Rabins_Chunking::rabin_init() {
@@ -178,19 +171,6 @@ void Rabins_Chunking::rabin_init() {
     rabin_reset();
 }
 
-struct chunk_t *Rabins_Chunking::rabin_finalize() {
-    if (count == 0) {
-        last_chunk.start = 0;
-        last_chunk.length = 0;
-        last_chunk.cut_fingerprint = 0;
-        return NULL;
-    }
-
-    last_chunk.start = start;
-    last_chunk.length = count;
-    last_chunk.cut_fingerprint = digest;
-    return &last_chunk;
-}
 
 Rabins_Chunking::Rabins_Chunking(const Config &config) {
     min_block_size = config.get_rabinc_min_block_size();
@@ -199,52 +179,8 @@ Rabins_Chunking::Rabins_Chunking(const Config &config) {
     window = new uint8_t[config.get_rabinc_window_size()];
     window_size = config.get_rabinc_window_size();
     fingerprint_mask = (1 << (fls32(avg_block_size) - 1)) - 1;
+    rabin_init();
 }
 
 Rabins_Chunking::~Rabins_Chunking() { delete[] window; }
-
-std::vector<File_Chunk> Rabins_Chunking::chunk_file(std::string file_path) {
-    std::vector<File_Chunk> file_chunks;
-    // 40 MiB buffer
-    rabin_init();
-    // large buffer to increase dedup ratio as last chunk will be incomplete 
-    const uint64_t BUFFER_SIZE = 40*1024*1024;
-    std::unique_ptr<char[]> buf_ptr = std::make_unique<char[]>(BUFFER_SIZE);
-    char* const buf = buf_ptr.get();
-    size_t bytes = 0;
-    std::ifstream file_ptr(file_path, std::ios::binary);
-
-    char *ptr;
-    while (true) {
-        file_ptr.read(buf, BUFFER_SIZE);
-        size_t len = file_ptr.gcount();
-        if (len == 0) {
-            break;
-        }
-        ptr = &buf[0];
-
-        bytes += len;
-
-        while (1) {
-            int remaining = rabin_next_chunk(ptr, len);
-
-            // ch.print();
-            if (remaining < 0) {
-                break;
-            }
-            File_Chunk ch{last_chunk.length};
-            memcpy(ch.get_data(), ptr, last_chunk.length);
-            file_chunks.emplace_back(std::move(ch));
-            len -= remaining;
-            ptr += remaining;
-        }
-    }
-
-    if (rabin_finalize() != NULL) {
-        File_Chunk ch{last_chunk.length};
-        memcpy(ch.get_data(), ptr, last_chunk.length);
-        file_chunks.emplace_back(std::move(ch));
-    }
-    return file_chunks;
-}
 
