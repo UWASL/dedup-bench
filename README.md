@@ -2,6 +2,13 @@
 
 Code for the DedupBench project
 
+# Installation 
+1. Clone the repo
+2. cd to build
+3. Run `make`
+4. Run `./dedup.exe <directory> <config file>`
+5. Run `./measure-dedup.exe <hash file>`
+
 ## VM Images used for becnhmarking:
 
 Business Tool-1 (Bitnami)
