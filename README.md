@@ -2,7 +2,7 @@
 
 Code for the DedupBench project
 
-## VM Images used for becnhmarking:
+## VM Images used for benchmarking:
 
 Business Tool-1 (Bitnami)
 https://marketplace.cloud.vmware.com/services/details/phplist?slug=true
