@@ -12,6 +12,7 @@
 #include "fixed_chunking.hpp"
 #include "sha1_hashing.hpp"
 #include "sha256_hashing.hpp"
+#include "sha512_hashing.hpp"
 #include "md5_hashing.hpp"
 #include "config.hpp"
 #include "config_error.hpp"
@@ -226,6 +227,9 @@ int main(int argc, char * argv[]) {
                     break;
                 case HashingTech::SHA256:
                     hash_method = std::make_unique<SHA256_Hashing>();
+                    break;
+                case HashingTech::SHA512:
+                    hash_method = std::make_unique<SHA512_Hashing>();
                     break;
                 default:
                     std::cerr << "Unimplemented hashing technique" << std::endl;
