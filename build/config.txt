@@ -1,5 +1,5 @@
 chunking_algo = fastcdc
-hashing_algo= sha1
+hashing_algo= sha512
 output_file=hash.out
 fc_size=10000
 

@@ -34,6 +34,8 @@ HashingTech Config::get_hashing_tech() const {
             return HashingTech::SHA1;
         } else if (value == "sha256") {
             return HashingTech::SHA256;
+        } else if (value == "sha512") {
+            return HashingTech::SHA512;
         } else if (value == "md5") {
             return HashingTech::MD5;
         }
