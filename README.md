@@ -9,7 +9,7 @@ Code for the DedupBench project
 4. Run `./dedup.exe <directory> <config file>`
 5. Run `./measure-dedup.exe <hash file>`
 
-## VM Images used for becnhmarking:
+## VM Images used for benchmarking:
 
 Business Tool-1 (Bitnami)
 https://marketplace.cloud.vmware.com/services/details/phplist?slug=true
