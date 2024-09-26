@@ -79,9 +79,6 @@ The following images from Bitnami were used in the original DedupBench paper at 
 
 ### Image URLs
 ```
-  https://marketplace.cloud.vmware.com/services/details/phplist?slug=true
-  https://marketplace.cloud.vmware.com/services/details/seopanel?slug=true
-  https://marketplace.cloud.vmware.com/services/details/publify?slug=true
   https://marketplace.cloud.vmware.com/services/details/tomcatstack?slug=true
   https://marketplace.cloud.vmware.com/services/details/mysql?slug=true
   https://marketplace.cloud.vmware.com/services/details/rubystack?slug=true
@@ -91,7 +88,15 @@ The following images from Bitnami were used in the original DedupBench paper at 
   https://marketplace.cloud.vmware.com/services/details/elasticsearch?slug=true
   https://marketplace.cloud.vmware.com/services/details/airflow-singlevm?slug=true
   https://marketplace.cloud.vmware.com/services/details/opencart?slug=true
-  https://marketplace.cloud.vmware.com/services/details/canvaslms?slug=true
   https://marketplace.cloud.vmware.com/services/details/grafana?slug=true
   https://marketplace.cloud.vmware.com/services/details/redis?slug=true
 ```
+
+Note that the following images were used in the paper but are unavailable as of Sept 2024.
+```
+  https://marketplace.cloud.vmware.com/services/details/phplist?slug=true
+  https://marketplace.cloud.vmware.com/services/details/seopanel?slug=true
+  https://marketplace.cloud.vmware.com/services/details/publify?slug=true
+  https://marketplace.cloud.vmware.com/services/details/canvaslms?slug=true
+```
+
