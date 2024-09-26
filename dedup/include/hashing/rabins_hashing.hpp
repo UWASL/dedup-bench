@@ -11,8 +11,53 @@
  */
 #define FINGERPRINT_PT 0xbfe6b8a5bf378d83LL
 
-u_int32_t fls32(u_int32_t x);
-char fls64(u_int64_t v);
+// Declaring and defining functions in header to allow it be used within TTTD Chunking without needing a local reimplementation
+inline u_int32_t fls32(u_int32_t num) {
+    /**
+    @brief find last set bit in a 32-bit number
+    @param num: the number to operate on
+
+    @return: last set bit in a 32-bit number
+    */
+    int r = 32;
+    if (!num) return 0;
+    if (!(num & 0xffff0000u)) {
+        num <<= 16;
+        r -= 16;
+    }
+    if (!(num & 0xff000000u)) {
+        num <<= 8;
+        r -= 8;
+    }
+    if (!(num & 0xf0000000u)) {
+        num <<= 4;
+        r -= 4;
+    }
+    if (!(num & 0xc0000000u)) {
+        num <<= 2;
+        r -= 2;
+    }
+    if (!(num & 0x80000000u)) {
+        num <<= 1;
+        r -= 1;
+    }
+    return r;
+}
+
+inline char fls64(u_int64_t num) {
+    /**
+    @brief find last set bit in a 64-bit number
+    @param num: the number to operate on
+
+    @return: last set bit in a 64-bit number
+    */
+    u_int32_t h;
+    if ((h = num >> 32))
+        return 32 + fls32(h);
+    else
+        return fls32((u_int32_t)num);
+}
+
 
 class Rabins_Hashing {
     /**

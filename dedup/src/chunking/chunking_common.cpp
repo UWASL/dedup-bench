@@ -9,6 +9,7 @@
  *
  */
 #include "chunking_common.hpp"
+#include "hashing_common.hpp"
 
 #include <cmath>
 #include <cstring>
@@ -17,6 +18,8 @@
 #include <iostream>
 #include <memory>
 #include <string>
+
+extern bool disable_hashing;
 
 File_Chunk::File_Chunk(uint64_t _chunk_size) {
     chunk_size = _chunk_size;
@@ -83,66 +86,74 @@ uint64_t Chunking_Technique::get_file_size(std::istream* file_ptr) {
     return file_size;
 }
 
-std::vector<std::unique_ptr<std::istream>>
-Chunking_Technique::read_files_to_buffers(std::string dir_path) {
-    std::vector<std::unique_ptr<std::istream>> buffers;
+std::unique_ptr<std::istream> Chunking_Technique::read_file_to_buffer(std::string file_path) {
+    std::unique_ptr<std::istream> buffers;
     // buffer of size 1MiB
     const uint64_t buffer_size = pow(2, 20);
     auto buffer = std::make_unique<char[]>(buffer_size);
 
-    for (const auto& entry :
-         std::filesystem::recursive_directory_iterator(dir_path)) {
-        std::filesystem::path file_path = entry.path();
-        if (std::filesystem::is_directory(file_path)) {
-            continue;
-        }
+    std::ifstream file_ptr;
+    file_ptr.open(file_path, std::ios::in | std::ios::binary);
+    // get length of file:
+    file_ptr.seekg(0, std::ios::end);
+    uint64_t length = file_ptr.tellg();
+    file_ptr.seekg(0, std::ios::beg);
+    auto ss = std::make_unique<std::stringstream>();
 
-        std::ifstream file_ptr;
-        file_ptr.open(file_path, std::ios::in | std::ios::binary);
-        // get length of file:
-        file_ptr.seekg(0, std::ios::end);
-        uint64_t length = file_ptr.tellg();
-        file_ptr.seekg(0, std::ios::beg);
-        auto ss = std::make_unique<std::stringstream>();
-
-        uint64_t curr_bytes_read = 0;
-        uint64_t bytes_to_read = std::min(buffer_size, length);
-        while (curr_bytes_read < length) {
-            // read data from file into the buffer
-            file_ptr.read(buffer.get(), bytes_to_read);
-            ss->write(buffer.get(), bytes_to_read);
-            curr_bytes_read += bytes_to_read;
-            bytes_to_read = std::min(buffer_size, length - curr_bytes_read);
-        }
-        buffers.emplace_back(std::move(ss));
-
-        // cleanup
-        file_ptr.close();
+    uint64_t curr_bytes_read = 0;
+    uint64_t bytes_to_read = std::min(buffer_size, length);
+    while (curr_bytes_read < length) {
+        // read data from file into the buffer
+        file_ptr.read(buffer.get(), bytes_to_read);
+        ss->write(buffer.get(), bytes_to_read);
+        curr_bytes_read += bytes_to_read;
+        bytes_to_read = std::min(buffer_size, length - curr_bytes_read);
     }
-    return buffers;
+
+    // cleanup
+    file_ptr.close();
+
+    return ss;
 }
 
-std::vector<File_Chunk> Chunking_Technique::chunk_file(std::string file_path) {
-    std::vector<File_Chunk> file_chunks;
+std::vector<std::string> Chunking_Technique::chunk_file(std::string file_path) {
+    std::vector<std::string> hashes;
     std::ifstream file_ptr;
     file_ptr.open(file_path, std::ios::in);
-    chunk_stream(file_chunks, file_ptr);
-    return file_chunks;
+    chunk_stream(hashes, file_ptr);
+    return hashes;
 }
 
-int64_t Chunking_Technique::create_chunk(std::vector<File_Chunk>& file_chunks, char* buffer, uint64_t buffer_end) {
-    int64_t chunk_size = find_cutpoint(buffer, buffer_end);
+int64_t Chunking_Technique::create_chunk(std::vector<std::string>& hashes,
+                                         char* buffer, uint64_t buffer_end) {
+    //start timing chunking
+    auto begin_chunking = std::chrono::high_resolution_clock::now();
+    uint64_t chunk_size = find_cutpoint(buffer, buffer_end);
+    // finish timing chunking
+    auto end_chunking = std::chrono::high_resolution_clock::now();
+    total_time_chunking += (end_chunking - begin_chunking);
     // create chunk
     File_Chunk new_chunk{chunk_size};
     memcpy(new_chunk.get_data(), buffer, chunk_size);
-    file_chunks.emplace_back(std::move(new_chunk));
+    if(!disable_hashing){
+        auto begin_hashing = std::chrono::high_resolution_clock::now();
+        hash_method->hash_chunk(new_chunk);
+        auto end_hashing = std::chrono::high_resolution_clock::now();
+        total_time_hashing += (end_hashing - begin_hashing);
+    }
+    hashes.emplace_back(new_chunk.to_string());
     return chunk_size;
 }
 
-void Chunking_Technique::chunk_stream(std::vector<File_Chunk>& result,
+void Chunking_Technique::chunk_stream(std::vector<std::string>& hashes,
                                       std::istream& stream) {
     std::vector<char> buffer;
-    int64_t buffer_size = 2 * 65535;
+    int64_t buffer_size;
+    if(this->stream_buffer_size == 0){
+        buffer_size = 1024 * 1024; // 1 Mib
+    } else{
+        buffer_size = this->stream_buffer_size;
+    }
     int64_t bytes_left = get_file_size(&stream);
     buffer.reserve(buffer_size);
     // initial chunk_size to allow the read of full buffer size
@@ -157,19 +168,18 @@ void Chunking_Technique::chunk_stream(std::vector<File_Chunk>& result,
         if (stream.gcount() == 0) {
             break;
         }
-        buffer_end += bytes_to_read;
 
-        chunk_size = create_chunk(result, buffer.data(), buffer_end);
+        buffer_end += bytes_to_read;
+        chunk_size = create_chunk(hashes, buffer.data(), buffer_end);
         buffer_end -= chunk_size;
         memmove(&buffer[0], &buffer[chunk_size], buffer_end);
         bytes_left -= bytes_to_read;
     }
     // finalize
     while (buffer_end > 0) {
-        chunk_size = create_chunk(result, buffer.data(), buffer_end);
+        chunk_size = create_chunk(hashes, buffer.data(), buffer_end);
         buffer_end -= chunk_size;
         memmove(&buffer[0], &buffer[chunk_size], buffer_end);
     }
-
     return;
 }

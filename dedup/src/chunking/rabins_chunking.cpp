@@ -10,44 +10,6 @@
  */
 #include "rabins_chunking.hpp"
 #include <iostream>
-inline u_int32_t fls32(u_int32_t num) {
-    /**
-    @brief find last set bit in a 32-bit number
-    @param num: the number to operate on
-
-    @return: last set bit in a 32-bit number
-    */
-    int r = 32;
-    if (!num) return 0;
-    if (!(num & 0xffff0000u)) {
-        num <<= 16;
-        r -= 16;
-    }
-    if (!(num & 0xff000000u)) {
-        num <<= 8;
-        r -= 8;
-    }
-    if (!(num & 0xf0000000u)) {
-        num <<= 4;
-        r -= 4;
-    }
-    if (!(num & 0xc0000000u)) {
-        num <<= 2;
-        r -= 2;
-    }
-    if (!(num & 0x80000000u)) {
-        num <<= 1;
-        r -= 1;
-    }
-    return r;
-}
-
-struct chunk_t {
-    unsigned int start;
-    unsigned int length;
-    uint64_t cut_fingerprint;
-};
-struct chunk_t last_chunk;
 
 int Rabins_Chunking::deg(uint64_t p) {
     uint64_t mask = 0x8000000000000000LL;
@@ -159,7 +121,7 @@ uint64_t Rabins_Chunking::find_cutpoint(char *buf, uint64_t len) {
             return size;
         }
     }
-
+    rabin_reset();
     return len;
 }
 

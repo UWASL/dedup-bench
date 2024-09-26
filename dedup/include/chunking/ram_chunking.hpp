@@ -1,5 +1,5 @@
-#ifndef _AE_CHUNKING_
-#define _AE_CHUNKING_
+#ifndef _RAM_Chunking_
+#define _RAM_Chunking_
 
 #include <math.h>
 #include <iostream>
@@ -9,15 +9,14 @@
 
 #include <cstring>
 
-#define DEFAULT_AE_AVG_BLOCK_SIZE 4096
+#define DEFAULT_RAM_AVG_BLOCK_SIZE 4096
 
-class AE_Chunking : public virtual Chunking_Technique {
+class RAM_Chunking : public virtual Chunking_Technique {
    private:
     uint64_t avg_block_size;
+    uint64_t max_block_size;
     uint64_t window_size;
     uint64_t curr_pos;
-    AE_Mode extreme_mode;
-
 
     /**
      * @brief finds the next cut point in an array of bytes
@@ -25,23 +24,23 @@ class AE_Chunking : public virtual Chunking_Technique {
      * @param size: the size of the buffer
      * @return: cutpoint position in the buffer 
      */
-    uint64_t find_cutpoint(char* buff, uint64_t size) override;
-
+    uint64_t find_cutpoint(char* buff, uint64_t size);
+    
    public:
     /**
      * @brief Default constructor.
      * @return: void
      */
-    AE_Chunking();
+    RAM_Chunking();
 
     /**
      * @brief Constructor with custom config from a config object
      * @param config: the config object
      * @return: void
      */
-    AE_Chunking(const Config& config);
+    RAM_Chunking(const Config& config);
 
-    ~AE_Chunking();
+    ~RAM_Chunking();
 
 };
 

@@ -25,18 +25,18 @@ FastCDC::FastCDC(const Config& config) {
     max_block_size = config.get_fastcdc_max_block_size();
     bool disable_normalization = config.get_fastcdc_disable_normalization();
     if (disable_normalization) {
-        notmalization_level = 0;
+        normalization_level = 0;
     } else {
-        notmalization_level = config.get_fastcdc_normalization_level();
+        normalization_level = config.get_fastcdc_normalization_level();
     }
     int mask_bits = int(round(log2(avg_block_size)));
-    small_mask = (1 << (mask_bits + notmalization_level)) - 1 ;
-    large_mask = (1 << (mask_bits - notmalization_level)) - 1 ;
+    small_mask = (1 << (mask_bits + normalization_level)) - 1 ;
+    large_mask = (1 << (mask_bits - normalization_level)) - 1 ;
 }
 
 uint64_t FastCDC::find_cutpoint(char* data, uint64_t len) {
     uint64_t fp = 0;
-    int i = min_block_size;  // skip min block size
+    uint64_t i = min_block_size;  // skip min block size
     if (len < min_block_size) {
         return len;
     }
@@ -44,18 +44,20 @@ uint64_t FastCDC::find_cutpoint(char* data, uint64_t len) {
     uint64_t first_phase = std::min(length, avg_block_size);
 
     for (; i < first_phase; i++) {
-        fp = (fp << 1) + GEAR_TABLE[data[i]];
+        fp = (fp << 1) + GEAR_TABLE[(int)data[i]];
         if ((fp & small_mask) == 0) {
             return i ;
         }
     }
 
     for (; i < length; i++) {
-        fp = (fp << 1) + GEAR_TABLE[data[i]];
+        fp = (fp << 1) + GEAR_TABLE[(int)data[i]];
         if ((fp & large_mask) == 0) {
             return i;
         }
     }
+
+    return length; //Double check that this is safe to return length here
 }
 
 FastCDC::~FastCDC() {}

@@ -1,3 +1,4 @@
+
 # =========================
 # Can consider using -MMD flag in the compiler to auto-gen dependencies file
 # if the number of headers ever grow too big
@@ -40,7 +41,8 @@ SRC_CONFIG = $(wildcard $(SRC_PATH_CONFIG)/*.cpp)
 OBJS_CONFIG = $(SRC_CONFIG:$(SRC_PATH_CONFIG)/%.cpp=%.o)
 DEPS_CONFIG = $(wildcard $(INCLUDE_PATH_CONFIG)/*.hpp)
 
-COMPILER_FLAGS= -std=c++17 -Wall -Wextra -Wno-format
+
+COMPILER_FLAGS= -std=c++17 -Wall -Wextra -Wno-format -O2 ${EXTRA_COMPILER_FLAGS}
 
 CC = g++
 RM = rm -f

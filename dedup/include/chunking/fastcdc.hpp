@@ -14,7 +14,7 @@ class FastCDC : public virtual Chunking_Technique {
     uint64_t min_block_size;
     uint64_t max_block_size;
     uint64_t avg_block_size;
-    int notmalization_level;
+    uint64_t normalization_level;
 
     uint64_t small_mask;
     uint64_t large_mask;

@@ -11,7 +11,7 @@
 #ifndef _COMMON_HASHING_
 #define _COMMON_HASHING_
 
-#include "chunking_common.hpp"
+#include "file_chunk.hpp"
 
 #include <string>
 #include <vector>

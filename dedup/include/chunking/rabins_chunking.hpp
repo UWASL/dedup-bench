@@ -26,7 +26,7 @@ class Rabins_Chunking : public virtual Chunking_Technique {
      *
      */
 
-   private:
+   protected:
     uint64_t avg_block_size;
     uint64_t max_block_size;
     uint64_t min_block_size;
@@ -40,7 +40,7 @@ class Rabins_Chunking : public virtual Chunking_Technique {
     uint64_t digest;
     uint64_t window_size;
 
-    bool tables_initialized;
+    bool tables_initialized = false;
     uint64_t mod_table[256];
     uint64_t out_table[256];
 

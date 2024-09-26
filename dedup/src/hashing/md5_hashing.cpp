@@ -4,6 +4,8 @@
 #include <openssl/md5.h>
 #include <utility>
 
+//MD5 Hashing is now deprecated and is generating build warnings. Discuss removing this at the next meeting.
+
 void MD5_Hashing::hash_chunk(File_Chunk& file_chunk) {
     file_chunk.init_hash(HashingTech::MD5, MD5_DIGEST_LENGTH);
 

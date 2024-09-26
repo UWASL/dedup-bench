@@ -17,33 +17,39 @@ class Fixed_Chunking: public virtual Chunking_Technique{
         uint64_t fixed_chunk_size;
 
     public:
-
+        /**
+        * @brief Default constructor. Initializes fixed_chunk_size to DEFAULT_CHUNK_SIZE
+        * @return: void
+        */
         Fixed_Chunking() {
-            /**
-             * @brief Default constructor. Initializes fixed_chunk_size to DEFAULT_CHUNK_SIZE
-             * @return: void
-             */
             fixed_chunk_size = DEFAULT_FIXED_CHUNK_SIZE;
             technique_name = "Fixed Chunking";
         }
 
+        /**
+        * @brief Constructor with custom fixed_chunk_size
+        * @param _chunk_size: Value for fixed_chunk_size
+        * @return: void
+        */
         Fixed_Chunking(const Config& config){
-            /**
-             * @brief Constructor with custom fixed_chunk_size
-             * @param _chunk_size: Value for fixed_chunk_size
-             * @return: void
-             */
             fixed_chunk_size = config.get_fc_size();
             technique_name = "Fixed Chunking";
         }
 
+        /**
+        * @brief finds the next cut point in an array of bytes
+        * @param buff: the buff to find the cutpoint in.
+        * @param size: the size of the buffer
+        * @return: cutpoint position in the buffer 
+        */
+
+        uint64_t find_cutpoint(char* buff, uint64_t size) override;
+
         // Set and Get functions for fixed_chunk_size
         bool set_fixed_chunk_size(uint64_t _chunk_size);
+        
         uint64_t get_fixed_chunk_size();
-
-        // Implementation of chunk_file from Chunking_Technique
-        std::vector<File_Chunk> chunk_file(std::string file_path);
-        void chunk_stream(std::vector<File_Chunk>& result, std::istream& stream) override;
+        
 };
 
 #endif
