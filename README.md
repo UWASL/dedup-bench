@@ -1,10 +1,7 @@
 # Information
+DedupBench is a benchmarking tool for data chunking techniques used in data deduplication. DedupBench is designed for extensibility, allowing new chunking techniques to be implemented with minimal additional code. DedupBench is also designed to be used with generic datasets, allowing for the comparison of a large number of data chunking techniques on similar grounds. 
 
-Code for the DedupBench project
-
-# Publications
-
-DedupBench has been used in the following publications:
+DedupBench currently supports many state-of-the-art data chunking and hashing algorithms used in data deduplication. It has been used in the following publications:
 
 ```
   [1] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, December. SeqCDC: Hashless Content-Defined Chunking for Data Deduplication. In 2024 ACM/IFIP International Conference on Middleware (MIDDLEWARE). ACM
@@ -92,7 +89,7 @@ The following images from Bitnami were used in the original DedupBench paper at 
   https://marketplace.cloud.vmware.com/services/details/redis?slug=true
 ```
 
-Note that the following images were used in the paper but are unavailable as of Sept 2024.
+Note that the following images were also used in the paper but are unavailable as of Sept 2024.
 ```
   https://marketplace.cloud.vmware.com/services/details/phplist?slug=true
   https://marketplace.cloud.vmware.com/services/details/seopanel?slug=true
