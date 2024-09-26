@@ -35,7 +35,7 @@ DedupBench has been used in the following publications:
   Alternatively, download and use the VM Dataset from DedupBench (details below).
 
 # Running dedup-bench
-1. Edit the configuration file with the required chunking, hashing techniques, and chunk sizes.
+1. Edit the configuration file with the required chunking, hashing techniques, and chunk sizes. Supported parameter values are given below.
    ```
      cd dedup-bench/build/
      vim config.txt
@@ -49,7 +49,31 @@ DedupBench has been used in the following publications:
      ./measure-dedup.exe hash.out
    ```
 
-## VM Dataset from DedupBench 2023:
+# Supported Chunking and Hashing Techniques
+
+The following chunking techniques are currently supported by DedupBench. Note that the `chunking_algo` parameter in the configuration file needs to be edited before a run to switch techniques.
+
+| Chunking Technique | chunking_algo |
+|--------------------|---------------|
+| AE                 | ae            |
+| FastCDC            | fastcdc       |
+| Gear Chunking      | gear          |
+| Rabin's Chunking   | rabins        |
+| RAM                | ram           |
+| SeqCDC             | seq           |
+| TTTD               | tttd          |
+
+The following hashing techniques are currently supported by DedupBench. Note that the `hashing_algo` parameter in the configuration file needs to be edited before a run to switch techniques.
+
+| Hashing Technique | hashing_algo |
+|-------------------|--------------|
+| MD5               | md5          |
+| SHA1              | sha1         |
+| SHA256            | sha256       |
+| SHA512            | sha512       |
+  
+
+# VM Dataset from DedupBench 2023:
 
 The following images from Bitnami were used in the original DedupBench paper at CCECE 2023:
 
