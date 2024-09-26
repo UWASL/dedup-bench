@@ -20,7 +20,7 @@ DedupBench has been used in the following publications:
    ```
 2. Clone and build the repository.
    ```
-     git clone git@github.com:UWASL/dedup-bench.git
+     git clone https://github.com/UWASL/dedup-bench.git
      cd dedup-bench/build/
      make
    ```
