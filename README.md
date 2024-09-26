@@ -4,7 +4,7 @@ DedupBench is a benchmarking tool for data chunking techniques used in data dedu
 DedupBench currently supports many state-of-the-art data chunking and hashing algorithms used in data deduplication. It has been used in the following publications:
 
 ```
-  [1] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, December. SeqCDC: Hashless Content-Defined Chunking for Data Deduplication. In 2024 ACM/IFIP International Conference on Middleware (MIDDLEWARE). ACM
+  [1] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, December. SeqCDC: Hashless Content-Defined Chunking for Data Deduplication. In 2024 ACM/IFIP 25th International Conference on Middleware (MIDDLEWARE). ACM
   [2] Jarah, MA., Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, July. The Impact of Low-Entropy on Chunking Techniques for Data Deduplication. In 2024 IEEE 17th International Conference on Cloud Computing (CLOUD) (pp. 134-140). IEEE.
   [3] Liu, A., Baba, A., Udayashankar, S. and Al-Kiswany, S., 2023, September. DedupBench: A Benchmarking Tool for Data Chunking Techniques. In 2023 IEEE Canadian Conference on Electrical and Computer Engineering (CCECE) (pp. 469-474). IEEE.
 ```
