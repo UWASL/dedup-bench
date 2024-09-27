@@ -13,7 +13,7 @@ DedupBench currently supports many state-of-the-art data chunking and hashing al
 1. Install prerequisites. Note that these commands are for Ubuntu 22.04.
    ```
      sudo apt update
-     sudo apt install libssh-dev
+     sudo apt install libssl-dev
    ```
 2. Clone and build the repository.
    ```
