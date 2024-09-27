@@ -32,14 +32,14 @@ DedupBench currently supports many state-of-the-art data chunking and hashing al
   Alternatively, download and use the VM Dataset from DedupBench (details below).
 
 # Running dedup-bench
-1. Edit the configuration file with the required chunking, hashing techniques, and chunk sizes. Supported parameter values are given below.
+1. Choose the required chunking, hashing techniques, and chunk sizes by modifying `config.txt`. The default configuration runs SeqCDC with an average chunk size of 8 KB. Supported parameter values are given in the next section.
    ```
-     cd dedup-bench/build/
+     cd <dedup_bench_repo_dir>/dedup-bench/build/
      vim config.txt
    ```
-2. Run dedup-bench. Note that the output is generated in a file `hash.out` by default. Throughput and avg chunk size are printed to stdout.
+2. Run dedup-bench. Note that the path to be passed is a directory and that the output is generated in a file `hash.out`. Throughput and avg chunk size are printed to stdout.
    ```
-     ./dedup.exe <path_to_random_dataset> config.txt
+     ./dedup.exe <path_to_random_dataset_dir> config.txt
    ```
 3. Measure space savings. Note that space savings will be zero if the random dataset is used.
    ```
@@ -48,7 +48,10 @@ DedupBench currently supports many state-of-the-art data chunking and hashing al
 
 # Supported Chunking and Hashing Techniques
 
-The following chunking techniques are currently supported by DedupBench. Note that the `chunking_algo` parameter in the configuration file needs to be edited before a run to switch techniques.
+Here are some hints using which `config.txt` can be modified.
+
+### Chunking Techniques
+The following chunking techniques are currently supported by DedupBench. Note that the `chunking_algo` parameter in the configuration file needs to be edited to switch techniques.
 
 | Chunking Technique | chunking_algo |
 |--------------------|---------------|
@@ -60,7 +63,10 @@ The following chunking techniques are currently supported by DedupBench. Note th
 | SeqCDC             | seq           |
 | TTTD               | tttd          |
 
-The following hashing techniques are currently supported by DedupBench. Note that the `hashing_algo` parameter in the configuration file needs to be edited before a run to switch techniques.
+After choosing a `chunking_algo`, make sure to check and adjust its parameters (e.g. chunk sizes). _Note that each `chunking_algo` has a separate parameter section in the config file_. For example, SeqCDC's minimum and maximum chunk sizes are called `seq_min_block_size` and `seq_max_block_size` respectively. 
+
+### Hashing Techniques
+The following hashing techniques are currently supported by DedupBench. Note that the `hashing_algo` parameter in the configuration file needs to be edited to switch techniques.
 
 | Hashing Technique | hashing_algo |
 |-------------------|--------------|
