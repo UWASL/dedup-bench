@@ -56,6 +56,30 @@ HashingTech Config::get_hashing_tech() const {
         "The configuration file does not specify a valid hashing technique");
 }
 
+SIMD_Mode Config::get_simd_mode() const {
+    try {
+        std::string value = parser.get_property(SIMD_MODE_STRING);
+        if (value == "none") {
+            return SIMD_Mode::NONE;
+        } else if (value == "sse128") {
+            return SIMD_Mode::SSE128;
+        } else if (value == "avx256") {
+            return SIMD_Mode::AVX256;
+        } else if (value == "avx512") {
+            if(__builtin_cpu_supports("avx512f"))
+                return SIMD_Mode::AVX512;
+            else
+                throw ConfigError(
+                    "Invalid SIMD Mode in configuration file: AVX-512 not supported by CPU");
+        } else if (value == "sse128_noslide"){
+            return SIMD_Mode::SSE128_NOSLIDE;
+        }
+    } catch (...) {
+    }
+    throw ConfigError(
+        "The configuration file does not specify a valid SIMD mode");
+}
+
 uint64_t Config::get_fc_size() const {
     try {
         std::string value = parser.get_property(FC_SIZE);

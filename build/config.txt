@@ -1,7 +1,8 @@
 # General Parameters
-chunking_algo=seq
+chunking_algo=ram
 hashing_algo=sha1
 output_file=hash.out
+simd_mode=avx256
 
 buffer_size=16384
 
