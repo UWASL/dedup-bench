@@ -160,7 +160,6 @@ uint64_t RAM_Chunking::get_return_position_avx256(char *buff, uint64_t start_pos
     
     uint64_t num_vectors = (end_position - start_position) / AVX256_REGISTER_SIZE_BYTES;
     uint64_t curr_scan_start;
-    __mmask32 all_ones = UINT32_MAX;
 
     // Structures to store bytes from data stream and comparison results in 128-bit SSE format
     __m256i xmm_array, cmp_array;
@@ -180,6 +179,7 @@ uint64_t RAM_Chunking::get_return_position_avx256(char *buff, uint64_t start_pos
          the corresponding bit of cmp_mask is set to 1.
         */
         #if defined(__AVX512F__)
+             __mmask32 all_ones = UINT32_MAX;
             cmp_mask = _mm256_mask_cmpge_epu8_mask(all_ones, xmm_array, max_val_xmm);
         #else
             cmp_array = GreaterOrEqual8uAVX256(xmm_array, max_val_xmm);

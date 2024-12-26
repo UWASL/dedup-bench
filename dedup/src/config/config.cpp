@@ -109,7 +109,7 @@ uint64_t Config::get_rabinc_min_block_size() const {
     } catch (...) {
     }
     throw ConfigError(
-        "The configuration file does not specify a valid minimum block size");
+        "The configuration file does not specify a valid rabins minimum block size");
 }
 
 uint64_t Config::get_rabinc_avg_block_size() const {
