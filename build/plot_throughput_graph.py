@@ -28,6 +28,9 @@ def plot_results():
     global throughput_vals
     sns.barplot(x = throughput_vals.keys(), y = throughput_vals.values())
     plt.tick_params(axis='x', labelsize=8)
+    plt.xlabel("CDC Algorithm")
+    plt.ylabel("Throughput (GB/s)")
+    plt.suptitle("Throughput of CDC Algorithms on given dataset")
     plt.savefig('results_graph.png')
 
     
