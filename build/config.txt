@@ -1,9 +1,10 @@
 # General Parameters
-chunking_algo=seq
+chunking_algo=ram
 hashing_algo=sha1
 output_file=hash.out
+simd_mode=avx256
 
-buffer_size=16384
+buffer_size=32768
 
 # Fixed Size Chunking Parameters
 fc_size=8192
@@ -31,7 +32,7 @@ ae_extreme_mode=max
 ae_avg_block_size=8448
 
 # RAM Parameters
-ram_max_block_size=16384
+ram_max_block_size=32768
 ram_avg_block_size=8448
 
 # TTTD Parameters

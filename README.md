@@ -1,12 +1,13 @@
 # Information
-DedupBench is a benchmarking tool for data chunking techniques used in data deduplication. DedupBench is designed for extensibility, allowing new chunking techniques to be implemented with minimal additional code. DedupBench is also designed to be used with generic datasets, allowing for the comparison of a large number of data chunking techniques on similar grounds. 
+DedupBench is a benchmarking tool for data chunking techniques used in data deduplication. DedupBench is designed for extensibility, allowing new chunking techniques to be implemented with minimal additional code. DedupBench is also designed to be used with generic datasets, allowing for the comparison of a large number of data chunking techniques. 
 
-DedupBench currently supports many state-of-the-art data chunking and hashing algorithms used in data deduplication. It has been used in the following publications:
+DedupBench currently supports many state-of-the-art data chunking and hashing algorithms. Please cite the relevant publications from this list if you use the code from this repository:
 
 ```
-  [1] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, December. SeqCDC: Hashless Content-Defined Chunking for Data Deduplication. In 2024 ACM/IFIP 25th International Conference on Middleware (MIDDLEWARE). ACM
-  [2] Jarah, MA., Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, July. The Impact of Low-Entropy on Chunking Techniques for Data Deduplication. In 2024 IEEE 17th International Conference on Cloud Computing (CLOUD) (pp. 134-140). IEEE.
-  [3] Liu, A., Baba, A., Udayashankar, S. and Al-Kiswany, S., 2023, September. DedupBench: A Benchmarking Tool for Data Chunking Techniques. In 2023 IEEE Canadian Conference on Electrical and Computer Engineering (CCECE) (pp. 469-474). IEEE.
+  [1] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2025, February. VectorCDC: Accelerating Data Deduplication with SSE/AVX Instructions. In 2025 USENIX 23rd Conference on File and Storage Technologies (FAST). USENIX
+  [2] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, December. SeqCDC: Hashless Content-Defined Chunking for Data Deduplication. In 2024 ACM/IFIP 25th International Middleware Conference (MIDDLEWARE). ACM
+  [3] Jarah, MA., Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, July. The Impact of Low-Entropy on Chunking Techniques for Data Deduplication. In 2024 IEEE 17th International Conference on Cloud Computing (CLOUD) (pp. 134-140). IEEE.
+  [4] Liu, A., Baba, A., Udayashankar, S. and Al-Kiswany, S., 2023, September. DedupBench: A Benchmarking Tool for Data Chunking Techniques. In 2023 IEEE Canadian Conference on Electrical and Computer Engineering (CCECE) (pp. 469-474). IEEE.
 ```
 
 # Installation 
@@ -14,14 +15,24 @@ DedupBench currently supports many state-of-the-art data chunking and hashing al
    ```
      sudo apt update
      sudo apt install libssl-dev
+     sudo apt install python3
+     sudo apt install python3-pip
+     python3 -m pip install matplotlib
+     python3 -m pip install seaborn
    ```
 2. Clone and build the repository.
    ```
      git clone https://github.com/UWASL/dedup-bench.git
      cd dedup-bench/build/
+     make clean
      make
    ```
-3. Generate a dataset consisting of random data for testing. This generates three 1GB files with random ASCII characters on Ubuntu 22.04.
+3. If AVX-512 support is required, these are the alternative build commands.
+   ```
+     make clean
+     make EXTRA_COMPILER_FLAGS='-mavx512f -mavx512vl -mavx512bw'
+   ```
+4. Generate a dataset consisting of random data for testing. This generates three 1GB files with random ASCII characters on Ubuntu 22.04.
    ```
      mkdir random_dataset
      cd random_dataset/
@@ -32,9 +43,21 @@ DedupBench currently supports many state-of-the-art data chunking and hashing al
   Alternatively, download and use the VM Dataset from DedupBench (details below).
 
 # Running dedup-bench
-1. Choose the required chunking, hashing techniques, and chunk sizes by modifying `config.txt`. The default configuration runs SeqCDC with an average chunk size of 8 KB. Supported parameter values are given in the next section.
+This section describes how to run dedup-bench.
+## Preconfigured Run - 8 KB chunks
+We have created scripts to run dedup-bench with an 8KB average chunk size on any given dataset. These commands run all the CDC techniques shown in the VectorCDC paper from FAST 2025. Replace `<path_to_dataset>` with the directory of the random dataset you previously created / any other dataset of your choice.
+
+```
+  cd <dedup_bench_repo_dir>/build/
+  ./dedup_script.sh -t 8kb_fast25 <path_to_dataset>
+  python3 plot_throughput_graph.py results.txt
+```
+This will generate a graph showing the throughput of all techniques (including VRAM) on your chosen dataset in `results_graph.png`.
+
+## Manual Runs - Custom techniques/chunk sizes
+1. Choose the required chunking, hashing techniques, and chunk sizes by modifying `config.txt`. The default configuration runs SeqCDC with an average chunk size of 8 KB. Supported parameter values are given in the next section and sample config files are available in `build/config_8kb_fast25/`.
    ```
-     cd <dedup_bench_repo_dir>/dedup-bench/build/
+     cd <dedup_bench_repo_dir>/build/
      vim config.txt
    ```
 2. Run dedup-bench. Note that the path to be passed is a directory and that the output is generated in a file `hash.out`. Throughput and avg chunk size are printed to stdout.
@@ -63,7 +86,17 @@ The following chunking techniques are currently supported by DedupBench. Note th
 | SeqCDC             | seq           |
 | TTTD               | tttd          |
 
-After choosing a `chunking_algo`, make sure to check and adjust its parameters (e.g. chunk sizes). _Note that each `chunking_algo` has a separate parameter section in the config file_. For example, SeqCDC's minimum and maximum chunk sizes are called `seq_min_block_size` and `seq_max_block_size` respectively. 
+After choosing a `chunking_algo`, make sure to check and adjust its parameters (e.g. chunk sizes). _Note that each `chunking_algo` has a separate parameter section in the config file_. For example, SeqCDC's minimum and maximum chunk sizes are called `seq_min_block_size` and `seq_max_block_size` respectively.
+
+### SSE / AVX Acceleration
+To use VectorCDC's RAM (VRAM), set `chunking_algo` to point to RAM and change `simd_mode` to one of the following values:
+| SIMD Mode | simd_mode |
+|-----------|-----------|
+| SSE128    | sse128    |
+| AVX256    | avx256    |
+| AVX512    | avx512    |
+
+Note that only RAM currently supports SSE/AVX acceleration. dedup-bench must be compiled with AVX-512 support to use the `avx512` mode.
 
 ### Hashing Techniques
 The following hashing techniques are currently supported by DedupBench. Note that the `hashing_algo` parameter in the configuration file needs to be edited to switch techniques.
