@@ -27,7 +27,7 @@ DedupBench currently supports many state-of-the-art data chunking and hashing al
      make clean
      make
    ```
-3. If AVX-512 support is required, these are the alternative build commands. Note that building with this option on a machine without AVX-512 support will result in runtime errors.
+3. If AVX-512 support is required, these are the alternative build commands. **_Note that building with this option on a machine without AVX-512 support will result in runtime errors._**
    ```
      make clean
      make EXTRA_COMPILER_FLAGS='-mavx512f -mavx512vl -mavx512bw'
@@ -43,16 +43,23 @@ DedupBench currently supports many state-of-the-art data chunking and hashing al
   Alternatively, download and use the VM Dataset from DedupBench (details below).
 
 # Running dedup-bench
-This section describes how to run dedup-bench.
-## Preconfigured Run - 8 KB chunks
-We have created scripts to run dedup-bench with an 8KB average chunk size on any given dataset. These commands run all the CDC techniques shown in the VectorCDC paper from FAST 2025. Replace `<path_to_dataset>` with the directory of the random dataset you previously created / any other dataset of your choice.
+This section describes how to run dedup-bench. You can run dedup-bench using our preconfigured scripts for 8KB chunks or manually if you want custom techniques/chunk sizes.
 
+## Preconfigured Run - 8 KB chunks
+We have created scripts to run dedup-bench with an 8KB average chunk size on any given dataset. These commands run all the CDC techniques shown in the VectorCDC paper from FAST 2025. 
+1. Go into the dedup-bench build directory.
 ```
-  cd <dedup_bench_repo_dir>/build/
+  cd <dedup_bench_root_dir>/build/
+```
+2. Run dedup-script with your chosen dataset. Replace `<path_to_dataset>` with the directory of the random dataset you previously created / any other dataset of your choice.
+```
   ./dedup_script.sh -t 8kb_fast25 <path_to_dataset>
+```
+3. Plot a graph with the throughput results from all CDC algorithms (including VRAM) on your dataset. The graph is saved in `results_graph.png`.
+```
   python3 plot_throughput_graph.py results.txt
 ```
-This will generate a graph showing the throughput of all techniques (including VRAM) on your chosen dataset in `results_graph.png`.
+
 
 ## Manual Runs - Custom techniques/chunk sizes
 1. Choose the required chunking, hashing techniques, and chunk sizes by modifying `config.txt`. The default configuration runs SeqCDC with an average chunk size of 8 KB. Supported parameter values are given in the next section and sample config files are available in `build/config_8kb_fast25/`.
