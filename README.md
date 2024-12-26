@@ -27,7 +27,7 @@ DedupBench currently supports many state-of-the-art data chunking and hashing al
      make clean
      make
    ```
-3. If AVX-512 support is required, these are the alternative build commands.
+3. If AVX-512 support is required, these are the alternative build commands. Note that building with this option on a machine without AVX-512 support will result in runtime errors.
    ```
      make clean
      make EXTRA_COMPILER_FLAGS='-mavx512f -mavx512vl -mavx512bw'
