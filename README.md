@@ -88,7 +88,7 @@ The following chunking techniques are currently supported by DedupBench. Note th
 
 After choosing a `chunking_algo`, make sure to check and adjust its parameters (e.g. chunk sizes). _Note that each `chunking_algo` has a separate parameter section in the config file_. For example, SeqCDC's minimum and maximum chunk sizes are called `seq_min_block_size` and `seq_max_block_size` respectively.
 
-### VectorCDC
+### SSE / AVX Acceleration
 To use VectorCDC's RAM (VRAM), set `chunking_algo` to point to RAM and change `simd_mode` to one of the following values:
 | SIMD Mode | simd_mode |
 |-----------|-----------|
