@@ -1,7 +1,7 @@
 # Information
 DedupBench is a benchmarking tool for data chunking techniques used in data deduplication. DedupBench is designed for extensibility, allowing new chunking techniques to be implemented with minimal additional code. DedupBench is also designed to be used with generic datasets, allowing for the comparison of a large number of data chunking techniques. 
 
-DedupBench currently supports many state-of-the-art data chunking and hashing algorithms used in data deduplication. Please cite the relevant publications from this list if you use the code from this repository:
+DedupBench currently supports many state-of-the-art data chunking and hashing algorithms. Please cite the relevant publications from this list if you use the code from this repository:
 
 ```
   [1] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2025, February. VectorCDC: Accelerating Data Deduplication with SSE/AVX Instructions. In 2025 USENIX 23rd Conference on File and Storage Technologies (FAST). USENIX
@@ -44,8 +44,8 @@ DedupBench currently supports many state-of-the-art data chunking and hashing al
 
 # Running dedup-bench
 This section describes how to run dedup-bench.
-## Automated Run - 8 KB chunks
-We have created scripts to run dedup-bench with an 8KB average chunk size on any given dataset. These commands run all the CDC techniques shown in the VectorCDC paper from FAST 2025. Replace `<path_to_dataset>` with the path to the random dataset you previously created.
+## Preconfigured Run - 8 KB chunks
+We have created scripts to run dedup-bench with an 8KB average chunk size on any given dataset. These commands run all the CDC techniques shown in the VectorCDC paper from FAST 2025. Replace `<path_to_dataset>` with the directory of the random dataset you previously created / any other dataset of your choice.
 
 ```
   cd <dedup_bench_repo_dir>/build/
