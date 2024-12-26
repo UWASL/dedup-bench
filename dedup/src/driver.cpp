@@ -122,10 +122,10 @@ int main(int argc, char* argv[]) {
      * @todo: Add Config class which takes in parameters
      */
     if (argc > 4 || argc < 3) {
-        std::cout << "Usage: ./dedup.exe <file_path> <config_file_path> [bool]"
+        std::cout << "Usage: ./dedup.exe <directory_path> <config_file_path> [bool]"
                   << std::endl;
         std::cout
-            << "\t  <file_path>: Path to file to run chunking and hashing on."
+            << "\t  <directory_path>: Path to directory to run chunking and hashing on."
             << std::endl;
         std::cout << "\t  <config_file_path>: Path to the config file."
                   << std::endl;
@@ -179,7 +179,7 @@ int main(int argc, char* argv[]) {
                 chunk_method = std::make_unique<RAM_Chunking>(config);
                 break;
             case ChunkingTech::CRC:
-                chunk_method = std::make_unique<Crc_Chunking>(config);
+                chunk_method = std::make_unique<SS_CRC_Chunking>(config);
                 break;
             case ChunkingTech::SEQ:
                 chunk_method = std::make_unique<Seq_Chunking>(config);
