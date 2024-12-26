@@ -42,18 +42,17 @@ OBJS_CONFIG = $(SRC_CONFIG:$(SRC_PATH_CONFIG)/%.cpp=%.o)
 DEPS_CONFIG = $(wildcard $(INCLUDE_PATH_CONFIG)/*.hpp)
 
 
-COMPILER_FLAGS= -std=c++17 -Wall -Wextra -Wno-format -msse -msse2 -msse3 -msse4.1 -mavx -mavx2 -O3 ${EXTRA_COMPILER_FLAGS}
+COMPILER_FLAGS= -std=c++17 -Wall -Wextra -Wno-format -O2 ${EXTRA_COMPILER_FLAGS}
 
 CC = g++
 RM = rm -f
-
-# For AVX-512, pass '-mavx512f -mavx512vl -mavx512bw' as EXTRA_COMPILER_FLAGS
 
 DEBUG = 1
 
 ifeq ($(DEBUG), 1)
 	$(COMPILER_FLAGS) += -g
 endif
+
 
 default: $(EXEC_NAME)
 all: $(EXEC_NAME)
@@ -88,3 +87,4 @@ $(OBJS_CONFIG): %.o: $(SRC_PATH_CONFIG)/%.cpp $(DEPS_CONFIG) $(MAKEFILE)
 
 clean:
 	$(RM) *.o *.d *.exe
+

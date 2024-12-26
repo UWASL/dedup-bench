@@ -64,14 +64,6 @@ enum class ChunkingTech {
     TTTD,
 };
 
-enum class SIMD_Mode{
-    NONE,
-    SSE128_NOSLIDE,
-    SSE128,
-    AVX256,
-    AVX512
-};
-
 // define the possible hashing algorithms
 enum class HashingTech { MD5, SHA1, SHA256, SHA512 };
 // define the the extreme value type of AE algorithm
@@ -100,13 +92,6 @@ class Config {
      * @return HashingTech
      */
     HashingTech get_hashing_tech() const;
-
-    /**
-     * @brief Get the SIMD mode for chunking technique
-     * 
-     * @return SIMD_Mode
-     */
-    SIMD_Mode get_simd_mode() const;
 
     /**
      * @brief Get the size (in number of bytes) of a chunk when using fixed-size
