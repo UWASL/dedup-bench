@@ -51,7 +51,7 @@ We have created scripts to run dedup-bench with an 8KB average chunk size on any
 ```
   cd <dedup_bench_root_dir>/build/
 ```
-2. Run dedup-script with your chosen dataset. Replace `<path_to_dataset>` with the directory of the random dataset you previously created / any other dataset of your choice.
+2. Run dedup-script with your chosen dataset. Replace `<path_to_dataset>` with the directory of the random dataset you previously created / any other dataset of your choice. **_Note that VRAM-512 will not run when compiled without AVX-512 support_**.
 ```
   ./dedup_script.sh -t 8kb_fast25 <path_to_dataset>
 ```
