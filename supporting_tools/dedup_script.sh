@@ -61,6 +61,9 @@ fi
 
 # Execute dedup.exe with each config file
 if [[ $SILENT == false ]]; then echo "Running dedup.exe and ./measure-dedup.exe for each configuration file"; fi
+rm -f results.txt
+rm -rf "./hashes_${now}/"
+mkdir "./hashes_${now}/"
 for config_file in $(ls config_${now}); do
   echo "==================" >> ./results.txt
   echo $config_file >> ./results.txt
