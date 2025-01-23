@@ -40,7 +40,7 @@ DedupBench currently supports many state-of-the-art data chunking and hashing al
      base64 /dev/urandom | head -c 1000000000 > random_2.txt
      base64 /dev/urandom | head -c 1000000000 > random_3.txt
    ```
-  Alternatively, download and use the VM Dataset from DedupBench (details below).
+  Alternatively, download and use the _DEB_ dataset used in our FAST 2025 paper from [Kaggle](https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25).
 
 # Running dedup-bench
 This section describes how to run dedup-bench. You can run dedup-bench using our preconfigured scripts for 8KB chunks or manually if you want custom techniques/chunk sizes.
