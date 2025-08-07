@@ -14,6 +14,7 @@
 #include <cmath>
 #include <cstring>
 #include <filesystem>
+#include <cstdint>
 #include <fstream>
 #include <memory>
 #include <string>
