@@ -6,6 +6,8 @@
   <a href="#-quick-start-guide"> 🚀 Quick Start</a> | <a href="#news">⭐News</a> | <a href="#-research-papers"> 🔖 Cite us </a> | <a href="https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25"> 💾 VM Images Dataset </a> | <a href="#faq">❓FAQ </a> | <a href="#️-people"> 💂‍♂️ People </a>
 </p></h3>
 
+[![Build](https://github.com/UWASL/dedup-bench/actions/workflows/makefile.yml/badge.svg?branch=main)](https://github.com/UWASL/dedup-bench/actions/workflows/makefile.yml)
+
 # 🎉 Introduction
 
 DedupBench is a benchmarking tool for data chunking techniques used in data deduplication. It is designed for extensibility, allowing new chunking and fingerprinting techniques to be implemented with minimal additional code. DedupBench is designed to be used with any dataset, allowing for the quick comparison of a large number of chunking techniques on user-specified data. 
@@ -31,7 +33,7 @@ The following chunking techniques and SIMD accelerations are currently supported
 # ⭐News
 - *Aug. 2025*: We have released DedupBench v2.0 with ARM / IBM vector acceleration support, xxHash compatibility and much more!
 - *Feb. 2025*:  VectorCDC has been published in [FAST](https://www.usenix.org/conference/fast25/presentation/udayashankar)!
-- *Jan. 2025*: We have released the [DEB dataset](https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25) on Kaggle
+- *Jan. 2025*: We have released the [DEB dataset](https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25) on Kaggle.
 
 
 # 🚀 Quick start guide
