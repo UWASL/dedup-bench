@@ -12,7 +12,7 @@
 
 DedupBench is a benchmarking tool for data chunking techniques used in data deduplication. It is designed for extensibility, allowing new chunking and fingerprinting techniques to be implemented with minimal additional code. DedupBench is designed to be used with any dataset, allowing for the quick comparison of a large number of chunking techniques on user-specified data. 
 
-It currently supports eleven different chunking algorithms and six different fingerprinting algorithms. It supports SIMD acceleration for these algorithms with five different vector instruction sets on Intel, AMD, ARM, and IBM CPUs. 
+It currently supports eleven different chunking algorithms and six different fingerprinting algorithms. It supports SIMD acceleration with [VectorCDC](https://www.usenix.org/conference/fast25/presentation/udayashankar) for hashless algorithms with five different vector instruction sets on Intel, AMD, ARM, and IBM CPUs. 
 
 The following chunking techniques and SIMD accelerations are currently supported by DedupBench.
 
