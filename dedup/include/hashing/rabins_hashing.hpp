@@ -69,7 +69,7 @@ class Rabins_Hashing {
     int shift;
     u_int64_t T[256];      // Lookup table for mod
     u_int64_t U[256];      // Lookup table for mod
-    uint64_t window_size;  // sl
+    u_int64_t window_size;  // sl
 
     unsigned char *circbuf;    // circular buffer of size 'window_size'
     unsigned int circbuf_pos;  // current position in circular buffer
