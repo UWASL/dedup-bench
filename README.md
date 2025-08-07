@@ -3,7 +3,7 @@
 <h2><p align="center">Benchmarking Chunking Techniques for Data Deduplication</p></h2>
 
 <h3><p align="center"> 
-  <a href="#-quick-start-guide"> 🚀 Quick Start</a> | <a href="#news">⭐News</a> | <a href="#-research-papers"> 🔖 Research Papers </a> | <a href="https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25"> 💾 VM Images Dataset </a> | <a href="#faq">❓FAQ </a> | <a href="#contact"> 💂‍♂️ People </a>
+  <a href="#-quick-start-guide"> 🚀 Quick Start</a> | <a href="#news">⭐News</a> | <a href="#-research-papers"> 🔖 Cite us </a> | <a href="https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25"> 💾 VM Images Dataset </a> | <a href="#faq">❓FAQ </a> | <a href="#️-people"> 💂‍♂️ People </a>
 </p></h3>
 
 # 🎉 Introduction
