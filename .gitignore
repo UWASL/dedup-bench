@@ -36,3 +36,7 @@
 
 # MacOS files
 **/.DS_Store
+
+results.txt
+results_*.txt
+results_graph.png

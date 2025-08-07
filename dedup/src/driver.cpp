@@ -32,24 +32,25 @@
 #include "crc_chunking.hpp"
 #include "seq_chunking.hpp"
 #include "tttd_chunking.hpp"
+#include "maxp_chunking.hpp"
 
 #include "md5_hashing.hpp"
 #include "sha1_hashing.hpp"
 #include "sha256_hashing.hpp"
 #include "sha512_hashing.hpp"
+#include "xxhash_hashing.hpp"
+#include "murmurhash3_hashing.hpp"
 
 bool disable_hashing = false;
 
 static void driver_function(const std::filesystem::path& dir_path,
-                            std::unique_ptr<Chunking_Technique>& chunk_method,
-                            const std::string& output_file) {
+                            std::unique_ptr<Chunking_Technique>& chunk_method, const std::string& output_file) {
     /**
      * @brief Uses the specified chunking technique to chunk the file, hash it
      * using the specified hashing technique and print the hashes
      * @param chunk_method: Chunking Technique Object. Object from a class
      * inheriting the Chunking_Technique interface.
-     * @param hash_method: Hash Technique Object. Object from a class inheriting
-     * the Hashing_Technique interface.
+     * @param output_file: Output file path for writing hashes to
      * @return: void
      *
      */
@@ -109,8 +110,7 @@ static void driver_function(const std::filesystem::path& dir_path,
     std::cout << "Avg Chunk size: " << total_bytes / chunk_count
               << std::endl;
 
-    std::cout << "Chunking Throughput (MB/sec): "
-              << total_mb / total_seconds_chunking << std::endl;
+    std::cout << "Chunking Throughput (MB/sec): " << total_mb / total_seconds_chunking << std::endl;
     std::cout << "Hashing Throughput (MB/sec): "
               << total_mb / total_seconds_hashing << std::endl;
 }
@@ -122,10 +122,10 @@ int main(int argc, char* argv[]) {
      * @todo: Add Config class which takes in parameters
      */
     if (argc > 4 || argc < 3) {
-        std::cout << "Usage: ./dedup.exe <directory_path> <config_file_path> [bool]"
+        std::cout << "Usage: ./dedup.exe <file_path> <config_file_path> [bool]"
                   << std::endl;
         std::cout
-            << "\t  <directory_path>: Path to directory to run chunking and hashing on."
+            << "\t  <file_path>: Path to file to run chunking and hashing on."
             << std::endl;
         std::cout << "\t  <config_file_path>: Path to the config file."
                   << std::endl;
@@ -181,6 +181,9 @@ int main(int argc, char* argv[]) {
             case ChunkingTech::CRC:
                 chunk_method = std::make_unique<SS_CRC_Chunking>(config);
                 break;
+            case ChunkingTech::MAXP:
+                chunk_method = std::make_unique<MAXP_Chunking>(config);
+                break;
             case ChunkingTech::SEQ:
                 chunk_method = std::make_unique<Seq_Chunking>(config);
                 break;
@@ -204,6 +207,12 @@ int main(int argc, char* argv[]) {
                     break;
                 case HashingTech::SHA512:
                     chunk_method -> hash_method = std::make_unique<SHA512_Hashing>();
+                    break;
+                case HashingTech::XXHASH128:
+                    chunk_method -> hash_method = std::make_unique<XXHash_Hashing>();
+                    break;
+                case HashingTech::MURMURHASH3:
+                    chunk_method -> hash_method = std::make_unique<MurmurHash3_Hashing>();
                     break;
                 default:
                     std::cerr << "Unimplemented hashing technique" << std::endl;

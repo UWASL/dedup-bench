@@ -17,6 +17,9 @@
 #include <memory>
 #include <sstream>
 #include <istream>
+#include <cstdint>
+#include <iostream>
+
 #include "hash.hpp"
 #include "config.hpp"
 #include "file_chunk.hpp"
@@ -47,13 +50,18 @@ class Chunking_Technique{
         std::chrono::duration<double, std::milli> total_time_hashing =
         std::chrono::duration<double, std::milli>::zero();
         /**
-         * @brief Chunk a file using a chunking technique and return the struct File_Chunks from this operation
+         * @brief Chunk a buffer using a chunking technique and return a single chunk boundary from this operation
          * 
-         * @param file_path: String containing path to file
-         * @return: Vector of struct File_Chunk
+         * @param buffer: Data stream of bytes
+         * @param buffer_size: Size of buffer
+         * @return: uint64_t indicating boundary position
          */
-        virtual uint64_t find_cutpoint(char*, uint64_t buffer_size){
-            return buffer_size;
+        virtual uint64_t find_cutpoint(char* buffer, uint64_t buffer_size){
+            if(buffer != nullptr)
+                return buffer_size;
+            else
+                std::cout << "Null buffer received" << std::endl; 
+            return 0;
         }
 
         /**
