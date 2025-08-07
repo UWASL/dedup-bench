@@ -35,6 +35,10 @@ ae_avg_block_size=8448
 ram_max_block_size=32768
 ram_avg_block_size=8448
 
+# MAXP Parameters
+maxp_window_size = 960
+maxp_max_block_size = 32768
+
 # TTTD Parameters
 tttd_min_block_size=4096
 tttd_avg_block_size=8192

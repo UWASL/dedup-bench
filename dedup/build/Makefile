@@ -20,7 +20,7 @@ INCLUDE_FLAGS += -I ${INCLUDE_PATH_HASHING}
 INCLUDE_FLAGS += -I ${INCLUDE_PATH_CONFIG}
 INCLUDE_FLAGS += -I ${INCLUDE_PATH_OPENSSL}
 
-LD_FLAGS = -L /usr/local/opt/openssl@3/lib -lcrypto
+LD_FLAGS = -L /usr/local/opt/openssl@3/lib -lcrypto -lxxhash
 
 SRC_PATH = ../src
 SRC_MAIN = $(wildcard $(SRC_PATH)/*.cpp)
@@ -41,13 +41,19 @@ SRC_CONFIG = $(wildcard $(SRC_PATH_CONFIG)/*.cpp)
 OBJS_CONFIG = $(SRC_CONFIG:$(SRC_PATH_CONFIG)/%.cpp=%.o)
 DEPS_CONFIG = $(wildcard $(INCLUDE_PATH_CONFIG)/*.hpp)
 
+# Only compiles unaccelerated code by default.
+# To enable acceleration, pass the appropriate flags as EXTRA_COMPILER_FLAGS.
+# 	For SSE-128, pass '-msse -msse2 -msse3 -msse4.1' as EXTRA_COMPILER_FLAGS
+# 	For AVX-256, pass '-mavx -mavx2' as EXTRA_COMPILER_FLAGS
+# 	For BMI2, pass '-mbmi -mbmi2' as EXTRA_COMPILER_FLAGS (used only in VSEQ)
+# 	For AVX-512, pass '-mavx512f -mavx512vl -mavx512bw' as EXTRA_COMPILER_FLAGS
 
-COMPILER_FLAGS= -std=c++17 -Wall -Wextra -Wno-format -msse -msse2 -msse3 -msse4.1 -mavx -mavx2 -O3 ${EXTRA_COMPILER_FLAGS}
+# 	For everything except AVX-512, pass '-msse -msse2 -msse3 -msse4.1 -mavx -mavx2 -mbmi -mbmi2' as EXTRA_COMPILER_FLAGS
+
+COMPILER_FLAGS= -std=c++17 -Wall -Wextra -Wno-format -O3 -Wno-implicit-fallthrough ${EXTRA_COMPILER_FLAGS}
 
 CC = g++
 RM = rm -f
-
-# For AVX-512, pass '-mavx512f -mavx512vl -mavx512bw' as EXTRA_COMPILER_FLAGS
 
 DEBUG = 1
 

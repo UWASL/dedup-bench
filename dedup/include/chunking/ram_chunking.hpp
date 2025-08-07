@@ -18,9 +18,25 @@ class RAM_Chunking : public virtual AVX_Chunking_Technique {
     uint64_t window_size;
     uint64_t curr_pos;
 
-    __m128i *sse_array;
-    __m256i *avx256_array;
-    __m512i *avx512_array;
+    #ifdef __SSE3__
+      __m128i *sse_array;
+    #endif
+
+    #ifdef __AVX2__
+      __m256i *avx256_array;
+    #endif
+
+    #if defined(__AVX512F__)
+      __m512i *avx512_array;
+    #endif
+
+    #ifdef __ARM_NEON
+      uint8x16_t *neon_array;
+    #endif
+
+    #ifdef __ALTIVEC__
+      __vector unsigned char *altivec_array;
+    #endif
 
     /**
      * @brief finds the next cut point in an array of bytes
@@ -38,12 +54,6 @@ class RAM_Chunking : public virtual AVX_Chunking_Technique {
      * @param max_value Max value within fixed size window
      * @return uint64_t Return position in stream
      */
-    uint64_t get_return_position_sse128(char *buff, uint64_t start_position, uint64_t end_position, uint8_t max_value);
-    uint64_t get_return_position_avx256(char *buff, uint64_t start_position, uint64_t end_position, uint8_t max_value);
-    #if defined(__AVX512F__)
-        uint64_t get_return_position_avx512(char *buff, uint64_t start_position, uint64_t end_position, uint8_t max_value);
-    #endif
-
     
    public:
     /**

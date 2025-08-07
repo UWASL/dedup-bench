@@ -23,8 +23,8 @@ ChunkingTech Config::get_chunking_tech() const {
             return ChunkingTech::FASTCDC;
         } else if (value == "ram") {
             return ChunkingTech::RAM;
-        } else if (value == "experiment") {
-            return ChunkingTech::EXPERIMENT;
+        } else if(value == "maxp"){
+            return ChunkingTech::MAXP;
         } else if (value == "crc") {
             return ChunkingTech::CRC;
         } else if (value == "seq") {
@@ -49,7 +49,11 @@ HashingTech Config::get_hashing_tech() const {
             return HashingTech::SHA512;
         } else if (value == "md5") {
             return HashingTech::MD5;
-        }
+        } else if (value == "xxhash128") {
+            return HashingTech::XXHASH128;
+        } else if (value == "murmurhash3") {
+            return HashingTech::MURMURHASH3;
+        } 
     } catch (...) {
     }
     throw ConfigError(
@@ -61,23 +65,44 @@ SIMD_Mode Config::get_simd_mode() const {
         std::string value = parser.get_property(SIMD_MODE_STRING);
         if (value == "none") {
             return SIMD_Mode::NONE;
-        } else if (value == "sse128") {
-            return SIMD_Mode::SSE128;
-        } else if (value == "avx256") {
-            return SIMD_Mode::AVX256;
-        } else if (value == "avx512") {
-            if(__builtin_cpu_supports("avx512f"))
+        } 
+        #ifdef __SSE3__
+            else if (value == "sse128") {
+                return SIMD_Mode::SSE128;
+            } 
+            else if (value == "sse128_noslide"){
+                return SIMD_Mode::SSE128_NOSLIDE;
+            }
+        #endif
+        
+        #ifdef __AVX2__
+            else if (value == "avx256") {
+                return SIMD_Mode::AVX256;
+            }
+        #endif
+        
+        #ifdef __AVX512F__
+            else if (value == "avx512") {
                 return SIMD_Mode::AVX512;
-            else
-                throw ConfigError(
-                    "Invalid SIMD Mode in configuration file: AVX-512 not supported by CPU");
-        } else if (value == "sse128_noslide"){
-            return SIMD_Mode::SSE128_NOSLIDE;
+            }
+        #endif
+        #ifdef __ARM_NEON
+            else if (value == "neon128") {
+                return SIMD_Mode::NEON;
+            }
+        #endif
+        #ifdef __ALTIVEC__
+            else if (value == "altivec128") {
+                return SIMD_Mode::ALTIVEC;
+            }
+        #endif
+        else {
+            throw ConfigError("Unsupported SIMD mode");
         }
     } catch (...) {
     }
     throw ConfigError(
-        "The configuration file does not specify a valid SIMD mode");
+        "Unsupported SIMD mode. Please check compilation flags and configuration file.");
 }
 
 uint64_t Config::get_fc_size() const {
@@ -109,7 +134,7 @@ uint64_t Config::get_rabinc_min_block_size() const {
     } catch (...) {
     }
     throw ConfigError(
-        "The configuration file does not specify a valid rabins minimum block size");
+        "The configuration file does not specify a valid minimum block size");
 }
 
 uint64_t Config::get_rabinc_avg_block_size() const {
@@ -506,5 +531,27 @@ uint64_t Config::get_tttd_max_block_size() const {
     }
     throw ConfigError(
         "The configuration file does not specify a valid TTTD max block "
+        "size");
+}
+
+uint64_t Config::get_maxp_window_size() const {
+    try {
+        std::string value = parser.get_property(MAXP_WINDOW_SIZE);
+        return std::stoull(value);
+    } catch (...) {
+    }
+    throw ConfigError(
+        "The configuration file does not specify a valid MAXP window "
+        "size");
+}
+
+uint64_t Config::get_maxp_max_block_size() const {
+    try {
+        std::string value = parser.get_property(MAXP_MAX_BLOCK_SIZE);
+        return std::stoull(value);
+    } catch (...) {
+    }
+    throw ConfigError(
+        "The configuration file does not specify a valid MAXP maximum chunk "
         "size");
 }

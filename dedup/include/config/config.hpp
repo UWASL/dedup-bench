@@ -3,8 +3,11 @@
 #define _CONFIG_
 #include "parser.hpp"
 
+#include <cstdint>
+
 #define CHUNKING_TECH "chunking_algo"
 #define HASHING_TECH "hashing_algo"
+#define CHUNKING_MODE "chunking_mode"
 #define SIMD_MODE_STRING "simd_mode"
 
 #define FC_SIZE "fc_size"
@@ -32,6 +35,8 @@
 #define CRC_WINDOW_STEP_SIZE "crc_window_step_size"
 #define CRC_HASH_BITS "crc_hash_bits"
 #define BUFFER_SIZE "buffer_size"
+#define MAXP_WINDOW_SIZE "maxp_window_size"
+#define MAXP_MAX_BLOCK_SIZE "maxp_max_block_size"
 #define SEQ_JUMP_TRIGGER "seq_jump_trigger"
 #define SEQ_CHUNK_BOUNDARY_THRESHOLD "seq_sequence_threshold"
 #define SEQ_JUMP_SIZE "seq_jump_size"
@@ -57,6 +62,7 @@ enum class ChunkingTech {
     AE,
     GEAR,
     FASTCDC,
+    MAXP,
     RAM,
     EXPERIMENT,
     CRC,
@@ -69,13 +75,18 @@ enum class SIMD_Mode{
     SSE128_NOSLIDE,
     SSE128,
     AVX256,
-    AVX512
+    AVX512,
+    NEON,
+    ALTIVEC
 };
 
 // define the possible hashing algorithms
-enum class HashingTech { MD5, SHA1, SHA256, SHA512 };
+enum class HashingTech { MD5, SHA1, SHA256, SHA512, XXHASH128, MURMURHASH3 };
+
 // define the the extreme value type of AE algorithm
 enum AE_Mode { MAX, MIN };
+
+// define SeqCDC operating modes
 enum Seq_Op_Mode { INCREASING, DECREASING };
 
 
@@ -93,27 +104,28 @@ class Config {
      */
     ChunkingTech get_chunking_tech() const;
 
-    /**
-     * @brief Get the hashing algorithm specified in the config file.
+     /**
+     * @brief Get the chunking mode specified in the config file.
      * throws ConfigError if the key does not exist or if the value is invalid
      *
-     * @return HashingTech
+     * @return ChunkingMode
      */
     HashingTech get_hashing_tech() const;
 
+    
     /**
      * @brief Get the SIMD mode for chunking technique
      * 
      * @return SIMD_Mode
      */
     SIMD_Mode get_simd_mode() const;
-
+    
     /**
      * @brief Get the size (in number of bytes) of a chunk when using fixed-size
      * chunking throws ConfigError if the key does not exist or if the value is
      * invalid
      *
-     * @return HashingTech
+     * @return uint64_t
      */
 
     uint64_t get_fc_size() const;
@@ -408,6 +420,15 @@ class Config {
      *
      * @return uint64_t
      */
+
+    uint64_t get_maxp_window_size() const;
+    uint64_t get_maxp_max_block_size() const;
+     
+     /**
+      * @brief: Get MAXP window size
+      * 
+      * @return uint64_t
+      */
 };
 
 #endif
