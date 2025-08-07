@@ -24,14 +24,6 @@ while (( "$#" )); do
         display_help
         ;;
     -c)
-      COMPRESS=true
-      shift
-      ;;
-    -s)
-      SILENT=true
-      shift
-      ;;
-    -t)
       now="$2"
       shift 2
       ;;
@@ -53,17 +45,12 @@ if [[ -z "$DIRECTORY" ]]; then
   exit 1
 fi
 
-if [[ $COMPRESS == true ]]; then
-  # Compress all files in the given directory
-  if [[ $SILENT == false ]]; then echo "Compressing files in directory $DIRECTORY"; fi
-  gzip $DIRECTORY/*
-fi
-
 # Execute dedup.exe with each config file
 if [[ $SILENT == false ]]; then echo "Running dedup.exe and ./measure-dedup.exe for each configuration file"; fi
 rm -f results.txt
 rm -rf "./hashes_${now}/"
 mkdir "./hashes_${now}/"
+echo "Dataset path: $DIRECTORY" >> ./results.txt
 for config_file in $(ls config_${now}); do
   echo "==================" >> ./results.txt
   echo $config_file >> ./results.txt

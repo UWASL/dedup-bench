@@ -11,7 +11,9 @@ function display_help() {
     echo "Usage: $0 [OPTIONS] <DIRECTORY>"
     echo "Options:"
     echo "  -h, --help          Show this help message"
-    echo "  -c, config directory name (without config_ included) Eg: -c simd_8kb"
+    echo "  -c, Compress all files in the given directory"
+    echo "  -s, Silent mode (no output to console)"
+    echo "  -t, current time or suffix for output naming"
     exit 1
 }
 

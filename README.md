@@ -1,73 +1,163 @@
-# Information
-DedupBench is a benchmarking tool for data chunking techniques used in data deduplication. DedupBench is designed for extensibility, allowing new chunking techniques to be implemented with minimal additional code. DedupBench is also designed to be used with generic datasets, allowing for the comparison of a large number of data chunking techniques. 
+![DedupBench Logo](images/dedupbench_logo.png)
 
-DedupBench currently supports many state-of-the-art data chunking and hashing algorithms. Please cite the relevant publications from this list if you use the code from this repository:
+<h2><p align="center">Benchmarking Chunking Techniques for Data Deduplication</p></h2>
 
+<h3><p align="center"> 
+  <a href="#-quick-start-guide"> 🚀 Quick Start</a> | <a href="#news">⭐News</a> | <a href="#-research-papers"> 🔖 Research Papers </a> | <a href="https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25"> 💾 VM Images Dataset </a> | <a href="#faq">❓FAQ </a> | <a href="#contact"> 💂‍♂️ People </a>
+</p></h3>
+
+# 🎉 Introduction
+
+DedupBench is a benchmarking tool for data chunking techniques used in data deduplication. It is designed for extensibility, allowing new chunking and fingerprinting techniques to be implemented with minimal additional code. DedupBench is designed to be used with any dataset, allowing for the quick comparison of a large number of chunking techniques on user-specified data. 
+
+It currently supports eleven different chunking algorithms and six different fingerprinting algorithms. It supports SIMD acceleration for these algorithms with five different vector instruction sets on Intel, AMD, ARM, and IBM CPUs. 
+
+The following chunking techniques and SIMD accelerations are currently supported by DedupBench.
+
+| CDC Algorithm | Link | Unaccelerated | SSE-128 | AVX-256 | AVX-512 | NEON-128 (ARM) | VSX-128 (IBM) |
+| :-------: | :-------: | :-------: | :-------: | :-------: | :-------: | :-------: | :-------: |
+| AE-Max | [Paper](https://ieeexplore.ieee.org/document/7218510) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| AE-Min | [Paper](https://ieeexplore.ieee.org/document/7218510) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| CRC-32 | [GitHub](https://github.com/google/crc32c) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| FastCDC | [Paper](https://www.usenix.org/conference/atc16/technical-sessions/presentation/xia) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Fixed-size | [Paper](https://www.usenix.org/conference/fast-02/venti-new-approach-archival-data-storage) |  ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Gear | [Paper](https://www.sciencedirect.com/science/article/pii/S0166531614000790) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| MAXP| [Paper](https://www.sciencedirect.com/science/article/pii/S0022000009000580) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Rabin | [Paper](https://dl.acm.org/doi/abs/10.1145/502034.502052) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| RAM | [Paper](https://www.sciencedirect.com/science/article/abs/pii/S0167739X16305829) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| SeqCDC | [Paper](https://dl.acm.org/doi/10.1145/3652892.3700766) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| TTTD | [Paper](https://shiftleft.com/mirrors/www.hpl.hp.com/techreports/2005/HPL-2005-30R1.pdf) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+# ⭐News
+- *Aug. 2025*: We have released DedupBench v2.0 with ARM / IBM vector acceleration support, xxHash compatibility and much more!
+- *Feb. 2025*:  VectorCDC has been published in [FAST](https://www.usenix.org/conference/fast25/presentation/udayashankar)!
+- *Jan. 2025*: We have released the [DEB dataset](https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25) on Kaggle
+
+
+# 🚀 Quick start guide
+To quickly get started, run the following commands on Ubuntu:
+
+1. Clone repository and create a basic build without SIMD acceleration.
 ```
-  [1] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2025, February. VectorCDC: Accelerating Data Deduplication with SSE/AVX Instructions. In 2025 USENIX 23rd Conference on File and Storage Technologies (FAST). USENIX
+  git clone git@github.com:UWASL/dedup-bench.git
+  cd dedup-bench/
+  sh ./install.sh
+```
+  
+
+3. Run a preconfigured run with 8KB average chunk sizes and unaccelerated algorithms.
+```
+    cd build/
+    ./dedup_script.sh -c unaccelerated_8kb random_dataset
+    python3 plot_results.py results.txt
+```
+
+This should generate graphs titled _results_graph.png_ similar to the one below. Note that the space savings will be zero for all algorithms, as the default run uses the random dataset. 
+
+To see a real dataset in action and generate the graph below, download and use the _DEB_ dataset used in our Middleware 2024 / FAST 2025 papers from [💾 VM Images Dataset](https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25). This graph is from an AMD EPYC Rome machine.
+
+![DEB-dataset results](images/sample_results_graph.png)
+
+
+# ⚡ DedupBench SIMD Builds
+
+To use any of the vector-accelerated CDC algorithms, an alternative Dedupbench build is required. We have provided preconfigured files for all algorithms with 8KB chunk sizes for convenience.
+
+**_Note that building with the wrong options (such as AVX-256 on a machine without AVX-256 support) may result in compile / runtime errors._**
+
+### 🔥 SSE/AVX-256 Acceleration 
+This build needs an AVX-256 compatible CPU to work correctly.
+   ```
+     cd build/
+     make clean
+     make simd_all
+
+     ./dedup_script.sh -c simd_8kb random_dataset
+     python3 plot_results.py results.txt
+   ```
+### 🌀 AVX-512 Acceleration
+This build needs an AVX-512 compatible CPU to work correctly.
+   ```
+     cd build/
+     make clean
+     make simd512_all
+
+     ./dedup_script.sh -c simd512_8kb random_dataset
+     python3 plot_results.py results.txt
+   ```
+
+## 🚴 Basic Unaccelerated Build
+This unaccelerated build should work on all machines regardless of CPU capabilities.
+```
+ cd build/
+ make clean
+ make
+
+ ./dedup_script.sh -c unaccelerated_8kb random_dataset
+ python3 plot_results.py results.txt
+ ```
+
+ ## 🔨 Alternate builds for ARM / IBM
+ Note that we have not provided configuration file examples for these. Please refer to the custom runs section in the [❓FAQ](#faq).
+ #### ARM with NEON-128 instructions
+ ```
+  cd build/
+  make clean
+  make arm_neon128
+ ```
+#### IBM with VSX-128 / AltiVec instructions
+```
+  cd build/
+  make clean
+  make ibm_altivec128
+```
+
+# 🔖 Research Papers
+
+Please cite the relevant publications from this list if you use the code from this repository:
+
+### Vectorized algorithms / DEB dataset
+```
+[1] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2025, February. VectorCDC: Accelerating Data Deduplication with SSE/AVX Instructions. In 2025 USENIX 23rd Conference on File and Storage Technologies (FAST). USENIX
+```
+### SeqCDC
+  ```
   [2] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, December. SeqCDC: Hashless Content-Defined Chunking for Data Deduplication. In 2024 ACM/IFIP 25th International Middleware Conference (MIDDLEWARE). ACM
+  ```
+### Low Entropy Analysis
+  ```
   [3] Jarah, MA., Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, July. The Impact of Low-Entropy on Chunking Techniques for Data Deduplication. In 2024 IEEE 17th International Conference on Cloud Computing (CLOUD) (pp. 134-140). IEEE.
+  ```
+  ### DedupBench Original Paper
+  ```
   [4] Liu, A., Baba, A., Udayashankar, S. and Al-Kiswany, S., 2023, September. DedupBench: A Benchmarking Tool for Data Chunking Techniques. In 2023 IEEE Canadian Conference on Electrical and Computer Engineering (CCECE) (pp. 469-474). IEEE.
 ```
 
-# Installation 
-1. Install prerequisites. Note that these commands are for Ubuntu 22.04.
-   ```
-     sudo apt update
-     sudo apt install libssl-dev
-     sudo apt install python3
-     sudo apt install python3-pip
-     python3 -m pip install matplotlib
-     python3 -m pip install seaborn
-   ```
-2. Clone and build the repository.
-   ```
-     git clone https://github.com/UWASL/dedup-bench.git
-     cd dedup-bench/build/
-     make clean
-     make
-   ```
-3. If AVX-512 support is required, these are the alternative build commands. **_Note that building with this option on a machine without AVX-512 support will result in runtime errors._**
-   ```
-     make clean
-     make EXTRA_COMPILER_FLAGS='-mavx512f -mavx512vl -mavx512bw'
-   ```
-4. Generate a dataset consisting of random data for testing. This generates three 1GB files with random ASCII characters on Ubuntu 22.04.
-   ```
-     mkdir random_dataset
-     cd random_dataset/
-     base64 /dev/urandom | head -c 1000000000 > random_1.txt
-     base64 /dev/urandom | head -c 1000000000 > random_2.txt
-     base64 /dev/urandom | head -c 1000000000 > random_3.txt
-   ```
-  Alternatively, download and use the _DEB_ dataset used in our Middleware 2024 / FAST 2025 papers from [Kaggle](https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25).
+# 💂‍♂️ People
 
-# Running dedup-bench
-This section describes how to run dedup-bench. You can run dedup-bench using our preconfigured scripts for 8KB chunks or manually if you want custom techniques/chunk sizes.
+For additional information, contact us via email:
+- Sreeharsha Udayashankar: s2udayas@uwaterloo.ca 
+- Abdelrahman Baba: ababa@uwaterloo.ca 
+- Mu'men Al-Jarah: mzaljara@uwaterloo.ca
+- Samer Al-Kiswany: alkiswany@uwaterloo.ca 
 
-## Preconfigured Run - 8 KB chunks
-We have created scripts to run dedup-bench with an 8KB average chunk size on any given dataset. These commands run all the CDC techniques shown in the VectorCDC paper from FAST 2025. 
-1. Go into the dedup-bench build directory.
+# ❓FAQ
+
+## How do I run the experiments from your Paper X?
+We provide configuration files in `build/` for the experiments from our papers. You can use `dedup_script` with the correct configuration.
 ```
-  cd <dedup_bench_root_dir>/build/
-```
-2. Run dedup-script with your chosen dataset. Replace `<path_to_dataset>` with the directory of the random dataset you previously created / any other dataset of your choice. **_Note that VRAM-512 will not run when compiled without AVX-512 support_**.
-```
-  ./dedup_script.sh -t 8kb_fast25 <path_to_dataset>
-```
-3. Plot a graph with the throughput results from all CDC algorithms (including VRAM) on your dataset. The graph is saved in `results_graph.png`.
-```
-  python3 plot_throughput_graph.py results.txt
+  ./dedup_script.sh -c 8kb_fast25 <path-to-dataset>
+  python3 plot_results.py results.txt
 ```
 
 
-## Manual Runs - Custom techniques/chunk sizes
-1. Choose the required chunking, hashing techniques, and chunk sizes by modifying `config.txt`. The default configuration runs SeqCDC with an average chunk size of 8 KB. Supported parameter values are given in the next section and sample config files are available in `build/config_8kb_fast25/`.
+## How do I run custom techniques / chunk sizes?
+1. Choose the required chunking, hashing techniques, and chunk sizes by modifying `config.txt`. 
    ```
-     cd <dedup_bench_repo_dir>/build/
+     cd build/
      vim config.txt
    ```
-2. Run dedup-bench. Note that the path to be passed is a directory and that the output is generated in a file `hash.out`. Throughput and avg chunk size are printed to stdout.
+2. Run the dedup-bench binary directly. Note that the path to be passed is a **directory containing all the dataset files** and that the output is generated in a file `hash.out`. Throughput and avg chunk size are printed to stdout.
    ```
      ./dedup.exe <path_to_random_dataset_dir> config.txt
    ```
@@ -76,16 +166,16 @@ We have created scripts to run dedup-bench with an 8KB average chunk size on any
      ./measure-dedup.exe hash.out
    ```
 
-# Supported Chunking and Hashing Techniques
+## How do I modify config.txt for custom runs?
 
-Here are some hints using which `config.txt` can be modified.
+### Chunking techniques (CDC algorithms)
 
-### Chunking Techniques
-The following chunking techniques are currently supported by DedupBench. Note that the `chunking_algo` parameter in the configuration file needs to be edited to switch techniques.
+Note that the `chunking_algo` parameter in the configuration file needs to be edited to switch CDC techniques.
 
 | Chunking Technique | chunking_algo |
 |--------------------|---------------|
 | AE                 | ae            |
+| CRC32                | crc            |
 | FastCDC            | fastcdc       |
 | Gear Chunking      | gear          |
 | Rabin's Chunking   | rabins        |
@@ -96,14 +186,16 @@ The following chunking techniques are currently supported by DedupBench. Note th
 After choosing a `chunking_algo`, make sure to check and adjust its parameters (e.g. chunk sizes). _Note that each `chunking_algo` has a separate parameter section in the config file_. For example, SeqCDC's minimum and maximum chunk sizes are called `seq_min_block_size` and `seq_max_block_size` respectively.
 
 ### SSE / AVX Acceleration
-To use VectorCDC's RAM (VRAM), set `chunking_algo` to point to RAM and change `simd_mode` to one of the following values:
+To change the SIMD acceleration used, change  `simd_mode` to one of the following values:
 | SIMD Mode | simd_mode |
 |-----------|-----------|
 | SSE128    | sse128    |
 | AVX256    | avx256    |
 | AVX512    | avx512    |
+| ARM NEON  | neon128   |
+| IBM VSX   | altivec128 |
 
-Note that only RAM currently supports SSE/AVX acceleration. dedup-bench must be compiled with AVX-512 support to use the `avx512` mode.
+Note that only RAM, AE, and MAXP currently support SSE/AVX acceleration. dedup-bench must be compiled with AVX-512 support to use the `avx512` mode.
 
 ### Hashing Techniques
 The following hashing techniques are currently supported by DedupBench. Note that the `hashing_algo` parameter in the configuration file needs to be edited to switch techniques.
@@ -114,11 +206,12 @@ The following hashing techniques are currently supported by DedupBench. Note tha
 | SHA1              | sha1         |
 | SHA256            | sha256       |
 | SHA512            | sha512       |
-  
+| MurmurHash3 (128-bit) | murmurhash3 |
+| xxHash3 (128-bit) | xxhash128       |  
 
-# VM Dataset from DedupBench 2023:
+# Where is the VM Dataset used in the DedupBench 2023 paper?
 
-The following images from Bitnami were used in the original DedupBench paper at CCECE 2023:
+Note that this is **not the same** as DEB. The following images from Bitnami were used in the original DedupBench paper at CCECE 2023:
 
 ### Image URLs
 ```
