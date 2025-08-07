@@ -211,7 +211,7 @@ The following hashing techniques are currently supported by DedupBench. Note tha
 
 # Where is the VM Dataset used in the DedupBench 2023 paper?
 
-Note that this is **not the same** as DEB. The following images from Bitnami were used in the original DedupBench paper at CCECE 2023:
+Note that this is **not the same** as the [💾 VM Images Dataset](https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25), but is a subset of it. The following images from Bitnami were used in the original DedupBench paper at CCECE 2023:
 
 ### Image URLs
 ```
