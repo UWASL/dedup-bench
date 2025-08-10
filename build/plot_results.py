@@ -16,6 +16,7 @@ rename_dict = { "aemin":"AE-Min",
                 "maxp":"MAXP",
                 "rabins":"Rabin",
                 "ram":"RAM",
+                "seqcdc":"SeqCDC",
                 "tttd":"TTTD",
                 "vaemax128":"VAEMax-128",
                 "vaemax256":"VAEMax-256",
@@ -80,6 +81,13 @@ def build_custom_order(keys):
     if("VRAM-512" in keys):
         custom_order.append("VRAM-512")
     
+    if("SeqCDC" in keys):
+        custom_order.append("SeqCDC")
+    
+    for key in keys:
+        if(key not in rename_dict.keys()):
+            custom_order.append(key)
+
     return custom_order
 
 
@@ -169,5 +177,5 @@ if(__name__ == "__main__"):
     read_src_spacesavings(results_path)
     plot_results()
 
-    print("Throughput graph plotted and saved as results_graph.png.")
+    print("Throughput and space savings graphs plotted and saved as results_graph.png.")
 

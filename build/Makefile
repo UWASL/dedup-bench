@@ -47,7 +47,7 @@ avx512:
 
 .PHONY: arm_neon128
 arm_neon128:
-	$(MAKE) all
+	$(MAKE) EXTRA_COMPILER_FLAGS="-mfpu=neon" all 
 
 .PHONY: ibm_altivec128
 ibm_altivec128:

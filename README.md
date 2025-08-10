@@ -14,16 +14,16 @@ DedupBench is a benchmarking tool for data chunking techniques used in data dedu
 
 It currently supports eleven different chunking algorithms and six different fingerprinting algorithms. It supports SIMD acceleration with [VectorCDC](https://www.usenix.org/conference/fast25/presentation/udayashankar) for these algorithms using five different vector instruction sets on Intel, AMD, ARM, and IBM CPUs. 
 
-The following chunking techniques and SIMD accelerations are currently supported by DedupBench.
+The following chunking techniques and vector instruction sets are currently supported by DedupBench.
 
 | CDC Algorithm | Link | Unaccelerated | SSE-128 | AVX-256 | AVX-512 | NEON-128 (ARM) | VSX-128 (IBM) |
 | :-------: | :-------: | :-------: | :-------: | :-------: | :-------: | :-------: | :-------: |
 | AE-Max | [Paper](https://ieeexplore.ieee.org/document/7218510) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | AE-Min | [Paper](https://ieeexplore.ieee.org/document/7218510) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
-| CRC-32 | [GitHub](https://github.com/google/crc32c) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| CRC-32 | [Paper](https://dl.acm.org/doi/10.1145/3319647.3325834) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | FastCDC | [Paper](https://www.usenix.org/conference/atc16/technical-sessions/presentation/xia) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Fixed-size | [Paper](https://www.usenix.org/conference/fast-02/venti-new-approach-archival-data-storage) |  ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Gear | [Paper](https://www.sciencedirect.com/science/article/pii/S0166531614000790) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Gear | [Paper](https://dl.acm.org/doi/10.1145/3319647.3325834) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | MAXP| [Paper](https://www.sciencedirect.com/science/article/pii/S0022000009000580) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Rabin | [Paper](https://dl.acm.org/doi/abs/10.1145/502034.502052) | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | RAM | [Paper](https://www.sciencedirect.com/science/article/abs/pii/S0167739X16305829) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
@@ -39,7 +39,7 @@ The following chunking techniques and SIMD accelerations are currently supported
 # 🚀 Quick start guide
 To quickly get started, run the following commands on Ubuntu:
 
-1. Clone repository and create a basic build without SIMD acceleration.
+1. Clone repository and choose a basic build without SIMD acceleration.
 ```
   git clone git@github.com:UWASL/dedup-bench.git
   cd dedup-bench/
@@ -63,7 +63,7 @@ To see a real dataset in action and generate the graph below, download and use t
 
 # ⚡ DedupBench SIMD Builds
 
-To use any of the vector-accelerated CDC algorithms, an alternative Dedupbench build is required. We have provided preconfigured files for all algorithms with 8KB chunk sizes for convenience.
+To use any of the vector-accelerated CDC algorithms, an alternative Dedupbench build is required. Choose the right SIMD build when running `install.sh` or use the manual commands commands below. We have provided preconfigured files for all algorithms with 8KB chunk sizes for convenience.
 
 **_Note that building with the wrong options (such as AVX-256 on a machine without AVX-256 support) may result in compile / runtime errors._**
 
