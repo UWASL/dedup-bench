@@ -63,7 +63,7 @@ To see a real dataset in action and generate the graph below, download and use t
 
 # ⚡ DedupBench SIMD Builds
 
-To use any of the vector-accelerated CDC algorithms, an alternative Dedupbench build is required. Choose the right SIMD build when running `install.sh` or use the manual commands commands below. We have provided preconfigured files for all algorithms with 8KB chunk sizes for convenience.
+To use any of the vector-accelerated CDC algorithms, an alternative Dedupbench build is required. Choose the right SIMD build when running `install.sh` or use the manual commands below. We have provided preconfigured files for all algorithms with 8KB chunk sizes for convenience.
 
 **_Note that building with the wrong options (such as AVX-256 on a machine without AVX-256 support) may result in compile / runtime errors._**
 
