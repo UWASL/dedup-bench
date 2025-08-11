@@ -120,19 +120,19 @@ Please cite the relevant publications from this list if you use the code from th
 
 ### Vectorized algorithms / DEB dataset
 ```
-[1] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2025, February. VectorCDC: Accelerating Data Deduplication with SSE/AVX Instructions. In 2025 USENIX 23rd Conference on File and Storage Technologies (FAST). USENIX
+  [1] Udayashankar, S., Baba, A., & Al-Kiswany, S. (2025). VectorCDC: Accelerating Data Deduplication with Vector Instructions. In 23rd USENIX Conference on File and Storage Technologies (FAST 25) (pp. 513-522).
 ```
 ### SeqCDC
   ```
-  [2] Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, December. SeqCDC: Hashless Content-Defined Chunking for Data Deduplication. In 2024 ACM/IFIP 25th International Middleware Conference (MIDDLEWARE). ACM
+  [2] Udayashankar, S., Baba, A., & Al-Kiswany, S. (2024, December). Seqcdc: Hashless content-defined chunking for data deduplication. In Proceedings of the 25th International Middleware Conference (pp. 292-298).
   ```
 ### Low Entropy Analysis
   ```
-  [3] Jarah, MA., Udayashankar, S., Baba, A. and Al-Kiswany, S., 2024, July. The Impact of Low-Entropy on Chunking Techniques for Data Deduplication. In 2024 IEEE 17th International Conference on Cloud Computing (CLOUD) (pp. 134-140). IEEE.
+  [3] Jarah, MA., Udayashankar, S., Baba, A., & Al-Kiswany, S. (2024, July). The impact of low-entropy on chunking techniques for data deduplication. In 2024 IEEE 17th International Conference on Cloud Computing (CLOUD) (pp. 134-140). IEEE.
   ```
   ### DedupBench Original Paper
   ```
-  [4] Liu, A., Baba, A., Udayashankar, S. and Al-Kiswany, S., 2023, September. DedupBench: A Benchmarking Tool for Data Chunking Techniques. In 2023 IEEE Canadian Conference on Electrical and Computer Engineering (CCECE) (pp. 469-474). IEEE.
+  [4] Liu, A., Baba, A., Udayashankar, S., & Al-Kiswany, S. (2023, September). Dedupbench: A benchmarking tool for data chunking techniques. In 2023 IEEE Canadian Conference on Electrical and Computer Engineering (CCECE) (pp. 469-474). IEEE.
 ```
 
 # 💂‍♂️ People
