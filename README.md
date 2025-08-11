@@ -121,6 +121,7 @@ Please cite the relevant publications from this list if you use the code from th
 ### Vectorized algorithms / DEB dataset
 ```
   [1] Udayashankar, S., Baba, A., & Al-Kiswany, S. (2025). VectorCDC: Accelerating Data Deduplication with Vector Instructions. In 23rd USENIX Conference on File and Storage Technologies (FAST 25) (pp. 513-522).
+  [2] Udayashankar, S., Baba, A., Al-Kiswany, S. (2025). Accelerating Data Chunking in Deduplication Systems using Vector Instructions. arXiv preprint arXiv:2508.05797.
 ```
 ### SeqCDC
   ```
