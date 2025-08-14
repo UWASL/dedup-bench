@@ -6,7 +6,7 @@ echo -e "\nInstalling dependencies....\n"
 
 sudo apt update
 sudo apt -y install libssl-dev libxxhash-dev python3 python3-pip 
-python3 -m pip install matplotlib seaborn
+python3 -m pip install matplotlib seaborn --break-system-packages
 
 # Build choices
 
