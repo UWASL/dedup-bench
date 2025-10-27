@@ -1,0 +1,7 @@
+seq_sequence_threshold,5,6,7
+seq_jump_trigger,35,37,39,40,42,45,48,50,53,55,58,60,62,65
+seq_jump_size,320,352,384,416,448,480,512,544,576,608,640,672,704
+seq_op_mode,inc
+seq_min_block_size,8192
+seq_avg_block_size,16384
+seq_max_block_size,32768

@@ -1,0 +1,12 @@
+seq_sequence_threshold=7
+seq_jump_trigger=60
+seq_jump_size=608
+seq_op_mode=inc
+seq_min_block_size=8192
+seq_avg_block_size=16384
+seq_max_block_size=32768
+chunking_algo=seq
+hashing_algo=xxhash128
+simd_mode=none
+output_file=./hashes_seq-param-search/config_517.out
+buffer_size=16384
