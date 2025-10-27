@@ -239,3 +239,7 @@ Note that the following images were also used in the paper but are unavailable a
   https://marketplace.cloud.vmware.com/services/details/canvaslms?slug=true
 ```
 
+# How do I figure out the right parameter values for SeqCDC?
+
+We have added a detailed parameter search procedure to `supporting_tools/seqcdc-parameter-search/README.md`. Related scripts can be found in the same directory.
+
