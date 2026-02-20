@@ -31,6 +31,7 @@ The following chunking techniques and vector instruction sets are currently supp
 | TTTD | [Paper](https://shiftleft.com/mirrors/www.hpl.hp.com/techreports/2005/HPL-2005-30R1.pdf) | ✔️ | - | - | - | - | - |
 
 # ⭐News
+- *Jan. 2026*: We have published a detailed VectorCDC evaluation on Intel, AMD, ARM and IBM CPUs in [ACM Transactions on Storage](https://dl.acm.org/doi/10.1145/3797270).
 - *Aug. 2025*: We have released DedupBench v2.0 with ARM / IBM vector acceleration support, xxHash compatibility and much more!
 - *Feb. 2025*:  VectorCDC has been published in [FAST](https://www.usenix.org/conference/fast25/presentation/udayashankar)!
 - *Jan. 2025*: We have released the [DEB dataset](https://www.kaggle.com/datasets/sreeharshau/vm-deb-fast25) on Kaggle.
@@ -120,20 +121,21 @@ Please cite the relevant publications from this list if you use the code from th
 
 ### Vectorized algorithms / DEB dataset
 ```
-  [1] Udayashankar, S., Baba, A., & Al-Kiswany, S. (2025). VectorCDC: Accelerating Data Deduplication with Vector Instructions. In 23rd USENIX Conference on File and Storage Technologies (FAST 25) (pp. 513-522).
-  [2] Udayashankar, S., Baba, A., Al-Kiswany, S. (2025). Accelerating Data Chunking in Deduplication Systems using Vector Instructions. arXiv preprint arXiv:2508.05797.
+  [1] Udayashankar, S., Baba, A., & Al-Kiswany, S. (2025, February). VectorCDC: Accelerating Data Deduplication with Vector Instructions. In 23rd USENIX Conference on File and Storage Technologies (FAST 25) (pp. 513-522).
+  [2] Udayashankar, S., Baba, A., Al-Kiswany, S. (2026, February). Accelerating Data Chunking in Deduplication Systems using Vector Instructions. In ACM Transactions on Storage. https://doi.org/10.1145/3797270.
 ```
 ### SeqCDC
   ```
-  [2] Udayashankar, S., Baba, A., & Al-Kiswany, S. (2024, December). Seqcdc: Hashless content-defined chunking for data deduplication. In Proceedings of the 25th International Middleware Conference (pp. 292-298).
+  [1] Udayashankar, S., Baba, A., & Al-Kiswany, S. (2024, December). Seqcdc: Hashless content-defined chunking for data deduplication. In Proceedings of the 25th International Middleware Conference (pp. 292-298).
+  [2] Udayashankar, S., Mahmoud, A.A., & Al-Kiswany, S. (2026, February). Vectorized Sequence-Based Chunking for Data Deduplication. In IEEE Transactions on Parallel and Distributed Systems, vol. 37, no. 4, pp. 934-947, doi: 10.1109/TPDS.2026.3660793.
   ```
 ### Low Entropy Analysis
   ```
-  [3] Jarah, MA., Udayashankar, S., Baba, A., & Al-Kiswany, S. (2024, July). The impact of low-entropy on chunking techniques for data deduplication. In 2024 IEEE 17th International Conference on Cloud Computing (CLOUD) (pp. 134-140). IEEE.
+  [1] Jarah, MA., Udayashankar, S., Baba, A., & Al-Kiswany, S. (2024, July). The impact of low-entropy on chunking techniques for data deduplication. In 2024 IEEE 17th International Conference on Cloud Computing (CLOUD) (pp. 134-140). IEEE.
   ```
   ### DedupBench Original Paper
   ```
-  [4] Liu, A., Baba, A., Udayashankar, S., & Al-Kiswany, S. (2023, September). Dedupbench: A benchmarking tool for data chunking techniques. In 2023 IEEE Canadian Conference on Electrical and Computer Engineering (CCECE) (pp. 469-474). IEEE.
+  [1] Liu, A., Baba, A., Udayashankar, S., & Al-Kiswany, S. (2023, September). Dedupbench: A benchmarking tool for data chunking techniques. In 2023 IEEE Canadian Conference on Electrical and Computer Engineering (CCECE) (pp. 469-474). IEEE.
 ```
 
 # 💂‍♂️ People
