@@ -4,14 +4,14 @@
 #include <math.h>
 #include <iostream>
 
-#include "avx_chunking_common.hpp"
+#include "avx_chunking_multiroll_common.hpp"
 #include "config.hpp"
 
 #include <cstring>
 
 #define DEFAULT_RAM_AVG_BLOCK_SIZE 4096
 
-class RAM_Chunking : public virtual AVX_Chunking_Technique {
+class RAM_Chunking : public virtual MultiRoll_AVX_Chunking_Technique {
    private:
     uint64_t avg_block_size;
     uint64_t max_block_size;
@@ -28,6 +28,7 @@ class RAM_Chunking : public virtual AVX_Chunking_Technique {
 
     #if defined(__AVX512F__)
       __m512i *avx512_array;
+      __m512i **avx512_arrays_nonbyteroll;
     #endif
 
     #ifdef __ARM_NEON
@@ -45,6 +46,7 @@ class RAM_Chunking : public virtual AVX_Chunking_Technique {
      * @return: cutpoint position in the buffer 
      */
     uint64_t find_cutpoint(char* buff, uint64_t size);
+    template <typename t> uint64_t find_cutpoint_native_nonbyteroll(char* buff, uint64_t size);
 
     /**
      * @brief Get the return position (chunk boundary) for RAM using SSE128 instructions. This is the first position after start_position with a value > max_val.

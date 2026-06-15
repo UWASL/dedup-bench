@@ -4,8 +4,7 @@
 #include <math.h>
 #include <iostream>
 
-#include "avx_chunking_common.hpp"
-#include "chunking_common.hpp"
+#include "avx_chunking_multiroll_common.hpp"
 #include "config.hpp"
 
 #include <cstring>
@@ -13,7 +12,7 @@
 #define DEFAULT_MAXP_WINDOW_SIZE 128
 #define DEFAULT_MAXP_MAX_BLOCK_SIZE 65536
 
-class MAXP_Chunking : public virtual AVX_Chunking_Technique {
+class MAXP_Chunking : public virtual MultiRoll_AVX_Chunking_Technique {
    private:
     uint64_t max_block_size;
     uint64_t window_size;
@@ -46,6 +45,7 @@ class MAXP_Chunking : public virtual AVX_Chunking_Technique {
      */
     uint64_t find_cutpoint(char* buff, uint64_t size) override;
     uint64_t find_cutpoint_native(char *buff, uint64_t size);
+    template <typename t> uint64_t find_cutpoint_native_nonbyteroll(char *buff, uint64_t size);
     
     #ifdef __SSE3__
     uint64_t find_cutpoint_sse128(char *buff, uint64_t size);
@@ -57,6 +57,7 @@ class MAXP_Chunking : public virtual AVX_Chunking_Technique {
     
     #if defined(__AVX512F__)
     uint64_t find_cutpoint_avx512(char *buff, uint64_t size);
+    template <typename t> uint64_t find_cutpoint_avx512_nonbyteroll(char *buff, uint64_t size);
     #endif
 
     #if defined(__ARM_NEON)

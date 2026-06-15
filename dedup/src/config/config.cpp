@@ -105,6 +105,27 @@ SIMD_Mode Config::get_simd_mode() const {
         "Unsupported SIMD mode. Please check compilation flags and configuration file.");
 }
 
+HASHLESS_BYTEROLL_MODE Config::get_hashless_byteroll_mode() const {
+    try {
+        std::string value = parser.get_property(HASHLESS_BYTEROLL_MODE_STRING);
+        if (value == "byte_roll") {
+            return HASHLESS_BYTEROLL_MODE::BYTE_ROLL;
+        } 
+        else if (value == "word_roll") {
+            return HASHLESS_BYTEROLL_MODE::WORD_ROLL;
+        } 
+        else if (value == "dword_roll") {
+            return HASHLESS_BYTEROLL_MODE::DWORD_ROLL;
+        } 
+        else if (value == "qword_roll") {
+            return HASHLESS_BYTEROLL_MODE::QWORD_ROLL;
+        } 
+    } catch (...) {
+    }
+    throw ConfigError(
+        "The configuration file does not specify a valid byteroll mode for hashless chunking algorithms");
+}
+
 uint64_t Config::get_fc_size() const {
     try {
         std::string value = parser.get_property(FC_SIZE);

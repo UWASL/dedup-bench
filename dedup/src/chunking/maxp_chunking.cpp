@@ -16,6 +16,8 @@
     window_size = DEFAULT_MAXP_WINDOW_SIZE;
     max_block_size = DEFAULT_MAXP_MAX_BLOCK_SIZE;
     simd_mode = SIMD_Mode::NONE;
+     byteroll_mode = HASHLESS_BYTEROLL_MODE::BYTE_ROLL;
+     roll_size = 1; // Byte roll by default
 
     
     #ifdef __SSE3__
@@ -45,6 +47,24 @@
     window_size = config.get_maxp_window_size();
     max_block_size = config.get_maxp_max_block_size();
     simd_mode = config.get_simd_mode();
+    byteroll_mode = config.get_hashless_byteroll_mode();
+
+    if(byteroll_mode == HASHLESS_BYTEROLL_MODE::BYTE_ROLL){
+        roll_size = 1;
+    }
+    else if(byteroll_mode == HASHLESS_BYTEROLL_MODE::WORD_ROLL){
+        roll_size = WORD_ROLL_SIZE_BYTES;
+    }
+    else if(byteroll_mode == HASHLESS_BYTEROLL_MODE::DWORD_ROLL){
+        roll_size = DWORD_ROLL_SIZE_BYTES;
+    }
+    else if(byteroll_mode == HASHLESS_BYTEROLL_MODE::QWORD_ROLL){
+        roll_size = QWORD_ROLL_SIZE_BYTES;
+    }
+    else{
+        std::cerr << "Error: Unsupported byteroll mode for MAXP chunking" << std::endl;
+        exit(1);
+    }
 
     #ifdef __SSE3__
     xmm_array = nullptr;
@@ -282,7 +302,7 @@ uint64_t MAXP_Chunking::find_cutpoint_avx512(char *buff, uint64_t size){
             // No match found i.e. all bytes in range are less than max_value
             // Start backward scan to verify if target is a local max
 
-            backward_max = find_maximum_avx512(buff, max_pos - window_size, max_pos, zmm_array);
+            backward_max = find_maximum_avx512_accumulator(buff, max_pos - window_size, max_pos);
             
             // No bytes > max value in the backward region i.e. max_value is a local max
             // Chunk boundary found
@@ -304,6 +324,72 @@ uint64_t MAXP_Chunking::find_cutpoint_avx512(char *buff, uint64_t size){
     // No chunk boundary found
     return size;
 
+}
+#endif
+
+#if defined(__AVX512F__)
+template <typename t> uint64_t MAXP_Chunking::find_cutpoint_avx512_nonbyteroll(char *buff, uint64_t size){
+    if(size < (2 * window_size) + 1)
+        return size;
+
+    // Cap out max size
+    size = std::min(size, max_block_size);
+
+    t max_value;
+    t backward_max;
+    uint64_t max_pos = window_size;
+
+    uint64_t return_pos_range_scan;
+
+    while(max_pos < (size - window_size)){
+
+        max_value = *(reinterpret_cast<t*>(&buff[max_pos]));
+
+        if(std::is_same<t, uint16_t>::value){
+            return_pos_range_scan = range_scan_geq_avx512_2byteroll(buff, max_pos + 1, max_pos + 1 + window_size, max_value);
+        }
+        else if(std::is_same<t, uint32_t>::value){
+            return_pos_range_scan = range_scan_geq_avx512_4byteroll(buff, max_pos + 1, max_pos + 1 + window_size, max_value);
+        }
+        else if(std::is_same<t, uint64_t>::value){
+            return_pos_range_scan = range_scan_geq_avx512_8byteroll(buff, max_pos + 1, max_pos + 1 + window_size, max_value);
+        }
+        else {
+            std::cerr << "Error: Unsupported type for non-byte byteroll in AVX512 MAXP chunking" << std::endl;
+            exit(1);
+        }
+        if(return_pos_range_scan == max_pos + window_size + 1){
+            // No match found i.e. all bytes in range are less than max_value
+            // Start backward scan to verify if target is a local max
+
+            if(std::is_same<t, uint16_t>::value){
+                backward_max = find_maximum_avx512_2byteroll_accumulator(buff, max_pos - window_size, max_pos);
+            }
+            else if(std::is_same<t, uint32_t>::value){
+                backward_max = find_maximum_avx512_4byteroll_accumulator(buff, max_pos - window_size, max_pos);
+            }
+            else if(std::is_same<t, uint64_t>::value){
+                backward_max = find_maximum_avx512_8byteroll_accumulator(buff, max_pos - window_size, max_pos);
+            }
+             else {
+                std::cerr << "Error: Unsupported type for non-byte byteroll in AVX512 MAXP chunking" << std::endl;
+                exit(1);
+            }
+            
+            if(backward_max <= max_value){
+                return max_pos;
+            }
+            else {
+                max_pos += window_size + 1;
+            }
+
+        }
+        else {
+            max_pos = return_pos_range_scan;
+        }
+    }
+
+    return size;
 }
 #endif
 
@@ -448,10 +534,66 @@ uint64_t MAXP_Chunking::find_cutpoint_native(char *buff, uint64_t size){
     return size;
  }
 
+ template <typename t>
+ uint64_t MAXP_Chunking::find_cutpoint_native_nonbyteroll(char *buff, uint64_t size){
+
+     if(size < (2 * window_size) + 1){
+         return size;
+     }
+     size = std::min(size, max_block_size);
+     uint64_t max_position = window_size;
+     t max_value = *(reinterpret_cast<t*>(&buff[max_position]));
+
+     uint64_t j;
+     bool local_max_found = false;
+
+     for(uint64_t i = window_size; i < size - 1; i++){
+          t curr_value = *(reinterpret_cast<t*>(&buff[i]));
+          if(curr_value >= max_value){
+              max_position = i;
+              max_value = curr_value;
+          }
+          else if(i == max_position + window_size){
+              local_max_found = true;
+
+              for(j = max_position - window_size; j < max_position; j++){
+                    t backward_value = *(reinterpret_cast<t*>(&buff[j]));
+                    if(backward_value > max_value){
+                         max_position = i+1;
+                         max_value = *(reinterpret_cast<t*>(&buff[i+1]));
+                         local_max_found = false;
+                         break;
+                    }
+              }
+
+              if(local_max_found == true){
+                    return max_position;
+              }
+          }
+     }
+
+     return size;
+ }
+
  uint64_t MAXP_Chunking::find_cutpoint(char *buff, uint64_t size){
     chunk_counter++;
     if(simd_mode == SIMD_Mode::NONE) {
-        return find_cutpoint_native(buff, size);
+        if(byteroll_mode == HASHLESS_BYTEROLL_MODE::BYTE_ROLL){
+            return find_cutpoint_native(buff, size);
+        }
+        else if(byteroll_mode == HASHLESS_BYTEROLL_MODE::WORD_ROLL){
+            return find_cutpoint_native_nonbyteroll<uint16_t>(buff, size);
+        }
+        else if(byteroll_mode == HASHLESS_BYTEROLL_MODE::DWORD_ROLL){
+            return find_cutpoint_native_nonbyteroll<uint32_t>(buff, size);
+        }
+        else if(byteroll_mode == HASHLESS_BYTEROLL_MODE::QWORD_ROLL){
+            return find_cutpoint_native_nonbyteroll<uint64_t>(buff, size);
+        }
+        else {
+            std::cerr << "Error: Unsupported byteroll mode in MAXP chunking" << std::endl;
+            exit(1);
+        }
     }
     
     #ifdef __SSE3__
@@ -468,7 +610,22 @@ uint64_t MAXP_Chunking::find_cutpoint_native(char *buff, uint64_t size){
 
     #if defined(__AVX512F__)
     else if(simd_mode == SIMD_Mode::AVX512) {
-        return find_cutpoint_avx512(buff, size);
+            if(byteroll_mode == HASHLESS_BYTEROLL_MODE::BYTE_ROLL) {
+                return find_cutpoint_avx512(buff, size);
+            }
+            else if (byteroll_mode == HASHLESS_BYTEROLL_MODE::WORD_ROLL){
+                return find_cutpoint_avx512_nonbyteroll<uint16_t>(buff, size);
+            }
+            else if(byteroll_mode == HASHLESS_BYTEROLL_MODE::DWORD_ROLL){
+                return find_cutpoint_avx512_nonbyteroll<uint32_t>(buff, size);
+            }
+            else if(byteroll_mode == HASHLESS_BYTEROLL_MODE::QWORD_ROLL){
+                return find_cutpoint_avx512_nonbyteroll<uint64_t>(buff, size);
+            }
+            else {
+                std::cerr << "Error: Unsupported byteroll mode in AVX512 MAXP chunking" << std::endl;
+                exit(1);
+            }
     }
     #endif
 

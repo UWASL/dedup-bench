@@ -4,19 +4,22 @@
 #include <math.h>
 #include <iostream>
 
-#include "avx_chunking_common.hpp"
+#include "avx_chunking_multiroll_common.hpp"
 #include "config.hpp"
 
 #include <cstring>
 
 #define DEFAULT_AE_AVG_BLOCK_SIZE 4096
 
-class AE_Chunking : public virtual AVX_Chunking_Technique {
+class AE_Chunking : public virtual MultiRoll_AVX_Chunking_Technique {
    private:
     uint64_t avg_block_size;
     uint64_t window_size;
     uint64_t curr_pos;
+
     AE_Mode extreme_mode;
+    HASHLESS_BYTEROLL_MODE byteroll_mode;
+    uint8_t roll_size;
 
     /**
      * @brief SSE128, AVX256 and AVX512 arrays for SIMD operations
@@ -31,7 +34,6 @@ class AE_Chunking : public virtual AVX_Chunking_Technique {
     #endif
 
     #if defined(__AVX512F__)
-    __m512i* avx512_array;
     #endif
 
     #if defined(__ARM_NEON)
@@ -50,6 +52,8 @@ class AE_Chunking : public virtual AVX_Chunking_Technique {
      */
     uint64_t find_cutpoint(char* buff, uint64_t size) override;
     uint64_t find_cutpoint_native(char* buff, uint64_t size);
+
+    template<typename t> uint64_t find_cutpoint_native_nonbyteroll(char* buff, uint64_t size);
    
     #if defined(__SSE3__)
     uint64_t find_cutpoint_sse128(char* buff, uint64_t size);
@@ -61,6 +65,7 @@ class AE_Chunking : public virtual AVX_Chunking_Technique {
     
     #if defined(__AVX512F__)
     uint64_t find_cutpoint_avx512(char* buff, uint64_t size);
+    template<typename t> uint64_t find_cutpoint_avx512_multiroll(char* buff, uint64_t size);
     #endif
 
     #if defined(__ARM_NEON)

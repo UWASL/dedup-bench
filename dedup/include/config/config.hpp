@@ -9,6 +9,7 @@
 #define HASHING_TECH "hashing_algo"
 #define CHUNKING_MODE "chunking_mode"
 #define SIMD_MODE_STRING "simd_mode"
+#define HASHLESS_BYTEROLL_MODE_STRING "hashless_byteroll_mode"
 
 #define FC_SIZE "fc_size"
 #define RABINC_WINDOW_SIZE "rabinc_window_size"
@@ -68,6 +69,10 @@ enum class ChunkingTech {
     CRC,
     SEQ,
     TTTD,
+    SS_CRC,
+    SS_GEAR,
+    PCI,
+    THROUGHPUT_TEST
 };
 
 enum class SIMD_Mode{
@@ -85,6 +90,8 @@ enum class HashingTech { MD5, SHA1, SHA256, SHA512, XXHASH128, MURMURHASH3 };
 
 // define the the extreme value type of AE algorithm
 enum AE_Mode { MAX, MIN };
+
+enum HASHLESS_BYTEROLL_MODE {BYTE_ROLL, WORD_ROLL, DWORD_ROLL, QWORD_ROLL};
 
 // define SeqCDC operating modes
 enum Seq_Op_Mode { INCREASING, DECREASING };
@@ -119,6 +126,13 @@ class Config {
      * @return SIMD_Mode
      */
     SIMD_Mode get_simd_mode() const;
+
+    /**
+    * @brief Get the byteroll mode for hashless chunking algorithms
+    * 
+    * @return HASHLESS_BYTEROLL_MODE
+    */
+    HASHLESS_BYTEROLL_MODE get_hashless_byteroll_mode() const;
     
     /**
      * @brief Get the size (in number of bytes) of a chunk when using fixed-size
