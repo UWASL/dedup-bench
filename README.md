@@ -48,13 +48,12 @@ The source code for these can be found in `dedup/src/`.
 
 To get started, run the following commands on Ubuntu:
 
-1. Clone repository, switch branches, and choose a build with AVX-512 acceleration.
+1. Clone the repository, switch branches, and choose a build with AVX-512 acceleration.
 ```
   git clone git@github.com:UWASL/dedup-bench.git
   cd dedup-bench/
   git checkout artifact_fast27
-  git pull
-  sh ./install.sh
+  ./install.sh
 ```
 
 If the install script fails due to Python / Pip errors, please run the commands within it manually.
